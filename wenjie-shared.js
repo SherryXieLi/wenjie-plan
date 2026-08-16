@@ -67,7 +67,8 @@
     const placeholders = document.querySelectorAll('[data-shared="footer"]');
     placeholders.forEach(function (el) {
       const lastUpdated = el.getAttribute('data-updated') || '2026-08-16';
-      const html =
+      el.classList.add('shared-footer');
+      el.innerHTML =
         '<div class="footer-inner">' +
           '<div class="meta">' +
             '<a href="https://github.com/SherryXieLi/wenjie-plan">📂 GitHub</a>' +
@@ -79,7 +80,6 @@
             'Last updated: <strong>' + lastUpdated + '</strong> · SherryXieLi · Singapore' +
           '</div>' +
         '</div>';
-      el.innerHTML = html;
     });
   }
 
