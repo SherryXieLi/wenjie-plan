@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文杰的成长花园</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+     配色：温暖奶油色 + 5 种花的颜色
+     设计哲学：只看见生长，看不见失败
+     ============================================ */
+  :root {
+    --bg: #fdf6e8;
+    --bg-card: #ffffff;
+    --bg-soft: #fff5dd;
+    --bg-softer: #fef9ec;
+    --line: #ead9b8;
+    --line-soft: #f5e8cc;
+
+    --ink: #4a3f2c;
+    --ink-2: #6b5e47;
+    --muted: #9c8d75;
+    --muted-soft: #bfae8e;
+
+    --primary: #d4a548;
+    --primary-deep: #b88a35;
+    --primary-soft: rgba(212, 165, 72, 0.18);
+
+    --coral: #e89580;
+    --coral-deep: #c97762;
+    --coral-soft: rgba(232, 149, 128, 0.18);
+
+    --sky: #7fb3cf;
+    --sky-deep: #5d92b1;
+    --sky-soft: rgba(127, 179, 207, 0.18);
+
+    --leaf: #8db97a;
+    --leaf-deep: #6d9a5a;
+    --leaf-soft: rgba(141, 185, 122, 0.18);
+
+    --gold: #e8b948;
+    --gold-deep: #c49930;
+    --gold-soft: rgba(232, 185, 72, 0.18);
+
+    --rose: #d49bb8;
+    --rose-deep: #b27a99;
+    --rose-soft: rgba(212, 155, 184, 0.18);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* 背景：轻柔的花园氛围 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 500px at 10% 0%, rgba(232, 149, 128, 0.06), transparent),
+      radial-gradient(ellipse 700px 600px at 100% 20%, rgba(127, 179, 207, 0.06), transparent),
+      radial-gradient(ellipse 800px 600px at 50% 100%, rgba(141, 185, 122, 0.05), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 背景小叶子装饰 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle 2px at 8% 15%, var(--leaf-soft) 100%, transparent),
+      radial-gradient(circle 2px at 92% 25%, var(--coral-soft) 100%, transparent),
+      radial-gradient(circle 2px at 15% 75%, var(--gold-soft) 100%, transparent),
+      radial-gradient(circle 2px at 88% 85%, var(--sky-soft) 100%, transparent),
+      radial-gradient(circle 2px at 45% 50%, var(--rose-soft) 100%, transparent);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  main { position: relative; z-index: 1; }
+  .container { max-width: 980px; margin: 0 auto; padding: 0 28px; }
+
+  /* ============================================
+     Top Bar
+     ============================================ */
+  .top-bar {
+    border-bottom: 1px solid var(--line);
+    background: rgba(253, 246, 232, 0.85);
+    backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .top-bar-inner {
+    max-width: 980px; margin: 0 auto; padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; color: var(--muted); flex-wrap: wrap; gap: 12px;
+  }
+  .top-bar .crumb { display: flex; gap: 10px; align-items: center; }
+  .top-bar .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-soft);
+  }
+  .top-bar .crumb strong { color: var(--ink); font-weight: 600; }
+  .top-bar .nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .top-bar .nav a {
+    color: var(--ink-2); text-decoration: none;
+    padding: 5px 11px; border-radius: 7px;
+    font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    transition: background 0.2s;
+  }
+  .top-bar .nav a:hover { background: var(--bg-soft); }
+
+  /* ============================================
+     Hero
+     ============================================ */
+  .hero { padding: 56px 0 20px; text-align: center; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 500; color: var(--primary-deep);
+    background: var(--primary-soft);
+    padding: 7px 16px; border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.15;
+    margin: 18px 0 14px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .hero h1 em {
+    font-style: italic;
+    background: linear-gradient(120deg, var(--coral) 0%, var(--gold) 50%, var(--leaf) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .date-row {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 16px; color: var(--ink-2);
+    background: var(--bg-card);
+    padding: 10px 20px; border-radius: 24px;
+    border: 1px solid var(--line);
+    margin-bottom: 18px;
+  }
+  .hero .date-row .weather { font-size: 22px; }
+  .hero .lede {
+    font-size: 17px; color: var(--ink-2);
+    max-width: 600px; margin: 0 auto;
+    line-height: 1.65;
+  }
+  .hero .welcome-msg {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    color: var(--primary-deep);
+    font-size: 19px;
+    margin-top: 10px;
+  }
+
+  /* ============================================
+     Section 通用
+     ============================================ */
+  section { padding: 36px 0; }
+  section + section { border-top: 1px dashed var(--line-soft); }
+  .sec-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--primary-deep);
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    text-align: center;
+    letter-spacing: -0.005em;
+  }
+  .sec-sub {
+    color: var(--muted); font-size: 14px;
+    margin: 0 auto 28px;
+    max-width: 580px;
+    text-align: center;
+  }
+
+  /* ============================================
+     探险地图：5 座岛屿
+     ============================================ */
+  .map-wrap {
+    background:
+      radial-gradient(ellipse 400px 200px at 90% 0%, rgba(255, 220, 130, 0.35), transparent 60%),
+      linear-gradient(180deg, #d9ecf3 0%, #f3e8d3 65%, #e8d8b8 100%);
+    border-radius: 24px;
+    padding: 40px 28px 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.3);
+  }
+
+  /* 太阳 */
+  .map-wrap::before {
+    content: "☀️";
+    position: absolute;
+    top: 16px;
+    right: 28px;
+    font-size: 42px;
+    animation: sunPulse 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(255, 200, 80, 0.6));
+  }
+
+  /* 海浪 */
+  .map-wrap::after {
+    content: "🌊  🌊  🌊  🌊  🌊  🌊  🌊  🌊  🌊";
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 6px;
+    opacity: 0.45;
+    animation: waveDrift 8s linear infinite;
+    pointer-events: none;
+  }
+
+  /* 经纬网格（古地图风） */
+  .graticule {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, rgba(74, 63, 44, 0.05) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(74, 63, 44, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* 罗盘 */
+  .compass-rose {
+    position: absolute;
+    top: 18px;
+    left: 24px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    opacity: 0.55;
+    animation: compassSpin 18s linear infinite;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    z-index: 3;
+    pointer-events: none;
+  }
+  .compass-rose::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 1.5px dashed rgba(74, 63, 44, 0.25);
+    border-radius: 50%;
+  }
+
+  /* 海鸥 */
+  .seagull {
+    position: absolute;
+    font-size: 18px;
+    pointer-events: none;
+    opacity: 0.45;
+    z-index: 2;
+  }
+  .seagull-1 {
+    top: 38px;
+    animation: seagullFly 14s linear infinite;
+  }
+  .seagull-2 {
+    top: 86px;
+    font-size: 14px;
+    opacity: 0.35;
+    animation: seagullFly 18s linear infinite 7s;
+  }
+
+  @keyframes sunPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  @keyframes waveDrift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-20px); }
+  }
+
+  @keyframes compassSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes seagullFly {
+    0% { left: -40px; transform: translateY(0) scaleX(1); }
+    24% { transform: translateY(-10px) scaleX(1); }
+    49% { left: calc(100% + 40px); transform: translateY(0) scaleX(1); }
+    50% { transform: translateY(0) scaleX(-1); }
+    74% { transform: translateY(-10px) scaleX(-1); }
+    99% { left: -40px; transform: translateY(0) scaleX(-1); }
+    100% { left: -40px; transform: translateY(0) scaleX(1); }
+  }
+
+  .islands-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 24px;
+  }
+
+  .island {
+    background: white;
+    border: 2.5px solid var(--card-color);
+    border-radius: 50% 50% 50% 50% / 60% 40% 60% 40%;
+    padding: 30px 12px 18px;
+    text-align: center;
+    position: relative;
+    transition: filter 0.4s ease, box-shadow 0.4s ease;
+    box-shadow:
+      0 8px 24px rgba(74, 63, 44, 0.1),
+      0 16px 32px -16px var(--card-color);
+    opacity: 0;
+    animation:
+      islandFloatIn 0.8s ease-out forwards,
+      islandBob 5s ease-in-out infinite;
+    animation-delay: var(--enter-delay, 0s), 1.5s;
+  }
+
+  .island:nth-child(1) { --enter-delay: 0.1s; }
+  .island:nth-child(2) { --enter-delay: 0.2s; }
+  .island:nth-child(3) { --enter-delay: 0.3s; }
+  .island:nth-child(4) { --enter-delay: 0.4s; }
+  .island:nth-child(5) { --enter-delay: 0.5s; }
+
+  .island:nth-child(odd) {
+    border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+  }
+
+  @keyframes islandFloatIn {
+    0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes islandBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
+  .island:hover {
+    filter: brightness(1.05) saturate(1.15);
+    box-shadow:
+      0 16px 36px rgba(74, 63, 44, 0.16),
+      0 28px 48px -20px var(--card-color);
+  }
+
+  /* 点击涟漪 */
+  .click-ripple {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2.5px solid var(--card-color);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    pointer-events: none;
+    z-index: 10;
+    animation: rippleOut 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes rippleOut {
+    0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 1;
+      border-width: 3px;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(10);
+      opacity: 0;
+      border-width: 0.5px;
+    }
+  }
+
+  /* 探险家小文 */
+  .explorer-mark {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 26px;
+    animation: explorerBounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.15));
+    z-index: 2;
+  }
+
+  @keyframes explorerBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-4px); }
+  }
+
+  .island-icon {
+    font-size: 32px;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+
+  .island-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  /* 里程碑小路 */
+  .milestone-trail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .milestone-step {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--card-color);
+    position: relative;
+  }
+
+  .milestone-step.empty {
+    background: transparent;
+    border: 1.5px dashed var(--card-color);
+    opacity: 0.5;
+  }
+
+  .milestone-step.current {
+    background: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-soft);
+    animation: milestonePulse 2s infinite;
+  }
+
+  /* 里程碑之间的连线 */
+  .milestone-trail::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 12%;
+    right: 12%;
+    height: 1.5px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--card-color) 0 4px,
+      transparent 4px 8px
+    );
+    opacity: 0.4;
+    z-index: -1;
+  }
+
+  @keyframes milestonePulse {
+    0%, 100% { box-shadow: 0 0 0 3px var(--primary-soft); transform: scale(1); }
+    50% { box-shadow: 0 0 0 7px rgba(212, 165, 72, 0.08); transform: scale(1.15); }
+  }
+
+  .current-label {
+    font-size: 10px;
+    color: var(--primary-deep);
+    font-weight: 600;
+    background: var(--primary-soft);
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  /* 今日花开（如果今天有数据） */
+  .island-today-flower {
+    font-size: 22px;
+    line-height: 1;
+    margin-top: 4px;
+    display: inline-block;
+    animation: gentleFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+
+  .island-today-flower.is-pending {
+    font-size: 18px;
+    opacity: 0.4;
+    filter: grayscale(0.5);
+  }
+
+  /* 探险地图底部状态栏 */
+  .map-status {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 14px;
+    padding: 14px 20px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-2);
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  .map-status .highlight {
+    color: var(--primary-deep);
+    font-weight: 600;
+  }
+
+  /* 响应式：3+2 → 2+2+1 */
+  @media (max-width: 900px) {
+    .islands-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .island:nth-child(4),
+    .island:nth-child(5) {
+      margin-top: 8px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .map-wrap {
+      padding: 36px 18px 22px;
+    }
+    .islands-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .island {
+      padding: 26px 10px 16px;
+    }
+    .island-icon { font-size: 28px; }
+    .island-name { font-size: 14px; }
+  }
+
+  /* ============================================
+     今日花朵：5 张技能卡
+     ============================================ */
+  .flowers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 18px;
+  }
+
+  .flower-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--line);
+    border-radius: 18px;
+    padding: 22px 16px 18px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+    overflow: hidden;
+    opacity: 0;
+    animation: cardIn 0.7s ease-out forwards;
+  }
+  .flower-card:nth-child(1) { animation-delay: 0.1s; }
+  .flower-card:nth-child(2) { animation-delay: 0.2s; }
+  .flower-card:nth-child(3) { animation-delay: 0.3s; }
+  .flower-card:nth-child(4) { animation-delay: 0.4s; }
+  .flower-card:nth-child(5) { animation-delay: 0.5s; }
+
+  .flower-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(74, 63, 44, 0.1);
+  }
+
+  .flower-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: var(--card-color);
+    opacity: 0.7;
+  }
+
+  .flower-card .skill-icon {
+    font-size: 32px;
+    margin-bottom: 4px;
+    display: inline-block;
+    animation: gentleFloat 4s ease-in-out infinite;
+  }
+
+  .flower-card .skill-name-en {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .flower-card .skill-name-zh {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .flower-card .flower-emoji {
+    font-size: 56px;
+    line-height: 1;
+    margin: 8px 0 10px;
+    display: inline-block;
+    animation: bloom 1.5s ease-out;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));
+  }
+
+  .flower-card .petals {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .flower-card .petal {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--card-color);
+    transition: all 0.3s;
+  }
+  .flower-card .petal.empty {
+    background: transparent;
+    border: 1.5px dashed var(--card-color);
+    opacity: 0.4;
+  }
+
+  .flower-card .mom-note {
+    font-size: 12px;
+    color: var(--ink-2);
+    background: var(--card-soft);
+    padding: 8px 10px;
+    border-radius: 10px;
+    line-height: 1.5;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 今日待填状态（今晚 21:00 后填真实数据） */
+  .flower-card.is-pending {
+    border-style: dashed;
+    background: var(--bg-softer);
+  }
+  .flower-card.is-pending::before { opacity: 0.25; }
+  .flower-card.is-pending .skill-icon,
+  .flower-card.is-pending .flower-emoji,
+  .flower-card.is-pending .skill-name-zh {
+    opacity: 0.55;
+  }
+  .flower-card.is-pending .flower-emoji {
+    animation: gentleFloat 3s ease-in-out infinite;
+  }
+  .flower-card.is-pending .mom-note {
+    background: transparent;
+    border: 1px dashed var(--card-color);
+    font-style: italic;
+    color: var(--muted);
+    opacity: 0.85;
+  }
+
+  /* "今日最棒" + "妈妈的话" 待填状态 */
+  .best-card.is-pending,
+  .mom-note-card.is-pending {
+    border-style: dashed;
+    background: var(--bg-softer);
+  }
+  .best-card.is-pending .text,
+  .mom-note-card.is-pending .text {
+    font-style: italic;
+    color: var(--muted);
+    opacity: 0.85;
+  }
+
+  /* ============================================
+     今日最棒
+     ============================================ */
+  .best-card {
+    background: linear-gradient(135deg, var(--gold-soft) 0%, var(--coral-soft) 100%);
+    border: 1.5px solid var(--gold);
+    border-radius: 20px;
+    padding: 32px 28px;
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: cardIn 0.7s ease-out 0.6s forwards;
+  }
+  .best-card::before {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, var(--gold-soft) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .best-card .badge {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-deep);
+    background: var(--bg-card);
+    padding: 6px 14px;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .best-card .text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 24px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .best-card .text .highlight {
+    background: linear-gradient(120deg, var(--gold) 0%, var(--coral) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+  }
+
+  /* ============================================
+     本周花园：7 天
+     ============================================ */
+  .garden-week {
+    background: var(--bg-card);
+    border: 1.5px solid var(--line);
+    border-radius: 24px;
+    padding: 32px 24px 24px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: cardIn 0.7s ease-out 0.8s forwards;
+  }
+
+  /* 背景草地纹理 */
+  .garden-week::before {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(180deg, transparent 0%, var(--leaf-soft) 100%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .garden-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .day-cell {
+    text-align: center;
+    padding: 12px 6px 14px;
+    border-radius: 14px;
+    background: var(--bg-softer);
+    transition: transform 0.3s;
+    position: relative;
+  }
+  .day-cell:hover {
+    transform: scale(1.05);
+  }
+  .day-cell.is-today {
+    background: linear-gradient(135deg, var(--primary-soft) 0%, var(--coral-soft) 100%);
+    box-shadow: 0 4px 12px rgba(212, 165, 72, 0.2);
+    border: 1.5px solid var(--primary);
+  }
+  .day-cell.is-future {
+    background: transparent;
+    border: 1.5px dashed var(--line);
+  }
+
+  .day-cell .day-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+  .day-cell.is-today .day-label {
+    color: var(--primary-deep);
+    font-weight: 600;
+  }
+
+  .day-cell .day-flower {
+    font-size: 38px;
+    line-height: 1;
+    margin: 6px 0;
+    display: inline-block;
+  }
+  .day-cell.is-today .day-flower {
+    animation: gentleFloat 2.5s ease-in-out infinite;
+  }
+  .day-cell.is-future .day-flower {
+    opacity: 0.35;
+    filter: grayscale(0.3);
+  }
+
+  .day-cell .day-petals {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 6px;
+  }
+  .day-cell .mini-petal {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+  .day-cell .mini-petal.empty {
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+
+  .day-cell .day-date {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .week-summary {
+    text-align: center;
+    padding: 16px 20px;
+    background: var(--bg-soft);
+    border-radius: 16px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .week-summary .big-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--primary-deep);
+    line-height: 1;
+    margin: 4px 0;
+  }
+  .week-summary .desc {
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .week-summary .desc .highlight {
+    color: var(--primary-deep);
+    font-weight: 600;
+  }
+
+  /* ============================================
+     妈妈的话
+     ============================================ */
+  .mom-note-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    opacity: 0;
+    animation: cardIn 0.7s ease-out 1s forwards;
+  }
+  .mom-note-card .label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--coral-deep);
+    background: var(--coral-soft);
+    padding: 5px 12px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .mom-note-card .text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  /* ============================================
+     页脚哲学
+     ============================================ */
+  .philosophy {
+    text-align: center;
+    padding: 32px 0 56px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .philosophy .leaf-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .philosophy .leaf {
+    color: var(--leaf);
+    font-size: 16px;
+  }
+  .philosophy .quote {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-2);
+    margin-bottom: 6px;
+  }
+
+  /* ============================================
+     动画
+     ============================================ */
+  @keyframes cardIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bloom {
+    0% { transform: scale(0.3); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes gentleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* ============================================
+     全景统计条（地图顶部）
+     ============================================ */
+  .global-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 22px;
+    padding: 14px 8px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    position: relative;
+    z-index: 1;
+  }
+
+  .global-stat {
+    text-align: center;
+    padding: 6px 4px;
+    position: relative;
+  }
+
+  .global-stat + .global-stat::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    width: 1px;
+    background: var(--line);
+    opacity: 0.6;
+  }
+
+  .global-stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--primary-deep);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .global-stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  /* ============================================
+     岛屿详情弹窗（点岛后弹出）
+     ============================================ */
+  .island-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .island-modal.is-open {
+    display: flex;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(74, 63, 44, 0.45);
+    backdrop-filter: blur(6px);
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal-card {
+    position: relative;
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 32px 28px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 86vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+    animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 2px solid var(--modal-color);
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover {
+    background: var(--line);
+    color: var(--ink);
+    transform: rotate(90deg);
+  }
+
+  .modal-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .modal-icon-large {
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: gentleFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+  }
+
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+
+  .modal-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .modal-section {
+    margin-bottom: 24px;
+  }
+
+  .modal-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .modal-section h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin: 0 0 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* 里程碑列表（弹窗内） */
+  .modal-milestones {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-milestone {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--bg-softer);
+    border: 1.5px solid var(--line);
+    transition: all 0.2s;
+  }
+
+  .modal-milestone.is-reached {
+    background: var(--card-soft);
+    border-color: var(--modal-color);
+  }
+
+  .modal-milestone.is-current {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    border-style: dashed;
+  }
+
+  .modal-milestone.is-pending {
+    opacity: 0.6;
+  }
+
+  .milestone-marker {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .milestone-marker.is-reached {
+    background: var(--modal-color);
+    color: white;
+  }
+
+  .milestone-marker.is-current {
+    background: var(--primary);
+    color: white;
+    animation: milestonePulse 2s infinite;
+  }
+
+  .milestone-marker.is-pending {
+    background: transparent;
+    border: 1.5px dashed var(--modal-color);
+    opacity: 0.5;
+  }
+
+  .milestone-info {
+    flex: 1;
+  }
+
+  .milestone-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .milestone-status-text {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .modal-milestone.is-current .milestone-status-text {
+    color: var(--primary-deep);
+    font-weight: 600;
+  }
+
+  /* 今日之花（弹窗内大图） */
+  .modal-today-flower {
+    text-align: center;
+    padding: 18px;
+    background: var(--bg-softer);
+    border-radius: 16px;
+    border: 1.5px dashed var(--line);
+  }
+
+  .modal-today-flower.has-data {
+    background: var(--card-soft);
+    border-style: solid;
+    border-color: var(--modal-color);
+  }
+
+  .modal-flower-big {
+    font-size: 72px;
+    line-height: 1;
+    margin-bottom: 8px;
+    display: inline-block;
+    animation: gentleFloat 3s ease-in-out infinite;
+  }
+
+  .modal-flower-big.is-pending {
+    font-size: 56px;
+    opacity: 0.4;
+    filter: grayscale(0.4);
+    animation: none;
+  }
+
+  .modal-petals-display {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .modal-petals-display .mini-petal {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--modal-color);
+  }
+
+  .modal-petals-display .mini-petal.empty {
+    background: transparent;
+    border: 1.5px dashed var(--modal-color);
+    opacity: 0.4;
+  }
+
+  .modal-today-note {
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.6;
+    margin: 8px 0 0;
+    font-style: italic;
+  }
+
+  .modal-today-pending {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  /* 下一个目标提示 */
+  .modal-next-target {
+    background: linear-gradient(135deg, var(--bg-soft) 0%, var(--card-soft) 100%);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .modal-next-target .arrow {
+    font-size: 20px;
+    color: var(--primary-deep);
+  }
+
+  .modal-next-target .target-text {
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  .modal-next-target .target-text strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* 让岛屿可点击 */
+  .island {
+    cursor: pointer;
+  }
+
+  @media (max-width: 600px) {
+    .global-stats {
+      padding: 10px 4px;
+      gap: 4px;
+    }
+    .global-stat-num { font-size: 18px; }
+    .global-stat-label { font-size: 9px; }
+    .modal-card { padding: 24px 20px; }
+    .modal-icon-large { font-size: 52px; }
+    .modal-title { font-size: 24px; }
+    .modal-flower-big { font-size: 56px; }
+  }
+
+  /* ============================================
+     响应式
+     ============================================ */
+  @media (max-width: 640px) {
+    .container { padding: 0 18px; }
+    .hero { padding: 36px 0 16px; }
+    .hero h1 { font-size: 32px; }
+    .hero .lede { font-size: 15px; }
+    h2 { font-size: 24px; }
+    .flowers-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .flower-card { padding: 18px 12px 14px; }
+    .flower-card .flower-emoji { font-size: 44px; }
+    .best-card { padding: 24px 18px; }
+    .best-card .text { font-size: 19px; }
+    .garden-row {
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .day-cell { padding: 8px 2px 10px; }
+    .day-cell .day-flower { font-size: 28px; }
+    .day-cell .day-date { display: none; }
+    .mom-note-card { padding: 22px 18px; }
+    .mom-note-card .text { font-size: 16px; }
+  }
+
+  @media (max-width: 380px) {
+    .flowers-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     📝 数据编辑说明（妈妈只需要改这里）：
+     ============================================
+     1. 修改顶部的 GARDEN 对象（日期、花朵、最棒的话、本周、妈妈的话）
+     2. 保存文件 → 刷新浏览器 → 文杰看到新的花园
+     3. 每日推荐时间：晚上 21:00（睡前）让文杰打开看今天的花
+     ============================================ -->
+
+<main>
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="crumb">
+      <div class="dot"></div>
+      <strong>文杰的成长花园</strong>
+      <span>·</span>
+      <span id="topbar-date">2026.08.17</span>
+    </div>
+    <div class="nav">
+      <a href="wenjie-master-overview.html">全景</a>
+      <a href="wenjie-daily-plan.html">今日</a>
+      <a href="wenjie-progress-dashboard.html">进度</a>
+      <a href="wenjie-school-readiness.html">入学</a>
+      <a href="wenjie-cca-tracker.html">CCA</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="eyebrow">✿ GROWTH GARDEN ✿</div>
+    <h1>文杰的 <em>成长花园</em></h1>
+    <div class="date-row">
+      <span class="weather" id="weather">☀️</span>
+      <span id="date-text">2026 年 8 月 17 日 · 周一</span>
+    </div>
+    <div class="welcome-msg" id="welcome-msg">新的一天又开始啦</div>
+    <p class="lede">每朵花都是今天的你。<br>不管长出几瓣，都是你的花园。</p>
+  </header>
+
+  <!-- 探险地图 -->
+  <section>
+    <div class="sec-num">✦ MAP · 5 座岛屿</div>
+    <h2>🗺️ 文杰的探险地图</h2>
+    <p class="sec-sub">5 座岛，5 个探险地。<br>每座岛上，都有文杰现在留下的脚印。</p>
+
+    <div class="map-wrap">
+      <!-- 经纬网格 -->
+      <div class="graticule"></div>
+
+      <!-- 罗盘 -->
+      <div class="compass-rose">🧭</div>
+
+      <!-- 海鸥飞过 -->
+      <div class="seagull seagull-1">🦅</div>
+      <div class="seagull seagull-2">🦅</div>
+
+      <!-- 全景统计条 -->
+      <div class="global-stats">
+        <div class="global-stat">
+          <div class="global-stat-num" id="stat-milestones">0/0</div>
+          <div class="global-stat-label">📍 里程碑</div>
+        </div>
+        <div class="global-stat">
+          <div class="global-stat-num" id="stat-week-petals">0</div>
+          <div class="global-stat-label">🌸 本周花</div>
+        </div>
+        <div class="global-stat">
+          <div class="global-stat-num" id="stat-today">⏳</div>
+          <div class="global-stat-label">今天状态</div>
+        </div>
+        <div class="global-stat">
+          <div class="global-stat-num" id="stat-islands">5</div>
+          <div class="global-stat-label">🏝️ 探险岛</div>
+        </div>
+      </div>
+
+      <div class="islands-grid" id="islands-grid">
+        <!-- 由 JS 渲染 -->
+      </div>
+
+      <div class="map-status">
+        🧒 文杰现在 <span class="highlight">5 个岛同时探险</span> · 点任意岛看详情 ⤴
+      </div>
+    </div>
+  </section>
+
+  <!-- 今日花朵 -->
+  <section>
+    <div class="sec-num">01 · TODAY</div>
+    <h2>今天长出了几朵花？</h2>
+    <p class="sec-sub">每朵花代表一项今天的努力。花瓣数 = 妈妈的观察：1-5 瓣是花苞到盛开。</p>
+
+    <div class="flowers-grid" id="flowers-grid">
+      <!-- 由 JS 渲染 -->
+    </div>
+  </section>
+
+  <!-- 今日最棒 -->
+  <section>
+    <div class="sec-num">02 · TODAY'S BEST</div>
+    <h2>今天最棒的一句</h2>
+    <p class="sec-sub">每天找一句最值得记住的事，写下来。</p>
+
+    <div class="best-card">
+      <div class="badge">✨ TODAY'S BEST</div>
+      <p class="text" id="best-text">今天数学 5 题全对！心算又稳又快 🚀</p>
+    </div>
+  </section>
+
+  <!-- 本周花园 -->
+  <section>
+    <div class="sec-num">03 · THIS WEEK</div>
+    <h2>本周花园 🌳</h2>
+    <p class="sec-sub">7 天 7 朵花。每一朵都在记录你的成长。<br>还没有到的日子，是种子，等着发芽。</p>
+
+    <div class="garden-week">
+      <div class="garden-row" id="garden-row">
+        <!-- 由 JS 渲染 -->
+      </div>
+
+      <div class="week-summary">
+        <div class="desc">这一周</div>
+        <div class="big-num" id="week-total">0</div>
+        <div class="desc" id="week-summary-text">
+          朵花已经开了 <span class="highlight">· 还有 <span id="week-pending">0</span> 个种子在等</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 妈妈的话 -->
+  <section>
+    <div class="sec-num">04 · MOM'S NOTE</div>
+    <h2>妈妈想说</h2>
+    <p class="sec-sub">每天一句温暖的话，写在这里。</p>
+
+    <div class="mom-note-card">
+      <div class="label">💛 MOM'S NOTE</div>
+      <p class="text" id="mom-text">今天文杰读 Long E 的时候特别认真，看到他自己拼出 seed 的时候眼睛都亮了 ❤️</p>
+    </div>
+  </section>
+
+  <!-- 设计哲学 -->
+  <footer class="philosophy">
+    <div class="leaf-line">
+      <span class="leaf">🌱</span>
+      <span class="quote">"只看见生长，看不见失败。"</span>
+      <span class="leaf">🌱</span>
+    </div>
+    <div>每朵花都是今天的你 · 不管长出几瓣，都是你的花园</div>
+  </footer>
+
+</div>
+
+<!-- ============================================
+     岛屿详情弹窗（点岛后弹出）
+     ============================================ -->
+<div class="island-modal" id="island-modal">
+  <div class="modal-overlay" id="modal-overlay"></div>
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="关闭">×</button>
+
+    <div class="modal-header">
+      <div class="modal-icon-large" id="modal-icon">🦁</div>
+      <h3 class="modal-title" id="modal-title">Phonics 岛</h3>
+      <div class="modal-subtitle" id="modal-subtitle">探险家文杰在这里</div>
+    </div>
+
+    <div class="modal-section">
+      <h4>📍 5 个里程碑</h4>
+      <div class="modal-milestones" id="modal-milestones">
+        <!-- 由 JS 渲染 -->
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h4>🌸 今天的脚印</h4>
+      <div class="modal-today-flower" id="modal-today-flower">
+        <!-- 由 JS 渲染 -->
+      </div>
+    </div>
+
+    <div class="modal-section" id="modal-next-section">
+      <h4>🎯 下一个目标</h4>
+      <div class="modal-next-target" id="modal-next-target">
+        <!-- 由 JS 渲染 -->
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ============================================
+// 📝 妈妈每天编辑这里（晚上 21:00 前）
+// ============================================
+// 字段说明：
+//   petals: 1=花苞 2=小芽 3=半开 4=盛开 5=完美
+//           null = 还没发生（今日待填 或 未来）
+//   color: sky(Phonics) / coral(中文) / leaf(数学) / gold(阅读) / rose(写作)
+//   note: 妈妈备注（孩子会看到，写温暖具体的话）
+// ============================================
+const GARDEN = {
+  today: {
+    date: "2026-08-17",
+    dateText: "2026 年 8 月 17 日 · 周一",
+    topbarDate: "2026.08.17",
+    weekday: "周一",
+    weather: "☀️",
+    welcome: "新的一天又开始啦"
+  },
+
+  // 探险地图 —— 5 座岛 + 每座岛 5 个里程碑
+  // reached: 已达成 / current: 现在探索中 / 两者皆 false: 未来
+  // 当前进度来自 mastery.md 和 log.md 的真实记录
+  islands: [
+    {
+      // Phonics 岛 —— 字母音 ✅ + CVC ✅ + Silent e ❌ + Vowel Team 🔄 + Diphthongs ❌
+      icon: "🦁",
+      name: "Phonics 岛",
+      color: "sky",
+      milestones: [
+        { label: "字母音", reached: true },
+        { label: "短元音", reached: true },
+        { label: "Silent e", reached: false },
+        { label: "Vowel Team", reached: false, current: true },
+        { label: "Diphthongs", reached: false }
+      ]
+    },
+    {
+      // 中文岛 —— 听故事 ✅ + 简单对话 ✅ + 识字 L4-6 🔄 + L7-8 ❌ + 拼音 ❌
+      icon: "🐉",
+      name: "中文岛",
+      color: "coral",
+      milestones: [
+        { label: "听故事", reached: true },
+        { label: "简单对话", reached: true },
+        { label: "识字 L4-6", reached: false, current: true },
+        { label: "识字 L7-8", reached: false },
+        { label: "拼音", reached: false }
+      ]
+    },
+    {
+      // 数学岛 —— 100 内加减 ✅ + 表内乘除 ✅ + 2-3 位加减 🔄 + 乘除 ❌ + 应用题 ❌
+      icon: "🔢",
+      name: "数学岛",
+      color: "leaf",
+      milestones: [
+        { label: "100 内加减", reached: true },
+        { label: "表内乘除", reached: true },
+        { label: "2-3 位加减", reached: false, current: true },
+        { label: "2-3 位乘除", reached: false },
+        { label: "应用题+奥数", reached: false }
+      ]
+    },
+    {
+      // 阅读岛 —— L1-2 ✅ + L3-4 ✅ + L5-6 跟读 🔄 + L7-8 ❌ + L9-10 ❌
+      icon: "📚",
+      name: "阅读岛",
+      color: "gold",
+      milestones: [
+        { label: "L1-2 启蒙", reached: true },
+        { label: "L3-4 基础", reached: true },
+        { label: "L5-6 跟读", reached: false, current: true },
+        { label: "L7-8 自主", reached: false },
+        { label: "L9-10 进阶", reached: false }
+      ]
+    },
+    {
+      // 写作岛 —— 描红 🔄（刚开始）+ 听写/看图写话/短句/段落 ❌
+      icon: "✏️",
+      name: "写作岛",
+      color: "rose",
+      milestones: [
+        { label: "描红", reached: false, current: true },
+        { label: "听写", reached: false },
+        { label: "看图写话", reached: false },
+        { label: "短句", reached: false },
+        { label: "段落", reached: false }
+      ]
+    }
+  ],
+
+  // 今日 5 朵花 —— 8/17 全是待填，今晚 21:00 后填真实数据
+  flowers: [
+    {
+      icon: "🔤",
+      skillEn: "Phonics",
+      skillZh: "自然拼读",
+      petals: null,           // ⏳ 今晚填
+      color: "sky",
+      flowerEmoji: "🌱",
+      note: "⏳ 今晚 21:00 后填"
+    },
+    {
+      icon: "📖",
+      skillEn: "Chinese",
+      skillZh: "中文识字",
+      petals: null,           // ⏳ 今晚填
+      color: "coral",
+      flowerEmoji: "🌱",
+      note: "⏳ 今晚 21:00 后填"
+    },
+    {
+      icon: "🔢",
+      skillEn: "Math",
+      skillZh: "心算数学",
+      petals: null,           // ⏳ 今晚填
+      color: "leaf",
+      flowerEmoji: "🌱",
+      note: "⏳ 今晚 21:00 后填"
+    },
+    {
+      icon: "📚",
+      skillEn: "Reading",
+      skillZh: "英文阅读",
+      petals: null,           // ⏳ 今晚填
+      color: "gold",
+      flowerEmoji: "🌱",
+      note: "⏳ 今晚 21:00 后填"
+    },
+    {
+      icon: "✏️",
+      skillEn: "Writing",
+      skillZh: "写字启蒙",
+      petals: null,           // ⏳ 今晚填
+      color: "rose",
+      flowerEmoji: "🌱",
+      note: "⏳ 今晚 21:00 后填"
+    }
+  ],
+
+  // 今日最棒的一句 —— 今晚填
+  bestText: "⏳ 今晚 21:00 后填",
+
+  // 本周花园（7 天）
+  // 8/15 + 8/16 = log.md 真实记录（花瓣数基于真实事件估算）
+  // 8/17 = 今天待填
+  // 8/18-21 = 未来
+  week: [
+    // 8/15 周六 · D1 周末项目日（实际完成 30%）
+    // 真实事件：Phonics length 卡壳 + Chinese 字询问 + 珠算80% 心算70% + Reading length 卡壳
+    // 5 朵花平均 ≈ 11/5 ≈ 2 瓣
+    { day: "六", date: "08-15", petals: 2, flower: "🌷" },
+
+    // 8/16 周日 · D2 休整日
+    // 真实事件：Phonics 新学 Long A ai/ay + Chinese 新增80字(只16不熟) + Reading 牛津树1本 + Math 休整没做 + Writing 没做
+    // 5 朵花平均 ≈ 14/5 ≈ 3 瓣
+    { day: "日", date: "08-16", petals: 3, flower: "🌸" },
+
+    // 8/17 周一 · D3 起点测评 Day 1（今天）—— 待填
+    { day: "一", date: "08-17", petals: null, flower: "🌱", isToday: true },
+
+    // 8/18-21 · 未来 4 天
+    { day: "二", date: "08-18", petals: null, flower: "🌱" },
+    { day: "三", date: "08-19", petals: null, flower: "🌱" },
+    { day: "四", date: "08-20", petals: null, flower: "🌱" },
+    { day: "五", date: "08-21", petals: null, flower: "🌱" }
+  ],
+
+  // 妈妈的话 —— 今晚填
+  momText: "⏳ 今晚 21:00 后填"
+};
+
+// ============================================
+// 渲染（妈妈不需要改这里）
+// ============================================
+const COLOR_MAP = {
+  sky: { color: "var(--sky)", soft: "var(--sky-soft)" },
+  coral: { color: "var(--coral)", soft: "var(--coral-soft)" },
+  leaf: { color: "var(--leaf)", soft: "var(--leaf-soft)" },
+  gold: { color: "var(--gold)", soft: "var(--gold-soft)" },
+  rose: { color: "var(--rose)", soft: "var(--rose-soft)" }
+};
+
+// 渲染顶部信息
+document.getElementById('topbar-date').textContent = GARDEN.today.topbarDate;
+document.getElementById('date-text').textContent = GARDEN.today.dateText;
+document.getElementById('weather').textContent = GARDEN.today.weather;
+document.getElementById('welcome-msg').textContent = GARDEN.today.welcome;
+document.getElementById('best-text').textContent = GARDEN.bestText;
+document.getElementById('mom-text').textContent = GARDEN.momText;
+
+// 检测 placeholder，自动给 best / mom 卡片加 is-pending
+if (GARDEN.bestText.startsWith('⏳')) {
+  document.querySelector('.best-card').classList.add('is-pending');
+}
+if (GARDEN.momText.startsWith('⏳')) {
+  document.querySelector('.mom-note-card').classList.add('is-pending');
+}
+
+// 渲染探险地图（5 座岛）
+const islandsGrid = document.getElementById('islands-grid');
+GARDEN.islands.forEach(island => {
+  const colors = COLOR_MAP[island.color];
+  const currentMilestone = island.milestones.find(m => m.current);
+
+  // 5 个里程碑小点
+  const milestoneDots = island.milestones.map(m => {
+    let cls = 'milestone-step';
+    if (m.current) cls += ' current';
+    else if (!m.reached) cls += ' empty';
+    return `<div class="${cls}" title="${m.label}"></div>`;
+  }).join('');
+
+  // 今日的花（如果今天该技能有数据就显示；否则显示待开）
+  const todayFlower = GARDEN.flowers.find(f => f.color === island.color);
+  const todayFlowerHTML = todayFlower
+    ? (todayFlower.petals === null
+        ? '<div class="island-today-flower is-pending">🌱</div>'
+        : `<div class="island-today-flower">${todayFlower.flowerEmoji}</div>`)
+    : '';
+
+  const card = document.createElement('div');
+  card.className = 'island';
+  card.style.setProperty('--card-color', colors.color);
+  card.innerHTML = `
+    <div class="explorer-mark">🧒</div>
+    <div class="island-icon">${island.icon}</div>
+    <div class="island-name">${island.name}</div>
+    <div class="milestone-trail">${milestoneDots}</div>
+    ${currentMilestone ? `<div class="current-label">📍 ${currentMilestone.label}</div>` : ''}
+    ${todayFlowerHTML}
+  `;
+  islandsGrid.appendChild(card);
+});
+
+// ============================================
+// 全景统计条（地图顶部）
+// ============================================
+const totalMilestones = GARDEN.islands.reduce((sum, i) => sum + i.milestones.length, 0);
+const reachedMilestones = GARDEN.islands.reduce(
+  (sum, i) => sum + i.milestones.filter(m => m.reached).length, 0);
+const weekPetalsTotal = GARDEN.week
+  .filter(d => d.petals !== null)
+  .reduce((sum, d) => sum + (d.petals || 0), 0);
+const filledFlowers = GARDEN.flowers.filter(f => f.petals !== null).length;
+const allFilled = filledFlowers === GARDEN.flowers.length;
+
+document.getElementById('stat-milestones').textContent = `${reachedMilestones}/${totalMilestones}`;
+document.getElementById('stat-week-petals').textContent = weekPetalsTotal;
+document.getElementById('stat-today').textContent = allFilled ? '✅' : '⏳';
+document.getElementById('stat-islands').textContent = GARDEN.islands.length;
+
+// ============================================
+// 岛屿详情弹窗（互动核心）
+// ============================================
+const islandModal = document.getElementById('island-modal');
+const modalOverlay = document.getElementById('modal-overlay');
+const modalClose = document.getElementById('modal-close');
+
+function openIslandModal(index) {
+  const island = GARDEN.islands[index];
+  const colors = COLOR_MAP[island.color];
+  const todayFlower = GARDEN.flowers.find(f => f.color === island.color);
+
+  // 设置卡片边框色（用 island color）
+  document.querySelector('.modal-card').style.setProperty('--modal-color', colors.color);
+  document.querySelector('.modal-card').style.setProperty('--card-soft', colors.soft);
+
+  // Header
+  document.getElementById('modal-icon').textContent = island.icon;
+  document.getElementById('modal-title').textContent = island.name;
+  document.getElementById('modal-subtitle').textContent = `探险家文杰在这里 · ${island.color} 色`;
+
+  // 里程碑列表
+  const milestoneList = document.getElementById('modal-milestones');
+  milestoneList.innerHTML = island.milestones.map(m => {
+    let stateCls = '';
+    let stateText = '';
+    let markerCls = '';
+    let markerText = '';
+
+    if (m.reached) {
+      stateCls = 'is-reached';
+      markerCls = 'is-reached';
+      markerText = '✓';
+      stateText = '已达成';
+    } else if (m.current) {
+      stateCls = 'is-current';
+      markerCls = 'is-current';
+      markerText = '★';
+      stateText = '正在探索';
+    } else {
+      stateCls = 'is-pending';
+      markerCls = 'is-pending';
+      markerText = '';
+      stateText = '未开始';
+    }
+
+    return `<div class="modal-milestone ${stateCls}">
+      <div class="milestone-marker ${markerCls}">${markerText}</div>
+      <div class="milestone-info">
+        <div class="milestone-label">${m.label}</div>
+        <div class="milestone-status-text">${stateText}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // 今日之花
+  const todayFlowerEl = document.getElementById('modal-today-flower');
+  if (todayFlower && todayFlower.petals !== null) {
+    const petalsHTML = Array.from({length: 5}, (_, i) =>
+      `<div class="mini-petal ${i < todayFlower.petals ? '' : 'empty'}"></div>`
+    ).join('');
+    todayFlowerEl.className = 'modal-today-flower has-data';
+    todayFlowerEl.innerHTML = `
+      <div class="modal-flower-big">${todayFlower.flowerEmoji}</div>
+      <div class="modal-petals-display">${petalsHTML}</div>
+      <p class="modal-today-note">"${todayFlower.note}"</p>
+    `;
+  } else {
+    todayFlowerEl.className = 'modal-today-flower';
+    todayFlowerEl.innerHTML = `
+      <div class="modal-flower-big is-pending">🌱</div>
+      <p class="modal-today-pending">今晚 21:00 后长出 🌸</p>
+    `;
+  }
+
+  // 下一个目标（找 current 之后的下一个未达成项）
+  const currentIdx = island.milestones.findIndex(m => m.current);
+  const nextMilestone = island.milestones[currentIdx + 1] || island.milestones.find(m => !m.reached && !m.current);
+
+  const nextSection = document.getElementById('modal-next-section');
+  if (nextMilestone && !nextMilestone.reached) {
+    nextSection.style.display = '';
+    document.getElementById('modal-next-target').innerHTML = `
+      <div class="arrow">→</div>
+      <div class="target-text">完成当前的 <strong>${island.milestones[currentIdx]?.label || '里程碑'}</strong> 后，<br>下一步是 <strong>${nextMilestone.label}</strong></div>
+    `;
+  } else {
+    nextSection.style.display = 'none';
+  }
+
+  // 打开弹窗
+  islandModal.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeIslandModal() {
+  islandModal.classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+
+// 绑定每个岛屿的点击事件（带涟漪效果）
+islandsGrid.querySelectorAll('.island').forEach((el, idx) => {
+  el.addEventListener('click', (e) => {
+    // 在点击位置生成涟漪
+    const rect = el.getBoundingClientRect();
+    const ripple = document.createElement('div');
+    ripple.className = 'click-ripple';
+    ripple.style.left = (e.clientX - rect.left) + 'px';
+    ripple.style.top = (e.clientY - rect.top) + 'px';
+    el.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 900);
+
+    // 打开弹窗
+    openIslandModal(idx);
+  });
+});
+
+// 关闭交互
+modalOverlay.addEventListener('click', closeIslandModal);
+modalClose.addEventListener('click', closeIslandModal);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && islandModal.classList.contains('is-open')) {
+    closeIslandModal();
+  }
+});
+
+// 渲染今日花朵
+const flowersGrid = document.getElementById('flowers-grid');
+GARDEN.flowers.forEach(f => {
+  const colors = COLOR_MAP[f.color];
+  const isPending = f.petals === null;
+
+  const petalsHTML = isPending
+    ? Array.from({length: 5}, () => `<div class="petal empty"></div>`).join('')
+    : Array.from({length: 5}, (_, i) =>
+        `<div class="petal ${i < f.petals ? '' : 'empty'}"></div>`
+      ).join('');
+
+  const card = document.createElement('div');
+  card.className = 'flower-card' + (isPending ? ' is-pending' : '');
+  card.style.setProperty('--card-color', colors.color);
+  card.style.setProperty('--card-soft', colors.soft);
+  card.innerHTML = `
+    <div class="skill-icon">${f.icon}</div>
+    <div class="skill-name-en">${f.skillEn}</div>
+    <div class="skill-name-zh">${f.skillZh}</div>
+    <div class="flower-emoji">${f.flowerEmoji}</div>
+    <div class="petals">${petalsHTML}</div>
+    <div class="mom-note">${f.note}</div>
+  `;
+  flowersGrid.appendChild(card);
+});
+
+// 渲染本周花园
+const gardenRow = document.getElementById('garden-row');
+let weekTotal = 0;
+let weekPending = 0;
+let hasTodayPending = false;
+
+GARDEN.week.forEach(d => {
+  const isToday = d.isToday === true;
+  const hasData = d.petals !== null;
+  const isFuture = !hasData && !isToday;
+
+  const petalsHTML = !hasData
+    ? Array.from({length: 5}, () => `<div class="mini-petal empty"></div>`).join('')
+    : Array.from({length: 5}, (_, i) =>
+        `<div class="mini-petal ${i < d.petals ? '' : 'empty'}"></div>`
+      ).join('');
+
+  const cell = document.createElement('div');
+  cell.className = 'day-cell' + (isToday ? ' is-today' : '') + (isFuture ? ' is-future' : '');
+  cell.innerHTML = `
+    <div class="day-label">${d.day}${isToday ? ' · 今天' : ''}</div>
+    <div class="day-flower">${d.flower}</div>
+    <div class="day-petals">${petalsHTML}</div>
+    <div class="day-date">${d.date}</div>
+  `;
+  gardenRow.appendChild(cell);
+
+  if (hasData) {
+    weekTotal += d.petals || 0;
+  } else if (isFuture) {
+    weekPending++;
+  } else if (isToday) {
+    hasTodayPending = true;
+  }
+});
+
+document.getElementById('week-total').textContent = weekTotal;
+document.getElementById('week-pending').textContent = weekPending;
+
+// 如果今天还在等待中，在摘要里加一句
+if (hasTodayPending) {
+  document.getElementById('week-summary-text').innerHTML += ' · <span class="highlight">今天还是种子，今晚开 🌱</span>';
+}
+</script>
+
+</body>
+</html>

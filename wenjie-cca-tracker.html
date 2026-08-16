@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文杰 · CCA 进度追踪（游泳 + 钢琴）</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --bg-card: #ffffff;
+    --line: #e9e3d6;
+    --line-soft: #f0eadb;
+    --ink: #14171e;
+    --ink-2: #3a4256;
+    --muted: #7c7a72;
+    --primary: #2f6f5e;
+    --primary-soft: rgba(47,111,94,0.08);
+    --warm: #c97b3f;
+    --warm-soft: rgba(201,123,63,0.08);
+    --rose: #b06367;
+    --rose-soft: rgba(176,99,103,0.08);
+    --gold: #b58a3b;
+    --gold-soft: rgba(181,138,59,0.10);
+    --swim: #2874a6;
+    --swim-soft: rgba(40,116,166,0.10);
+    --piano: #6b4f8c;
+    --piano-soft: rgba(107,79,140,0.10);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 15px; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+  .top-bar { border-bottom: 1px solid var(--line); background: rgba(247,245,240,0.85); position: sticky; top: 0; z-index: 10; }
+  .top-bar-inner { max-width: 1080px; margin: 0 auto; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--muted); }
+  .top-bar .crumb { display: flex; gap: 8px; align-items: center; }
+  .top-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+  h1 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 36px; line-height: 1.15; margin: 20px 0 12px; }
+  h1 em { font-style: italic; color: var(--primary); }
+  h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 26px; margin: 0 0 8px; }
+  h3 { font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+  .sec-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--primary); margin-bottom: 10px; }
+  .sec-sub { color: var(--muted); font-size: 14px; margin: 0 0 24px; max-width: 720px; }
+  .lede { font-size: 16px; color: var(--ink-2); max-width: 720px; margin-bottom: 28px; }
+  .hero { padding: 48px 0 24px; }
+  section { padding: 40px 0; }
+  section + section { border-top: 1px dashed var(--line); }
+
+  /* Hero summary */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .summary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 24px;
+  }
+  .summary-card.swim { border-top: 4px solid var(--swim); }
+  .summary-card.piano { border-top: 4px solid var(--piano); }
+  .summary-card .stitle { font-size: 18px; font-weight: 700; margin-bottom: 4px; display: flex; gap: 8px; align-items: center; }
+  .summary-card .sicon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .summary-card.swim .sicon { background: var(--swim-soft); color: var(--swim); }
+  .summary-card.piano .sicon { background: var(--piano-soft); color: var(--piano); }
+  .summary-card .slevel { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .summary-card .sbench { display: flex; flex-direction: column; gap: 8px; }
+  .summary-card .srow { display: grid; grid-template-columns: 110px 1fr 50px; gap: 10px; align-items: center; font-size: 12px; }
+  .summary-card .srow .lbl { color: var(--ink-2); }
+  .summary-card .srow .trk { position: relative; height: 8px; background: var(--line-soft); border-radius: 4px; }
+  .summary-card .srow .fil { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .summary-card.swim .fil { background: var(--swim); }
+  .summary-card.piano .fil { background: var(--piano); }
+  .summary-card .srow .val { font-family: 'JetBrains Mono', monospace; text-align: right; color: var(--ink); }
+
+  /* Timeline */
+  .year-grid { display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 0; background: var(--bg-card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .year-head { display: contents; }
+  .year-head > div { padding: 10px 8px; background: var(--line-soft); border-bottom: 1px solid var(--line); font-size: 11px; font-weight: 600; text-align: center; }
+  .year-head > div:first-child { text-align: left; }
+  .year-row { display: contents; }
+  .year-row > div { padding: 10px 8px; border-bottom: 1px solid var(--line-soft); font-size: 11.5px; border-left: 1px solid var(--line-soft); min-height: 44px; }
+  .year-row > div:first-child { border-left: none; font-weight: 600; color: var(--ink); background: var(--bg); }
+  .year-row .swim-cell { background: var(--swim-soft); }
+  .year-row .piano-cell { background: var(--piano-soft); }
+  .year-row .milestone { font-weight: 600; }
+  .year-row .critical { font-weight: 700; color: var(--rose); }
+
+  /* Milestone cards */
+  .ms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ms-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .ms-card.swim-card { border-left: 3px solid var(--swim); }
+  .ms-card.piano-card { border-left: 3px solid var(--piano); }
+  .ms-card .mswhen { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .ms-card.swim-card .mswhen { color: var(--swim); }
+  .ms-card.piano-card .mswhen { color: var(--piano); }
+  .ms-card .mstitle { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .ms-card .msdesc { font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+  .ms-card .msstatus {
+    margin-top: 8px; font-size: 10px; padding: 3px 8px; border-radius: 8px;
+    display: inline-block; font-family: 'JetBrains Mono', monospace; font-weight: 600;
+  }
+  .ms-card .msstatus.done { background: var(--primary-soft); color: var(--primary); }
+  .ms-card .msstatus.now { background: var(--gold-soft); color: var(--gold); }
+  .ms-card .msstatus.todo { background: var(--line-soft); color: var(--muted); }
+  .ms-card .msstatus.critical { background: var(--rose-soft); color: var(--rose); }
+
+  /* DSA checklist */
+  .dsa-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 24px;
+  }
+  .dsa-card .school-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .dsa-card .school-meta { font-size: 12px; color: var(--muted); margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; }
+  .dsa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .dsa-block { }
+  .dsa-block .dbname { font-size: 13px; font-weight: 600; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line-soft); display: flex; gap: 8px; align-items: center; }
+  .dsa-block.swim-block .dbname { color: var(--swim); }
+  .dsa-block.piano-block .dbname { color: var(--piano); }
+  .dsa-block .dbitem { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; font-size: 12.5px; }
+  .dsa-block .dbcheck { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .dsa-block .dbcheck.yes { background: var(--primary); color: white; }
+  .dsa-block .dbcheck.no { background: var(--line-soft); color: var(--muted); }
+  .dsa-block .dbcheck.partial { background: var(--gold); color: white; }
+  .dsa-block .dbtxt { color: var(--ink-2); }
+  .dsa-block .dbtxt strong { color: var(--ink); }
+
+  /* Conduct tracker */
+  .conduct-grid { display: grid; grid-template-columns: 60px 1fr 1fr 1fr 1fr 1fr 1fr; gap: 0; background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .conduct-head { display: contents; }
+  .conduct-head > div { padding: 10px 8px; background: var(--line-soft); font-size: 11px; font-weight: 600; text-align: center; border-bottom: 1px solid var(--line); }
+  .conduct-head > div:first-child { text-align: left; }
+  .conduct-row { display: contents; }
+  .conduct-row > div { padding: 10px 8px; border-bottom: 1px solid var(--line-soft); font-size: 12px; text-align: center; border-left: 1px solid var(--line-soft); }
+  .conduct-row > div:first-child { border-left: none; font-weight: 600; background: var(--bg); text-align: left; }
+  .conduct-row .cg { font-family: 'JetBrains Mono', monospace; font-weight: 600; padding: 4px 6px; border-radius: 6px; display: inline-block; }
+  .cg.excellent { background: var(--primary-soft); color: var(--primary); }
+  .cg.very-good { background: var(--swim-soft); color: var(--swim); }
+  .cg.good { background: var(--line-soft); color: var(--muted); }
+  .cg.todo { color: var(--muted); opacity: 0.5; }
+
+  /* Callout */
+  .callout {
+    background: var(--gold-soft);
+    border: 1px solid var(--gold);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 20px;
+    font-size: 13px; color: var(--ink-2);
+  }
+  .callout strong { color: var(--gold); }
+  .callout.rose { background: var(--rose-soft); border-color: var(--rose); }
+  .callout.rose strong { color: var(--rose); }
+
+  footer { border-top: 1px solid var(--line); padding: 24px 0; text-align: center; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 880px) {
+    h1 { font-size: 28px; }
+    h2 { font-size: 22px; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .year-grid { grid-template-columns: 60px repeat(3, 1fr); overflow-x: auto; }
+    .ms-grid { grid-template-columns: 1fr; }
+    .dsa-grid { grid-template-columns: 1fr; }
+    .conduct-grid { grid-template-columns: 50px repeat(3, 1fr); overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="crumb"><span class="dot"></span><span>文杰 · CCA 进度追踪</span></div>
+    <span>🏊 Swimming + 🎹 Piano · DSA 准备</span>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+<section class="hero" style="border: none;">
+  <h1>文杰的 <em>6 年 CCA 路线</em>，<br>游泳 + 钢琴 → RI / HCI IP</h1>
+  <p class="lede">DSA-Sec 通道最看 2 样东西：<strong>可见成果</strong>（奖项、考级、表演）+ <strong>持续性</strong>（不能"突击"）。这张图把 6 年拆成可执行的里程碑，每一年要做什么、什么时候考、什么时候参赛，都标得清清楚楚。</p>
+</section>
+
+<!-- ========== 1. 当前水平速览 ========== -->
+<section>
+  <div class="sec-num">01 / 现状速览</div>
+  <h2>文杰的双 CCA 当前位置</h2>
+  <p class="sec-sub">两条赛道并行推进。当前进度条 + 距离 DSA 申请（P6 7-8 月）的差距。</p>
+
+  <div class="summary-grid">
+    <div class="summary-card swim">
+      <div class="stitle"><span class="sicon">🏊</span>游泳 · Swimming</div>
+      <div class="slevel">目标学校：RI / HCI DSA-Sports (Swimming - IP)</div>
+      <div class="sbench">
+        <div class="srow">
+          <div class="lbl">仰泳</div>
+          <div class="trk"><div class="fil" style="width: 60%;"></div></div>
+          <div class="val">2.5/5</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">自由泳</div>
+          <div class="trk"><div class="fil" style="width: 60%;"></div></div>
+          <div class="val">2.5/5</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">Board Kicking</div>
+          <div class="trk"><div class="fil" style="width: 70%;"></div></div>
+          <div class="val">3.0/5</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">比赛经验</div>
+          <div class="trk"><div class="fil" style="width: 30%;"></div></div>
+          <div class="val">业余银牌</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">NSG 经历</div>
+          <div class="trk"><div class="fil" style="width: 0%;"></div></div>
+          <div class="val">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-card piano">
+      <div class="stitle"><span class="sicon">🎹</span>钢琴 · Piano</div>
+      <div class="slevel">目标学校：RI MEP / HCI PA（Performing Arts - IP）</div>
+      <div class="sbench">
+        <div class="srow">
+          <div class="lbl">Trinity 1 级</div>
+          <div class="trk"><div class="fil" style="width: 100%;"></div></div>
+          <div class="val">✓ Distinct</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">Trinity 3 级</div>
+          <div class="trk"><div class="fil" style="width: 60%;"></div></div>
+          <div class="val">备考中</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">SPAF 表演</div>
+          <div class="trk"><div class="fil" style="width: 50%;"></div></div>
+          <div class="val">每年参加</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">SYF 选拔</div>
+          <div class="trk"><div class="fil" style="width: 0%;"></div></div>
+          <div class="val">未参加</div>
+        </div>
+        <div class="srow">
+          <div class="lbl">校内主奏</div>
+          <div class="trk"><div class="fil" style="width: 0%;"></div></div>
+          <div class="val">待争取</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout rose">
+    <strong>🎯 DSA 申请的"硬证据"需要：</strong>文杰在 P6 那年申请时，<strong>游泳需要有 NSG 区/全国级参赛记录</strong>，<strong>钢琴需要有 SYF 表演经验 + Trinity 5-6 级</strong>。剩下 4 年的目标就是把这些"零"变成"有"。
+  </div>
+</section>
+
+<!-- ========== 2. 6 年时间轴 ========== -->
+<section>
+  <div class="sec-num">02 / 6 年时间轴</div>
+  <h2>每年要做什么</h2>
+  <p class="sec-sub">两条赛道并行的年度计划。蓝色 = 游泳 · 紫色 = 钢琴。</p>
+
+  <div class="year-grid">
+    <div class="year-head">
+      <div>年度</div>
+      <div>P1<br><small style="font-weight:400;">2027</small></div>
+      <div>P2<br><small style="font-weight:400;">2028</small></div>
+      <div>P3<br><small style="font-weight:400;">2029</small></div>
+      <div>P4<br><small style="font-weight:400;">2030</small></div>
+      <div>P5<br><small style="font-weight:400;">2031</small></div>
+      <div>P6<br><small style="font-weight:400;">2032</small></div>
+      <div>关键</div>
+    </div>
+
+    <div class="year-row">
+      <div>🏊 游泳</div>
+      <div class="swim-cell">校外俱乐部<br>强度提升</div>
+      <div class="swim-cell">校外俱乐部<br>主力</div>
+      <div class="swim-cell">区级赛<br>第 1 次</div>
+      <div class="swim-cell milestone">区级赛<br>稳定前 8</div>
+      <div class="swim-cell milestone">NSG 区赛<br>前 4</div>
+      <div class="swim-cell critical">NSG 全国赛<br>前 8 / DSA 关键</div>
+      <div>见左</div>
+    </div>
+
+    <div class="year-row">
+      <div>🎹 钢琴</div>
+      <div class="piano-cell">Trinity 2</div>
+      <div class="piano-cell">Trinity 3<br>(已备考)</div>
+      <div class="piano-cell">Trinity 4<br>SPAF 2 级</div>
+      <div class="piano-cell milestone">Trinity 5<br>SYF / SPAF 3 级</div>
+      <div class="piano-cell milestone">Trinity 6<br>SYF 主奏</div>
+      <div class="piano-cell critical">Trinity 7<br>SYF 主力</div>
+      <div>见左</div>
+    </div>
+
+    <div class="year-row">
+      <div>学术要求</div>
+      <div>不要求</div>
+      <div>不要求</div>
+      <div>不要求</div>
+      <div>不要求</div>
+      <div class="milestone">平均 50%+<br>EM1 通道</div>
+      <div class="critical">平均 50%+<br>操行 Excellent</div>
+      <div>DSA 硬指标</div>
+    </div>
+
+    <div class="year-row">
+      <div>关键动作</div>
+      <div>建立训练<br>习惯</div>
+      <div>校外俱乐部主力<br>Trinity 3 考完</div>
+      <div>区级赛首秀<br>SYF 观摩</div>
+      <div>校外俱乐部主力<br>NSG 区级赛</div>
+      <div>NSG 区赛<br>Trinity 6</div>
+      <div class="critical">DSA 申请<br>7-8 月</div>
+      <div>硬节点</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 3. 详细里程碑 ========== -->
+<section>
+  <div class="sec-num">03 / 详细里程碑</div>
+  <h2>每条赛道的具体节点</h2>
+  <p class="sec-sub">游泳 6 个关键节点 + 钢琴 6 个关键节点。每个都有"达标标准"，过了就 ✓。</p>
+
+  <h3 style="margin-top: 24px; color: var(--swim);">🏊 游泳</h3>
+  <div class="ms-grid" style="margin-top: 12px;">
+    <div class="ms-card swim-card">
+      <div class="mswhen">P1 · 2027</div>
+      <div class="mstitle">M1：基础训练习惯建立</div>
+      <div class="msdesc">每周 2-3 次训练，4 种泳姿都接触。目标：自由泳能连续游 50m，<strong>不要求速度</strong>。</div>
+      <div class="msstatus now">进行中</div>
+    </div>
+    <div class="ms-card swim-card">
+      <div class="mswhen">P2 · 2028</div>
+      <div class="mstitle">M2：校外俱乐部强度提升</div>
+      <div class="msdesc">文杰学校没有游泳队，主要靠校外俱乐部培训。P2 起训练强度提升，每周 3-4 次，目标：50m 自由泳 < 1:00。</div>
+      <div class="msstatus todo">待启动</div>
+    </div>
+    <div class="ms-card swim-card">
+      <div class="mswhen">P3 · 2029</div>
+      <div class="mstitle">M3：第一次区级赛</div>
+      <div class="msdesc">参加区级游泳比赛（Zone-level）。目标：<strong>完赛 + 拿到名次</strong>。这是 DSA 的"开始有成绩"标志。</div>
+      <div class="msstatus todo">待启动</div>
+    </div>
+    <div class="ms-card swim-card">
+      <div class="mswhen">P4 · 2030</div>
+      <div class="mstitle">M4：区级赛稳定前 8</div>
+      <div class="msdesc">连续 2 年区级赛都能进入前 8。开始训练 100m 仰泳 + 100m 自由泳（NSG 比赛项目）。</div>
+      <div class="msstatus todo">待启动</div>
+    </div>
+    <div class="ms-card swim-card">
+      <div class="mswhen">P5 · 2031</div>
+      <div class="mstitle">M5：NSG 区赛前 4</div>
+      <div class="msdesc">NSG（National School Games）是新加坡教育部主办的官方校际赛。<strong>区前 4 → 晋级全国赛</strong>。这是 DSA 申请时"国家级"的硬证据。</div>
+      <div class="msstatus todo">待启动</div>
+    </div>
+    <div class="ms-card swim-card">
+      <div class="mswhen">P6 · 2032 上半年</div>
+      <div class="mstitle">M6：NSG 全国赛 + DSA 申请</div>
+      <div class="msdesc">NSG 全国赛取得前 8 成绩 + 7-8 月提交 RI / HCI DSA-Sec 申请。带<strong>区/全国级成绩 + CCA 推荐信</strong>。</div>
+      <div class="msstatus critical">DSA 关键</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 32px; color: var(--piano);">🎹 钢琴</h3>
+  <div class="ms-grid" style="margin-top: 12px;">
+    <div class="ms-card piano-card">
+      <div class="mswhen">P1 · 2027</div>
+      <div class="mstitle">M1：Trinity 1 → 2 过渡</div>
+      <div class="msdesc">Trinity 1 已 Distinct（✓）。P1 内完成 Trinity 2 准备。目标：保持每周 2-3 次练习。</div>
+      <div class="msstatus now">进行中</div>
+    </div>
+    <div class="ms-card piano-card">
+      <div class="mswhen">P2 · 2028</div>
+      <div class="mstitle">M2：Trinity 3 考过</div>
+      <div class="msdesc">Trinity 3 是小学阶段的"分水岭"——能拿 Merit/Distinct 说明已经能弹中等难度曲目。继续每年参加 SPAF 表演。</div>
+      <div class="msstatus todo">待考</div>
+    </div>
+    <div class="ms-card piano-card">
+      <div class="mswhen">P3 · 2029</div>
+      <div class="mstitle">M3：Trinity 4 + SPAF 2 级</div>
+      <div class="msdesc">Trinity 4 考过 + 参加 SPAF 2 级（SPAF 每年可参加一次，9 月）。SPAF 跟 SYF 一样是国家级表演经验，DSA 时算"硬证据"。</div>
+      <div class="msstatus todo">待启动</div>
+    </div>
+    <div class="ms-card piano-card">
+      <div class="mswhen">P4 · 2030</div>
+      <div class="mstitle">M4：SYF 校内选拔</div>
+      <div class="msdesc">P4 是关键年——<strong>SYF 选拔</strong>或 <strong>SPAF 2-3 级</strong>任一。两者都是国家级表演，SPAF 更容易参加（个人报名），SYF 是学校选拔（更"集体"）。</div>
+      <div class="msstatus todo">待启动</div>
+    </div>
+    <div class="ms-card piano-card">
+      <div class="mswhen">P5 · 2031</div>
+      <div class="mstitle">M5：SYF 主奏 + Trinity 6</div>
+      <div class="msdesc">SYF 正式表演（每年 4-5 月）+ Trinity 6 考完。校内钢琴 CCA 担任主奏或领奏。</div>
+      <div class="msstatus todo">待启动</div>
+    </div>
+    <div class="ms-card piano-card">
+      <div class="mswhen">P6 · 2032 上半年</div>
+      <div class="mstitle">M6：DSA 申请 + Trinity 7</div>
+      <div class="msdesc">带<strong>SYF 连续 2-3 年表演经验 + Trinity 6-7 级 + 校内钢琴 CCA 领导角色</strong>申请 DSA。提交<strong>演奏视频 + 老师推荐信</strong>。</div>
+      <div class="msstatus critical">DSA 关键</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 4. 操行记录追踪 ========== -->
+<section>
+  <div class="sec-num">04 / 操行记录追踪</div>
+  <h2>Conduct Grade · DSA 申请的隐形门槛</h2>
+  <p class="sec-sub">DSA 申请时学校要看 P5 + P6 上半年的操行记录。<strong>Very Good 是底线，Excellent 是加分</strong>。从 P3 开始关注最稳。</p>
+
+  <div class="conduct-grid">
+    <div class="conduct-head">
+      <div>学期</div>
+      <div>P3<br><small style="font-weight:400;">2029</small></div>
+      <div>P4<br><small style="font-weight:400;">2030</small></div>
+      <div>P5<br><small style="font-weight:400;">2031</small></div>
+      <div>P6 上<br><small style="font-weight:400;">2032 H1</small></div>
+      <div>P6 下<br><small style="font-weight:400;">2032 H2</small></div>
+      <div>目标</div>
+    </div>
+
+    <div class="conduct-row">
+      <div>Term 1</div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg excellent">Excellent</span></div>
+    </div>
+    <div class="conduct-row">
+      <div>Term 2</div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div>—</div>
+    </div>
+    <div class="conduct-row">
+      <div>Term 3</div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div>—</div>
+    </div>
+    <div class="conduct-row">
+      <div>Term 4</div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div><span class="cg todo">—</span></div>
+      <div>—</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>📌 操行评估的 5 个维度：</strong>① 守规矩（不迟到、不旷课）② 尊师重道 ③ 同学关系 ④ 班级/CCA 参与度 ⑤ 是否违纪。<strong>DSA 申请时学校会给推荐信 + 操行报告</strong>，从 P3 起就建立"准时、守信、负责任"的口碑比临时抱佛脚有效得多。
+  </div>
+</section>
+
+<!-- ========== 5. RI / HCI DSA 资格对账 ========== -->
+<section>
+  <div class="sec-num">05 / DSA 资格对账</div>
+  <h2>RI / HCI 申请时 · 文杰有什么</h2>
+  <p class="sec-sub">DSA 申请的核心是"硬件 + 软件"。硬件 = 比赛 / 考级 / 表演；软件 = 老师推荐信 + 面试表现。这一节告诉你 RI / HCI 各自要看到什么。</p>
+
+  <div class="dsa-card">
+    <div class="dsa-grid">
+      <div class="dsa-block swim-block">
+        <div class="dbname">🏊 游泳（Swimming - IP）</div>
+        <div class="dbitem">
+          <div class="dbcheck yes">✓</div>
+          <div class="dbtxt"><strong>NSG 全国赛经历</strong>（P5-P6 至少 1 次）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck partial">~</div>
+          <div class="dbtxt"><strong>区级赛稳定成绩</strong>（P4 起步）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck partial">~</div>
+          <div class="dbtxt"><strong>校内游泳 CCA 主力</strong>（P3 起）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck no">○</div>
+          <div class="dbtxt">教练推荐信（P5 末开始要）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck no">○</div>
+          <div class="dbtxt">50m / 100m 计时成绩达标</div>
+        </div>
+      </div>
+
+      <div class="dsa-block piano-block">
+        <div class="dbname">🎹 钢琴（Music - IP）</div>
+        <div class="dbitem">
+          <div class="dbcheck partial">~</div>
+          <div class="dbtxt"><strong>SYF 表演经验</strong>（P4-P6 至少 1 次）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck partial">~</div>
+          <div class="dbtxt"><strong>Trinity 5-6 级</strong>（P5 前考完）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck no">○</div>
+          <div class="dbtxt">校内钢琴 CCA 主奏（P5 起）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck no">○</div>
+          <div class="dbtxt">演奏视频（高质量，3-5 分钟）</div>
+        </div>
+        <div class="dbitem">
+          <div class="dbcheck no">○</div>
+          <div class="dbtxt">钢琴老师推荐信</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--line-soft);">
+      <div class="dbname" style="color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 12px;">📋 学术 + 操行（两个通道都要）</div>
+      <div class="dbitem">
+        <div class="dbcheck no">○</div>
+        <div class="dbtxt"><strong>P5 + P6 上半年平均分 50%+</strong>（4 科平均）</div>
+      </div>
+      <div class="dbitem">
+        <div class="dbcheck no">○</div>
+        <div class="dbtxt"><strong>P5 + P6 上半年操行 Very Good 以上</strong></div>
+      </div>
+      <div class="dbitem">
+        <div class="dbcheck no">○</div>
+        <div class="dbtxt"><strong>P5 必须进 EM1</strong>（EM2/EM3 进 IP 难）</div>
+      </div>
+      <div class="dbitem">
+        <div class="dbcheck no">○</div>
+        <div class="dbtxt"><strong>面试表现</strong>（7-8 月 DSA 选拔现场）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout rose">
+    <strong>⚠️ DSA 申请的"硬规则"：</strong>通过 DSA 进入 RI / HCI 后，<strong>学生必须从 Sec 1 到 Sec 4 持续参与所录取的 CCA</strong>。也就是说你选的"游泳通道"，就要一直练到 Sec 4。这是承诺，不是选项。
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    文杰 · CCA 进度追踪 · 2026.08.15 · 6 年路线 · 每月 1 号更新
+  </div>
+</footer>
+
+</body>
+</html>

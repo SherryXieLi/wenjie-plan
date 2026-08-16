@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文杰 · 中英文学习进度仪表盘</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --bg-card: #ffffff;
+    --line: #e9e3d6;
+    --line-soft: #f0eadb;
+    --ink: #14171e;
+    --ink-2: #3a4256;
+    --muted: #7c7a72;
+    --primary: #2f6f5e;
+    --primary-soft: rgba(47,111,94,0.08);
+    --primary-mid: rgba(47,111,94,0.18);
+    --warm: #c97b3f;
+    --warm-soft: rgba(201,123,63,0.08);
+    --warm-mid: rgba(201,123,63,0.18);
+    --rose: #b06367;
+    --rose-soft: rgba(176,99,103,0.08);
+    --gold: #b58a3b;
+    --gold-soft: rgba(181,138,59,0.10);
+    --gray: #9a9690;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 0% 0%, rgba(47,111,94,0.04), transparent),
+      radial-gradient(ellipse 800px 600px at 100% 100%, rgba(201,123,63,0.05), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+  main { position: relative; z-index: 1; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  /* Header */
+  .top-bar {
+    border-bottom: 1px solid var(--line);
+    background: rgba(247,245,240,0.85);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .top-bar-inner {
+    max-width: 1080px; margin: 0 auto; padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; color: var(--muted);
+  }
+  .top-bar .crumb { display: flex; gap: 8px; align-items: center; }
+  .top-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+  .top-bar .actions { display: flex; gap: 16px; align-items: center; }
+  .top-bar .btn {
+    padding: 6px 12px; border-radius: 8px;
+    background: white; border: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-2); cursor: pointer;
+    text-decoration: none; font-family: inherit;
+  }
+  .top-bar .btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* Hero */
+  .hero { padding: 56px 0 32px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 500; color: var(--primary);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    background: var(--primary-soft);
+    padding: 6px 12px; border-radius: 20px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.15;
+    margin: 20px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em { font-style: italic; color: var(--primary); }
+  .hero .lede {
+    font-size: 16px; color: var(--ink-2);
+    max-width: 720px; margin-bottom: 28px;
+  }
+  .hero-meta {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    border-top: 1px solid var(--line); padding-top: 20px;
+  }
+  .hero-meta .cell { padding: 4px 0; }
+  .hero-meta .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .hero-meta .v { font-size: 18px; font-weight: 600; color: var(--ink); }
+  .hero-meta .v small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 4px; }
+
+  /* Section */
+  section { padding: 48px 0; }
+  section + section { border-top: 1px dashed var(--line); }
+  .sec-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--primary);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    letter-spacing: -0.005em;
+  }
+  h3 {
+    font-size: 17px; font-weight: 600;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .sec-sub {
+    color: var(--muted); font-size: 14px;
+    margin: 0 0 24px;
+    max-width: 680px;
+  }
+
+  /* Countdown */
+  .countdown-card {
+    background: linear-gradient(135deg, var(--primary) 0%, #235a4a 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+  }
+  .countdown-card .label { font-size: 12px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .countdown-card .big { font-family: 'DM Serif Display', serif; font-size: 36px; line-height: 1; margin-bottom: 6px; }
+  .countdown-card .desc { font-size: 14px; opacity: 0.85; }
+  .countdown-card .right { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.7; }
+  .countdown-card .right .date { font-size: 18px; color: white; opacity: 1; margin-top: 4px; }
+
+  /* Ability cards */
+  .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .lang-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 28px;
+  }
+  .lang-card.en { border-top: 3px solid var(--primary); }
+  .lang-card.zh { border-top: 3px solid var(--warm); }
+  .lang-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+  .lang-head .name { font-size: 18px; font-weight: 700; }
+  .lang-head .name .flag { margin-right: 6px; }
+  .lang-head .overall {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--muted);
+  }
+  .lang-head .overall strong { color: var(--ink); font-size: 16px; }
+
+  .bench { display: grid; grid-template-columns: 100px 1fr 60px; gap: 10px; align-items: center; padding: 7px 0; font-size: 13px; }
+  .bench-label { color: var(--ink-2); }
+  .bench-label small { display: block; font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .bench-track {
+    position: relative; height: 14px;
+    background: var(--line-soft); border-radius: 7px; overflow: hidden;
+  }
+  .bench-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    border-radius: 7px; transition: width 0.4s ease;
+  }
+  .bench-fill.en { background: linear-gradient(90deg, var(--primary) 0%, #4a9080 100%); }
+  .bench-fill.zh { background: linear-gradient(90deg, var(--warm) 0%, #d99762 100%); }
+  .bench-target {
+    position: absolute; top: -2px; bottom: -2px;
+    width: 2px; background: var(--rose); z-index: 2;
+  }
+  .bench-target::after {
+    content: attr(data-label);
+    position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+    font-size: 9px; color: var(--rose); white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .bench-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink); text-align: right; }
+  .bench-val .target { display: block; font-size: 10px; color: var(--rose); }
+
+  /* Phase timeline */
+  .timeline {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .phase {
+    padding: 20px 22px;
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+  .phase:last-child { border-right: none; }
+  .phase.current { background: var(--primary-soft); }
+  .phase .pnum {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--primary); margin-bottom: 6px; letter-spacing: 0.05em;
+  }
+  .phase .pmonth {
+    font-size: 13px; font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .phase .pname {
+    font-size: 16px; font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .phase .pgoal {
+    font-size: 12px; color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .phase .pgoal strong { color: var(--primary); }
+  .phase.current::before {
+    content: "当前";
+    position: absolute; top: 12px; right: 12px;
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    background: var(--primary); color: white;
+    font-weight: 600; letter-spacing: 0.05em;
+  }
+  .phase .check {
+    margin-top: 12px; padding-top: 10px;
+    border-top: 1px dashed var(--line-soft);
+    font-size: 11px; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .phase .check.done { color: var(--primary); }
+
+  /* Milestone */
+  .milestones {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .milestone {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: grid; grid-template-columns: 36px 1fr auto; gap: 14px; align-items: center;
+  }
+  .milestone .micon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  }
+  .milestone .micon.en { background: var(--primary-soft); color: var(--primary); }
+  .milestone .micon.zh { background: var(--warm-soft); color: var(--warm); }
+  .milestone .mtitle { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .milestone .msub { font-size: 12px; color: var(--muted); }
+  .milestone .mstatus {
+    font-size: 11px; padding: 4px 10px; border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .milestone .mstatus.done { background: var(--primary-soft); color: var(--primary); }
+  .milestone .mstatus.now { background: var(--gold-soft); color: var(--gold); }
+  .milestone .mstatus.todo { background: var(--line-soft); color: var(--muted); }
+  .milestone .mstatus.todo-late { background: var(--rose-soft); color: var(--rose); }
+
+  /* Resource / buy list */
+  .resource-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .resource-card .rhead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .resource-card .rname { font-weight: 600; font-size: 15px; }
+  .resource-card .rprice { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-2); }
+  .resource-card .rprice .currency { font-size: 10px; color: var(--muted); margin-right: 1px; }
+  .resource-card .rmeta { display: flex; gap: 12px; font-size: 12px; color: var(--muted); margin-bottom: 6px; flex-wrap: wrap; }
+  .resource-card .rmeta .channel { padding: 2px 8px; background: var(--line-soft); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .resource-card .rdesc { font-size: 13px; color: var(--ink-2); }
+  .resource-card .raction { margin-top: 8px; font-size: 12px; color: var(--primary); font-weight: 500; }
+
+  .res-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .res-grid-2 .resource-card { margin-bottom: 0; }
+
+  .urgency {
+    display: inline-block; font-size: 10px;
+    padding: 2px 8px; border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600; letter-spacing: 0.04em;
+    margin-left: 8px; vertical-align: middle;
+  }
+  .urgency.now { background: var(--rose-soft); color: var(--rose); }
+  .urgency.week1 { background: var(--gold-soft); color: var(--gold); }
+  .urgency.month1 { background: var(--primary-soft); color: var(--primary); }
+  .urgency.optional { background: var(--line-soft); color: var(--muted); }
+
+  /* Pattern */
+  .pattern {
+    border: 1px solid var(--line); border-radius: 12px;
+    background: white; padding: 16px 20px; margin-bottom: 10px;
+  }
+  .pattern-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .pattern-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .pattern-id.en { color: var(--primary); }
+  .pattern-id.zh { color: var(--warm); }
+  .pattern-name { font-weight: 600; font-size: 14px; }
+  .pattern-meta { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .pattern-evidence {
+    background: var(--bg); border-left: 2px solid var(--warm);
+    padding: 8px 12px; font-size: 12.5px; color: var(--ink-2);
+    border-radius: 0 6px 6px 0; margin-top: 8px; font-style: italic;
+  }
+  .pattern-evidence.en { border-left-color: var(--primary); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0; text-align: center;
+    color: var(--muted); font-size: 12px;
+  }
+
+  @media (max-width: 880px) {
+    .hero h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+    .hero-meta { grid-template-columns: 1fr 1fr; }
+    .lang-grid { grid-template-columns: 1fr; }
+    .timeline { grid-template-columns: 1fr 1fr; }
+    .phase { border-right: none; border-bottom: 1px solid var(--line); }
+    .res-grid-2 { grid-template-columns: 1fr; }
+    .milestones { grid-template-columns: 1fr; }
+    section { padding: 36px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="crumb">
+      <span class="dot"></span>
+      <span>文杰 · 语言学习追踪</span>
+    </div>
+    <div class="actions">
+      <a class="btn" href="#buy">📋 购买清单</a>
+      <a class="btn" href="#daily">📅 每日内容</a>
+      <span style="color: var(--muted);">D 0 · 2026.08.15</span>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+<!-- ========== HERO ========== -->
+<section class="hero" style="padding-top: 24px; border: none;">
+  <div class="eyebrow">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    个人进度仪表盘
+  </div>
+  <h1>文杰的 <em>20 周</em> 冲刺，<br>从 K2 到 Primary 1 的双语准备</h1>
+  <p class="lede">
+    一份直观的进度追踪——4 个阶段、20 周、6 个英文维度 + 6 个中文维度、4 个关键里程碑。每天打完勾，进度条自己会涨。
+  </p>
+
+  <div class="countdown-card">
+    <div>
+      <div class="label">距离 Primary 1 开学</div>
+      <div class="big">140 天</div>
+      <div class="desc">新加坡公立小学 · 2027 年 1 月 4 日开学 · 还有 20 周有效准备时间</div>
+    </div>
+    <div class="right">
+      <div>目标开学日</div>
+      <div class="date">2027.01.04</div>
+    </div>
+  </div>
+
+  <div class="hero-meta">
+    <div class="cell">
+      <div class="k">学生</div>
+      <div class="v">Huo Wenjie <small>6岁</small></div>
+    </div>
+    <div class="cell">
+      <div class="k">当前阶段</div>
+      <div class="v" style="color: var(--primary);">P1 · Foundation</div>
+    </div>
+    <div class="cell">
+      <div class="k">周次</div>
+      <div class="v">W01 <small>of 20</small></div>
+    </div>
+    <div class="cell">
+      <div class="k">学习投入</div>
+      <div class="v">45 min <small>/天</small></div>
+    </div>
+    <div class="cell">
+      <div class="k">综合完成度</div>
+      <div class="v">2% <small>起步</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 1. 双语能力对照 ========== -->
+<section>
+  <div class="sec-num">01 / 双语能力对照</div>
+  <h2>现在 vs 入学前目标</h2>
+  <p class="sec-sub">6 维度 × 2 语言 = 12 条进度条。虚线是目标线，进度条是文杰现在的位置。每天的练习对应 1-2 个维度的提升。</p>
+
+  <div class="lang-grid">
+    <!-- 英文 -->
+    <div class="lang-card en">
+      <div class="lang-head">
+        <div class="name"><span class="flag">🇬🇧</span>English · 英文</div>
+        <div class="overall">综合 <strong>2.4</strong> / 5.0</div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">听 Listening<small>课堂指令</small></div>
+        <div class="bench-track">
+          <div class="bench-fill en" style="width: 80%;"></div>
+          <div class="bench-target" data-label="目标 90%" style="left: 90%;"></div>
+        </div>
+        <div class="bench-val">4.0<span class="target">→4.5</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">说 Speaking<small>完整句子</small></div>
+        <div class="bench-track">
+          <div class="bench-fill en" style="width: 60%;"></div>
+          <div class="bench-target" data-label="目标 80%" style="left: 80%;"></div>
+        </div>
+        <div class="bench-val">3.0<span class="target">→4.0</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">读 Reading<small>独立阅读</small></div>
+        <div class="bench-track">
+          <div class="bench-fill en" style="width: 60%;"></div>
+          <div class="bench-target" data-label="目标 80%" style="left: 80%;"></div>
+        </div>
+        <div class="bench-val">3.0<span class="target">→4.0</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">写 Writing<small>听写句子</small></div>
+        <div class="bench-track">
+          <div class="bench-fill en" style="width: 20%;"></div>
+          <div class="bench-target" data-label="目标 70%" style="left: 70%;"></div>
+        </div>
+        <div class="bench-val">1.0<span class="target">→3.5</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">Phonics<small>拼读规则</small></div>
+        <div class="bench-track">
+          <div class="bench-fill en" style="width: 50%;"></div>
+          <div class="bench-target" data-label="目标 95%" style="left: 95%;"></div>
+        </div>
+        <div class="bench-val">2.5<span class="target">→4.5</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">Sight Words<small>高频词</small></div>
+        <div class="bench-track">
+          <div class="bench-fill en" style="width: 22%;"></div>
+          <div class="bench-target" data-label="目标 75%" style="left: 75%;"></div>
+        </div>
+        <div class="bench-val">22/52<span class="target">→40/52</span></div>
+      </div>
+    </div>
+
+    <!-- 中文 -->
+    <div class="lang-card zh">
+      <div class="lang-head">
+        <div class="name"><span class="flag">🇨🇳</span>中文 · Mandarin</div>
+        <div class="overall">综合 <strong>3.1</strong> / 5.0</div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">听 Listening<small>故事复述</small></div>
+        <div class="bench-track">
+          <div class="bench-fill zh" style="width: 92%;"></div>
+          <div class="bench-target" data-label="目标 95%" style="left: 95%;"></div>
+        </div>
+        <div class="bench-val">4.6<span class="target">→4.8</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">说 Speaking<small>完整表达</small></div>
+        <div class="bench-track">
+          <div class="bench-fill zh" style="width: 84%;"></div>
+          <div class="bench-target" data-label="目标 90%" style="left: 90%;"></div>
+        </div>
+        <div class="bench-val">4.2<span class="target">→4.5</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">读 Reading<small>独立阅读</small></div>
+        <div class="bench-track">
+          <div class="bench-fill zh" style="width: 50%;"></div>
+          <div class="bench-target" data-label="目标 80%" style="left: 80%;"></div>
+        </div>
+        <div class="bench-val">Lv 6<small style="color:var(--muted);">/10级</small><span class="target">→Lv 8</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">写 Writing<small>看图写话</small></div>
+        <div class="bench-track">
+          <div class="bench-fill zh" style="width: 20%;"></div>
+          <div class="bench-target" data-label="目标 60%" style="left: 60%;"></div>
+        </div>
+        <div class="bench-val">1.0<span class="target">→3.0</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">识字量<small>核心高频字</small></div>
+        <div class="bench-track">
+          <div class="bench-fill zh" style="width: 40%;"></div>
+          <div class="bench-target" data-label="目标 80%" style="left: 80%;"></div>
+        </div>
+        <div class="bench-val">390/1000<span class="target">→600</span></div>
+      </div>
+
+      <div class="bench">
+        <div class="bench-label">拼音 Pinyin<small>声韵调</small></div>
+        <div class="bench-track">
+          <div class="bench-fill zh" style="width: 30%;"></div>
+          <div class="bench-target" data-label="目标 80%" style="left: 80%;"></div>
+        </div>
+        <div class="bench-val">2.0<span class="target">→4.0</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 2. 20 周阶段路线 ========== -->
+<section>
+  <div class="sec-num">02 / 路线图</div>
+  <h2>20 周 · 4 个阶段</h2>
+  <p class="sec-sub">不是线性堆时间。每个阶段有明确目标，结束有"体检"（lint），通过才进下一阶段。</p>
+
+  <div class="timeline">
+    <div class="phase current">
+      <div class="pnum">PHASE 01</div>
+      <div class="pmonth">2026.8 – 9</div>
+      <div class="pname">诊断 + 基础</div>
+      <div class="pgoal">
+        完整跑一次起点测评，<strong>Phonics 系统化补完</strong>，识字 390→500，建档错因模式。4 周。
+      </div>
+      <div class="check">end-of-phase: lint 1</div>
+    </div>
+    <div class="phase">
+      <div class="pnum">PHASE 02</div>
+      <div class="pmonth">2026.9 – 10</div>
+      <div class="pname">读写并行攻坚</div>
+      <div class="pgoal">
+        9 月主攻<strong>英文读写</strong>（CVC + Dolch + 句子朗读）。10 月<strong>中文读写</strong>上量（识字 500→600 + 拼音 + 看图写话）。8 周。
+      </div>
+      <div class="check">end-of-phase: lint 2</div>
+    </div>
+    <div class="phase">
+      <div class="pnum">PHASE 03</div>
+      <div class="pmonth">2026.11</div>
+      <div class="pname">综合应用</div>
+      <div class="pgoal">
+        从单项技能切到综合任务。<strong>15-20 分钟"小课"模拟</strong>，周末真实场景项目。4 周。
+      </div>
+      <div class="check">end-of-phase: lint 3</div>
+    </div>
+    <div class="phase">
+      <div class="pnum">PHASE 04</div>
+      <div class="pmonth">2026.12 – 1</div>
+      <div class="pname">模拟 + 入学适应</div>
+      <div class="pgoal">
+        12 月做<strong>Primary 1 模拟日</strong>（家长扮老师）。1 月头两周专做作息调整。4 周。
+      </div>
+      <div class="check">end-of-phase: final lint</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 3. 关键里程碑 ========== -->
+<section>
+  <div class="sec-num">03 / 关键里程碑</div>
+  <h2>4 个能"感觉到进步"的卡点</h2>
+  <p class="sec-sub">这些不是模糊目标，是可以被"测试"的具体行为。每一个过了，就打勾。</p>
+
+  <div class="milestones">
+    <div class="milestone">
+      <div class="micon en">M1</div>
+      <div>
+        <div class="mtitle">英文独立读 L7</div>
+        <div class="msub">Oxford Reading Tree L7 全本不需家长介入</div>
+      </div>
+      <div class="mstatus now">M1 · W6</div>
+    </div>
+    <div class="milestone">
+      <div class="micon zh">M2</div>
+      <div>
+        <div class="mtitle">中文识字 600+</div>
+        <div class="msub">能独立读《小羊上山》第 7-8 级</div>
+      </div>
+      <div class="mstatus now">M2 · W8</div>
+    </div>
+    <div class="milestone">
+      <div class="micon en">M3</div>
+      <div>
+        <div class="mtitle">30 分钟独立小课</div>
+        <div class="msub">听指令完成任务，全程英文输出</div>
+      </div>
+      <div class="mstatus todo-late">M3 · W12</div>
+    </div>
+    <div class="milestone">
+      <div class="micon zh">M4</div>
+      <div>
+        <div class="mtitle">看图写话 3-5 句</div>
+        <div class="msub">中文能完整描述一张图，语句通顺</div>
+      </div>
+      <div class="mstatus todo-late">M4 · W16</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 4. 已识别的错因模式 ========== -->
+<section>
+  <div class="sec-num">04 / 错因模式追踪</div>
+  <h2>目前识别的"老毛病"</h2>
+  <p class="sec-sub">每个错因出现 ≥3 次证据才建档。一旦建档，每日计划会自动插入专项训练。出现频率下降 50% 才标记"已克服"。</p>
+
+  <div class="pattern">
+    <div class="pattern-head">
+      <div>
+        <div class="pattern-id en">en/pattern-001</div>
+        <div class="pattern-name">Phonics 半生不熟：长元音 vs 短元音混淆</div>
+      </div>
+      <div class="pattern-meta">本月 4 次 · 持续 8 周+</div>
+    </div>
+    <div class="pattern-evidence en">
+      "had" 听写写 "hed"（短元音 a 错读成 e）；"ship" 拼成 "sip"（漏掉 sh 组合）。Phonics 规则有接触但没内化。
+    </div>
+  </div>
+
+  <div class="pattern">
+    <div class="pattern-head">
+      <div>
+        <div class="pattern-id en">en/pattern-002</div>
+        <div class="pattern-name">Sight Words 听写跳词</div>
+      </div>
+      <div class="pattern-meta">本月 3 次 · 跨章节反复</div>
+    </div>
+    <div class="pattern-evidence en">
+      看图能说 "the cat is on the mat" 整句，但听写 "the"、"is" 写不出。属于"整句记忆强、单词拆解弱"。
+    </div>
+  </div>
+
+  <div class="pattern">
+    <div class="pattern-head">
+      <div>
+        <div class="pattern-id zh">zh/pattern-001</div>
+        <div class="pattern-name">声母翘舌音 zh/ch/sh 混淆</div>
+      </div>
+      <div class="pattern-meta">本月 5 次 · 集中在"知""吃""是"等高频字</div>
+    </div>
+    <div class="pattern-evidence">
+      "知了" 读成 "机了"；"吃饭" 读成 "次饭"。舌尖位置没建立，新加坡华人孩子常见。
+    </div>
+  </div>
+</section>
+
+<!-- ========== 5. 资源与购买清单 ========== -->
+<section id="buy">
+  <div class="sec-num">05 / 资源与购买清单</div>
+  <h2>需要买的、马上要买的、可以等一下的</h2>
+  <p class="sec-sub">下面是文杰进度推进需要的全部资源。按"是否现在就买"分成 3 档。已在 Popular / Times / MPH / Amazon.sg 验证可买。</p>
+
+  <h3 style="margin-top: 24px; color: var(--rose);">🚨 现在就买（Phase 1 必须，本周内）</h3>
+  <div class="res-grid-2" style="margin-top: 12px;">
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">Oxford Reading Tree L7-9 拓展阅读 40 册<span class="urgency now">立即买</span></div>
+        <div class="rprice"><span class="currency">S$</span>160-180</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">Popular Bookstore</span>
+        <span class="channel">Amazon.sg</span>
+        <span>ISBN: 9780198308000</span>
+      </div>
+      <div class="rdesc">
+        文杰目前在 L6（父母陪同），L7-9 是从"伴读"过渡到"独立阅读"的关键。共 40 本，难度逐级上升，正好覆盖 8-9 月攻坚期。
+      </div>
+      <div class="raction">→ 喜马拉雅奇奇学最新版（2025年11月新版，含点读笔可选）</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">Jolly Phonics 丽声快乐自然拼读 1-4 级套装<span class="urgency now">立即买</span></div>
+        <div class="rprice"><span class="currency">S$</span>95-110</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">Popular</span>
+        <span class="channel">Kinokuniya</span>
+        <span>外研社引进版（中文版）</span>
+      </div>
+      <div class="rdesc">
+        42 个字母音用动作 + 歌曲教学，适合听觉+动觉型孩子。英国 50%+ 小学采用。配点读笔最佳。文杰 Phonics 半生不熟的最优解。
+      </div>
+      <div class="raction">→ 含 1-4 级学生书 + 练习册 + 音频。点读笔可加配（约 S$45）。</div>
+    </div>
+
+  </div>
+
+  <h3 style="margin-top: 32px; color: var(--gold);">📦 9 月前补齐（Phase 2 攻坚用）</h3>
+  <div class="res-grid-2" style="margin-top: 12px;">
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">Dolch Sight Words K 级单词卡 + 句子卡<span class="urgency week1">9 月前</span></div>
+        <div class="rprice"><span class="currency">S$</span>25-40</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">Amazon.sg</span>
+        <span class="channel">淘宝代购</span>
+        <span>共 52 词 + 句子</span>
+      </div>
+      <div class="rdesc">
+        文杰目前掌握 22/52。计划 9 月底推到 40/52。打印版即可（PDF 免费），实体卡可贴冰箱，每日过 5 个。
+      </div>
+      <div class="raction">→ 免费 PDF：<code>highfrequencywords.org/dolch-words</code>。实体卡推荐 School Zone 或 Trend 品牌。</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">小羊上山 第 1-6 级全套 60 册<span class="urgency week1">9 月前</span></div>
+        <div class="rprice"><span class="currency">S$</span>240-280</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">Shopee SG</span>
+        <span class="channel">淘宝人民邮电出版社官方</span>
+        <span>中文分级领军产品</span>
+      </div>
+      <div class="rdesc">
+        文杰在 L6（父母陪），需要把 L1-L5 整套备齐（用于"回炉"复习不熟的字）和 L6 复购 + 备 L7。主编孙蓓，2020 年后销量 5000 万册。
+      </div>
+      <div class="raction">→ 新加坡本地不一定有，Shopee SG 可找代购 / 淘宝直邮 7-10 天到。</div>
+    </div>
+
+  </div>
+
+  <h3 style="margin-top: 32px; color: var(--primary);">📚 10-11 月根据进度追加（可选）</h3>
+  <div class="res-grid-2" style="margin-top: 12px;">
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">四五快读 + 学前快读 600 字<span class="urgency month1">10 月后</span></div>
+        <div class="rprice"><span class="currency">S$</span>40-55</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">Shopee SG</span>
+        <span class="channel">MPH Online</span>
+        <span>新加坡华文老师推荐</span>
+      </div>
+      <div class="rdesc">
+        用于把识字量从 500 推到 600+。每天 2-3 字，重点是"用字"而不是"认字"。和分级读物搭配使用。
+      </div>
+      <div class="raction">→ 如买不到纸质版，<a href="https://www.youtube.com/results?search_query=%E5%9B%9B%E4%BA%94%E5%BF%AB%E8%AF%BB" target="_blank">YouTube 有完整带读视频</a>，可以先听 2 周再决定。</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">PM Benchmark 红/黄级 OR Raz-Kid A-D<span class="urgency month1">10 月后</span></div>
+        <div class="rprice"><span class="currency">S$</span>10/月</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">Raz-Kids 在线</span>
+        <span>新加坡主流分级</span>
+      </div>
+      <div class="rdesc">
+        L7-9 牛津树做完后，向 PM Benchmark 过渡（新加坡小学真正用的教材）。Raz-Kids 是它的在线等价物，按月订阅灵活。
+      </div>
+      <div class="raction">→ Raz-Kids Singapore 版：raz-kids.com。文杰可以先进 Free Trial 试 14 天。</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">物理奖励贴纸 + 15 分钟沙漏<span class="urgency month1">工具</span></div>
+        <div class="rprice"><span class="currency">S$</span>15-20</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">Daiso / Popular</span>
+        <span>立即买也行</span>
+      </div>
+      <div class="rdesc">
+        奖励敏感型的关键工具。10 张贴纸 = 1 次"周末活动选择权"（如选去哪吃、选什么电影）。沙漏比倒计时 App 友好。
+      </div>
+      <div class="raction">→ 任意品牌都行，Daiso 5 新币一包性价比最高。</div>
+    </div>
+
+    <div class="resource-card">
+      <div class="rhead">
+        <div class="rname">拼音挂图 + 声母韵母卡片<span class="urgency month1">可选</span></div>
+        <div class="rprice"><span class="currency">S$</span>12-25</div>
+      </div>
+      <div class="rmeta">
+        <span class="channel">淘宝直邮</span>
+        <span>文杰重点项</span>
+      </div>
+      <div class="rdesc">
+        翘舌音专项训练需要反复看口型图 + 听示范音频。挂图贴墙上，吃饭时随机指 5 个比划。MOE 华文课也用类似工具。
+      </div>
+      <div class="raction">→ 搜"人教版拼音卡片"或"汉之韵拼音卡片"。</div>
+    </div>
+
+  </div>
+
+  <div style="background: var(--gold-soft); border: 1px solid var(--gold); border-radius: 12px; padding: 16px 20px; margin-top: 24px; font-size: 13.5px; color: var(--ink-2);">
+    <strong style="color: var(--gold);">💡 帮买建议：</strong>如果你想我直接下单或推荐具体卖家（Popular / Kinokuniya / Shopee 店铺），告诉我就行。另外 Jolly Phonics 套装在 Popular 偶尔有 15-20% 折扣，可以蹲一下。
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    文杰 · 20 周冲刺 · D 0 · 2026.08.15 · 进度每周日晚更新
+  </div>
+</footer>
+
+</body>
+</html>
