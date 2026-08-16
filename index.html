@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2f6f5e">
+  <title>文杰学习计划 · 入口</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
+      background: linear-gradient(135deg, #fdf6e8 0%, #fef9e6 100%);
+      min-height: 100vh;
+      padding: 24px 16px;
+      color: #2a2a2a;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    .hero {
+      text-align: center;
+      padding: 32px 16px 24px;
+    }
+    .hero h1 {
+      font-size: 28px;
+      color: #14171e;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .hero .sub {
+      color: #7c7a72;
+      font-size: 14px;
+    }
+    .hero .emoji {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    @media (min-width: 600px) {
+      .cards { grid-template-columns: 1fr 1fr; }
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e9e3d6;
+      border-radius: 12px;
+      padding: 18px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      display: block;
+    }
+    .card:hover, .card:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      border-color: #2f6f5e;
+    }
+    .card .icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .card .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #14171e;
+      margin-bottom: 4px;
+    }
+    .card .desc {
+      font-size: 13px;
+      color: #7c7a72;
+      line-height: 1.5;
+    }
+    .card .tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      background: rgba(47,111,94,0.08);
+      color: #2f6f5e;
+      font-size: 11px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .meta {
+      text-align: center;
+      margin-top: 32px;
+      padding: 16px;
+      font-size: 12px;
+      color: #7c7a72;
+    }
+    .meta a { color: #2f6f5e; text-decoration: none; }
+    .share-bar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2f6f5e;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+    }
+    .share-bar:active { transform: scale(0.95); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <div class="emoji">🎒</div>
+      <h1>文杰学习计划</h1>
+      <div class="sub">Huo Wenjie · 6 岁 · 2027 年 1 月新加坡 P1 入学<br>妈妈 SherryXieLi 制作 · 6 年目标 RI / HCI</div>
+    </div>
+
+    <div class="cards">
+      <a href="wenjie-daily-plan.html" class="card">
+        <div class="icon">📅</div>
+        <div class="title">每日学习计划</div>
+        <div class="desc">20 周 · 5:2:1 节奏 · 50 min/天 · 含 8/15-8/23 实际内容</div>
+        <span class="tag">MOST UPDATED</span>
+      </a>
+
+      <a href="wenjie-growth-garden.html" class="card">
+        <div class="icon">🌱</div>
+        <div class="title">成长花园（娃看版）</div>
+        <div class="desc">5 座岛 · 12 维度能力可视化 · 文杰专属</div>
+      </a>
+
+      <a href="wenjie-master-overview.html" class="card">
+        <div class="icon">🗺</div>
+        <div class="title">6 年总览</div>
+        <div class="desc">P1-P6 · IP · A-Level · 时间轴 · 资源预算</div>
+      </a>
+
+      <a href="wenjie-progress-dashboard.html" class="card">
+        <div class="icon">📊</div>
+        <div class="title">进度仪表盘</div>
+        <div class="desc">三科进度 · KAK · 每周汇总 · 错题分析</div>
+      </a>
+
+      <a href="wenjie-school-readiness.html" class="card">
+        <div class="icon">🏫</div>
+        <div class="title">入学准备度</div>
+        <div class="desc">12 维度入学评分 · 与 P1 标准对比</div>
+      </a>
+
+      <a href="wenjie-cca-tracker.html" class="card">
+        <div class="icon">🎹</div>
+        <div class="title">CCA 追踪</div>
+        <div class="desc">钢琴 · 游泳 · 跆拳道进展</div>
+      </a>
+    </div>
+
+    <div class="meta">
+      📍 自动部署 · 妈妈更新后 1-2 分钟可见<br>
+      制作：<a href="#">SherryXieLi</a> · 用爱 + 数据驱动
+    </div>
+  </div>
+
+  <button class="share-bar" onclick="shareSite()">📤 分享</button>
+
+  <script>
+    function shareSite() {
+      if (navigator.share) {
+        navigator.share({
+          title: '文杰学习计划',
+          text: '文杰 6 年新加坡小学学习计划（妈妈制作）',
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('链接已复制！');
+      }
+    }
+  </script>
+</body>
+</html>
