@@ -5,65 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>文杰 · 每日学习内容</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wenjie-shared.css">
 <style>
-  :root {
-    --bg: #f7f5f0;
-    --bg-card: #ffffff;
-    --line: #e9e3d6;
-    --line-soft: #f0eadb;
-    --ink: #14171e;
-    --ink-2: #3a4256;
-    --muted: #7c7a72;
-    --primary: #2f6f5e;
-    --primary-soft: rgba(47,111,94,0.08);
-    --primary-mid: rgba(47,111,94,0.18);
-    --warm: #c97b3f;
-    --warm-soft: rgba(201,123,63,0.08);
-    --rose: #b06367;
-    --rose-soft: rgba(176,99,103,0.08);
-    --gold: #b58a3b;
-    --gold-soft: rgba(181,138,59,0.10);
-    --math: #4a90a4;
-    --math-soft: rgba(74,144,164,0.10);
-    --math-mid: rgba(74,144,164,0.18);
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    font-family: 'Outfit', 'Noto Sans SC', -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.55;
-    font-size: 15px;
-    -webkit-font-smoothing: antialiased;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 800px 600px at 0% 0%, rgba(47,111,94,0.04), transparent),
-      radial-gradient(ellipse 800px 600px at 100% 100%, rgba(201,123,63,0.05), transparent);
-    pointer-events: none;
-    z-index: 0;
-  }
-  main { position: relative; z-index: 1; }
-  .container { max-width: 980px; margin: 0 auto; padding: 0 28px; }
+  /* ============================================================
+     wenjie-daily-plan.html · 页面专属样式
+     共享设计系统见 wenjie-shared.css
+     ============================================================ */
 
-  /* Header */
-  .top-bar {
-    border-bottom: 1px solid var(--line);
-    background: rgba(247,245,240,0.85);
-    backdrop-filter: blur(8px);
-    position: sticky; top: 0; z-index: 10;
-  }
-  .top-bar-inner {
-    max-width: 980px; margin: 0 auto; padding: 14px 28px;
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 13px; color: var(--muted);
-  }
-  .top-bar .crumb { display: flex; gap: 8px; align-items: center; }
-  .top-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+  /* Page-specific overrides */
+  .top-bar .crumb strong { color: var(--ink); font-weight: 600; }
 
   /* Hero */
   .hero { padding: 48px 0 24px; }
@@ -344,15 +294,8 @@
 </head>
 <body>
 
-<header class="top-bar">
-  <div class="top-bar-inner">
-    <div class="crumb">
-      <span class="dot"></span>
-      <span>文杰 · 每日学习内容</span>
-    </div>
-    <span>Phase 1 · W01 · 8 月 · <strong>v4 · 5:2:1 节奏</strong></span>
-  </div>
-</header>
+<!-- 共享顶部导航（由 wenjie-shared.js 渲染）-->
+<div data-shared="top-bar"></div>
 
 <main>
 <div class="container">
@@ -1838,11 +1781,9 @@
 </div>
 </main>
 
-<footer>
-  <div class="container">
-    文杰 · 每日学习内容 · <strong>v4 · 5:2:1 节奏</strong> · Phase 1 W01 · 2026.08.15 · 每天 19:15 启动 · 21:00 睡觉
-  </div>
-</footer>
+<!-- 共享页脚（由 wenjie-shared.js 渲染）-->
+<div data-shared="footer" data-updated="2026-08-16"></div>
 
+<script src="wenjie-shared.js"></script>
 </body>
 </html>
