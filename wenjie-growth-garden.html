@@ -204,6 +204,85 @@
       text-align: right;
     }
 
+    /* ===== 战斗规则书 ===== */
+    .battle-rules {
+      max-width: 600px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .rules-card {
+      background: linear-gradient(135deg, rgba(135, 206, 235, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%);
+      border: 2px solid rgba(255, 215, 0, 0.4);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .rules-card::before {
+      content: '📜';
+      position: absolute;
+      top: -16px;
+      left: 20px;
+      font-size: 28px;
+      background: #0a0e27;
+      padding: 0 8px;
+    }
+    .rules-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      color: #ffd700;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .rule-block {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      border-left: 3px solid;
+    }
+    .rule-block.small { border-color: #87ceeb; }
+    .rule-block.boss { border-color: #ff6b35; }
+    .rule-block.reward { border-color: #ffd700; }
+    .rule-block.xp { border-color: #b06367; }
+    .rule-block h4 {
+      font-size: 13px;
+      margin: 0 0 6px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .rule-block p {
+      font-size: 11px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.5;
+    }
+    .rule-block .rule-icon {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .rule-block ul {
+      margin: 4px 0 0;
+      padding-left: 16px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+    }
+    .rule-block ul li {
+      margin-bottom: 2px;
+    }
+
+    @media (max-width: 560px) {
+      .rules-grid { grid-template-columns: 1fr; }
+    }
+
     /* ===== 怪兽任务卡 ===== */
     .mission-board {
       max-width: 600px;
@@ -634,6 +713,72 @@
   </div>
 </div>
 
+<!-- 战斗规则书 -->
+<div class="battle-rules">
+  <h2 class="rules-title">📜 战斗规则书 · Battle Rules</h2>
+  <div class="rules-card">
+    <p style="font-size: 12px; color: rgba(255,255,255,0.7); margin: 0 0 16px;">
+      想知道做什么能打怪兽？看这里 👇
+    </p>
+
+    <div class="rules-grid">
+      <div class="rule-block small">
+        <span class="rule-icon">🐉</span>
+        <h4>小怪兽（每次 1 个）</h4>
+        <p>做完下面任何一件事，就击败 1 个小怪兽：</p>
+        <ul>
+          <li>📝 复习 1 道错题并答对</li>
+          <li>📖 完成 1 页练习册</li>
+          <li>🎹 练完 1 首曲子</li>
+          <li>✍️ 写 1 个新汉字</li>
+        </ul>
+      </div>
+
+      <div class="rule-block boss">
+        <span class="rule-icon">👹</span>
+        <h4>大怪兽（每个战场 1 个）</h4>
+        <p>完成整个战场的目标，打败大 Boss：</p>
+        <ul>
+          <li>🔴 加法怪兽 → 算术练习全做完</li>
+          <li>🔵 拼写怪兽 → KAK Grade 2</li>
+          <li>🟠 识字怪兽 → 识字 500 字</li>
+          <li>🟡 节拍怪兽 → Trinity 3 通过</li>
+          <li>🟢 故事怪兽 → 独立阅读 Level 3</li>
+        </ul>
+      </div>
+
+      <div class="rule-block xp">
+        <span class="rule-icon">⭐</span>
+        <h4>XP 经验值</h4>
+        <p>做事情获得 XP：</p>
+        <ul>
+          <li>击败 1 个小怪兽 → <strong>+10 XP</strong></li>
+          <li>击败 1 个大怪兽 → <strong>+100 XP</strong></li>
+          <li>完成今日所有任务 → <strong>+90 XP 奖励</strong></li>
+        </ul>
+      </div>
+
+      <div class="rule-block reward">
+        <span class="rule-icon">🏆</span>
+        <h4>升级 & 奖杯</h4>
+        <p>XP 攒够了就升级：</p>
+        <ul>
+          <li>每升 1 级 = 越来越强 ⚡</li>
+          <li>连续 7 天打完所有怪兽 → 🏆 特殊奖杯</li>
+          <li>击败 1 个大怪兽 → 🏆 Boss 奖杯</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 12px; background: rgba(255, 107, 53, 0.1); border-left: 3px solid #ff6b35; border-radius: 6px; font-size: 12px; color: rgba(255,255,255,0.9);">
+      <strong style="color: #ff6b35;">⚔️ 怪兽消失规则</strong>：<br>
+      • 小怪兽：做完对应的事情 → 立刻消失<br>
+      • 大怪兽：达成整个战场的目标 → 永远消失，奖杯进柜子<br>
+      • 错题怪兽：连续 3 次复习都答对 → 永远消失
+    </div>
+  </div>
+</div>
+
 <!-- 今日任务 -->
 <div class="mission-board">
   <h2 class="mission-title">📋 今日任务 · 1 个怪兽</h2>
@@ -799,7 +944,10 @@
 
 <!-- 奖杯柜 -->
 <div class="trophy-cabinet">
-  <h2 class="trophy-title">🏆 奖杯柜</h2>
+  <h2 class="trophy-title">🏆 奖杯柜 · Trophy Cabinet</h2>
+  <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 0 0 12px; font-family: 'JetBrains Mono', monospace;">
+    ⚔️ 累计击败怪兽统计
+  </p>
 
   <div class="trophy-grid">
     <div class="trophy-card">
@@ -809,9 +957,15 @@
     </div>
 
     <div class="trophy-card">
-      <div class="trophy-icon">🐲</div>
+      <div class="trophy-icon">🐉</div>
       <div class="trophy-value">0</div>
-      <div class="trophy-label">击败怪兽</div>
+      <div class="trophy-label">小怪兽击败</div>
+    </div>
+
+    <div class="trophy-card">
+      <div class="trophy-icon">👹</div>
+      <div class="trophy-value">0/5</div>
+      <div class="trophy-label">大 Boss 击败</div>
     </div>
 
     <div class="trophy-card">
@@ -819,12 +973,33 @@
       <div class="trophy-value">1</div>
       <div class="trophy-label">连续打卡(天)</div>
     </div>
+
+    <div class="trophy-card">
+      <div class="trophy-icon">🏆</div>
+      <div class="trophy-value">0</div>
+      <div class="trophy-label">特殊奖杯</div>
+    </div>
+
+    <div class="trophy-card">
+      <div class="trophy-icon">⭐</div>
+      <div class="trophy-value">等级 3</div>
+      <div class="trophy-label">450/300 XP</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; padding: 12px; background: rgba(135, 206, 235, 0.08); border-radius: 8px; font-size: 11px; color: rgba(255,255,255,0.75); line-height: 1.6;">
+    <strong style="color: #87ceeb;">📖 怎么收集更多奖杯？</strong><br>
+    • 每天打 1 个小怪兽 → +10 XP<br>
+    • 每周打 7 天不间断 → 🔥 streak +1<br>
+    • 击败 1 个大 Boss → +100 XP + 🏆 Boss 奖杯<br>
+    • 连续 7 天打完所有 → 🏆「周冠军」奖杯<br>
+    • 累计击败 50 个小怪兽 → 🏆「怪兽猎人」奖杯
   </div>
 </div>
 
 <!-- 数据来源 -->
 <div class="data-footer">
-  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-18 07:19:42
+  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-18 07:56:59
 </div>
 
 </main>

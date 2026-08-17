@@ -485,6 +485,26 @@ def build_academy(daily_data, daily_perf, today_date):
     xp = total_days * 90  # 每个完成日 90 XP
     monsters_defeated = sum(1 for m in _get_all_mistakes() if m.get('status') == 'mastered')
     streak = 1  # TODO: 计算 streak
+
+    # 计算大 Boss 击败（基于 subject 进度 > 80% 算打败）
+    math_p_v = _subject_progress(daily_perf, 'math_correct', 'math_total')
+    bosses_defeated = 0
+    if math_p_v >= 0.8:
+        bosses_defeated += 1  # 加法怪兽
+
+    # 钢琴 Trinity 通过 = 钢琴 Boss 打败
+    if any(m.get('status') == 'mastered' for m in _get_all_mistakes() if m.get('subject') == 'piano'):
+        bosses_defeated += 1
+
+    # 计算特殊奖杯
+    trophies = 0
+    if streak >= 7:
+        trophies += 1  # 周冠军
+    if monsters_defeated >= 50:
+        trophies += 1  # 怪兽猎人
+    if bosses_defeated >= 1:
+        trophies += 1  # Boss 杀手
+
     level = max(1, total_days // 2 + 1)
     xp_max = level * 100
 
@@ -515,6 +535,8 @@ def build_academy(daily_data, daily_perf, today_date):
     html = html.replace('__PIANO_PROGRESS__', f'{piano_p}% 击败')
     html = html.replace('__READING_PROGRESS__', f'{reading_p}% 击败')
     html = html.replace('__MONSTERS_DEFEATED__', str(monsters_defeated))
+    html = html.replace('__BOSSES_DEFEATED__', str(bosses_defeated))
+    html = html.replace('__TROPHIES__', str(trophies))
     html = html.replace('__STREAK__', str(streak))
     html = html.replace('__BUILD_TIME__', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
