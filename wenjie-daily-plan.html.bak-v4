@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文杰 · 每日学习内容</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wenjie-shared.css">
+<style>
+  /* ============================================================
+     wenjie-daily-plan.html · 页面专属样式
+     共享设计系统见 wenjie-shared.css
+     ============================================================ */
+
+  /* Page-specific overrides */
+  .top-bar .crumb strong { color: var(--ink); font-weight: 600; }
+
+  /* Hero */
+  .hero { padding: 48px 0 24px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 500; color: var(--primary);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    background: var(--primary-soft);
+    padding: 6px 12px; border-radius: 20px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.15;
+    margin: 20px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em { font-style: italic; color: var(--primary); }
+  .hero .lede {
+    font-size: 16px; color: var(--ink-2);
+    max-width: 680px; margin-bottom: 24px;
+  }
+  .legend {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 12px; color: var(--muted);
+  }
+  .legend .item { display: flex; gap: 6px; align-items: center; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 2px; }
+  .legend .dot.en { background: var(--primary); }
+  .legend .dot.zh { background: var(--warm); }
+  .legend .dot.math { background: var(--math); }
+  .legend .dot.warm { background: var(--gold); }
+
+  /* Section */
+  section { padding: 36px 0; }
+  section + section { border-top: 1px dashed var(--line); }
+  .sec-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--primary);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    letter-spacing: -0.005em;
+  }
+  .sec-sub {
+    color: var(--muted); font-size: 14px;
+    margin: 0 0 24px;
+    max-width: 680px;
+  }
+
+  /* Week header */
+  .week-header {
+    background: linear-gradient(135deg, var(--primary) 0%, #235a4a 100%);
+    color: white;
+    padding: 24px 28px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+  .week-header .wnum {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; opacity: 0.7;
+    letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+  .week-header .wt {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; margin-bottom: 8px;
+  }
+  .week-header .wg {
+    font-size: 14px; opacity: 0.85; max-width: 720px;
+  }
+  .week-header .wnav {
+    display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;
+    font-size: 13px; font-family: 'JetBrains Mono', monospace;
+  }
+  .week-header .wnav a {
+    color: white; opacity: 0.7; text-decoration: none;
+    padding: 4px 10px; border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+  }
+  .week-header .wnav a.current { background: rgba(255,255,255,0.25); opacity: 1; }
+  .week-header .wnav a:hover { opacity: 1; }
+
+  /* Day card */
+  .day-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .day-card.today {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary), 0 2px 8px rgba(47,111,94,0.08);
+  }
+  .day-card.weekend {
+    background: linear-gradient(135deg, #fff8ee 0%, #fef5e8 100%);
+    border-color: var(--gold);
+  }
+  .day-head {
+    display: grid; grid-template-columns: 80px 1fr auto; gap: 16px; align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .day-card.weekend .day-head { background: var(--gold-soft); border-bottom-color: rgba(181,138,59,0.2); }
+  .day-card.today .day-head { background: var(--primary-soft); }
+  .day-head .dnum {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; line-height: 1;
+    color: var(--ink);
+  }
+  .day-head .dnum small {
+    display: block; font-family: 'Outfit', sans-serif;
+    font-size: 11px; color: var(--muted); margin-top: 2px;
+    font-weight: 500; letter-spacing: 0.08em;
+  }
+  .day-head .dinfo { font-size: 14px; }
+  .day-head .dinfo .ddate { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+  .day-head .dinfo .dtitle { font-weight: 600; font-size: 15px; }
+  .day-head .dtag {
+    font-size: 10px; padding: 4px 10px; border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .day-head .dtag.today { background: var(--primary); color: white; }
+  .day-head .dtag.weekend { background: var(--gold); color: white; }
+  .day-head .dtag.tomorrow { background: var(--line-soft); color: var(--muted); }
+  .day-head .dtag.done { background: var(--primary-soft); color: var(--primary); }
+  .day-head .dtag.rest { background: #d8d2bf; color: #6e6750; }
+  .day-head .dtag.light { background: #c5dec0; color: #4d7a48; }
+  .day-head .dtag.project { background: var(--warm); color: white; }
+
+  /* Day card variants */
+  .day-card.rest-day {
+    background: linear-gradient(135deg, #f5f2e8 0%, #ebe6d4 100%);
+    border-color: #c8c0a8;
+    border-style: dashed;
+  }
+  .day-card.light-day {
+    background: linear-gradient(135deg, #f4f8ed 0%, #e8f0db 100%);
+    border-color: #b8d4ad;
+  }
+  .day-card.project-day {
+    background: linear-gradient(135deg, #fff5e8 0%, #fce0c0 100%);
+    border-color: var(--warm);
+  }
+  .day-card.completed {
+    opacity: 0.75;
+  }
+  .day-card.completed .day-body {
+    background: rgba(247, 245, 240, 0.5);
+  }
+
+  .day-body { padding: 16px 20px; }
+  .day-body .total {
+    font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed var(--line-soft);
+  }
+
+  .task {
+    display: grid; grid-template-columns: 50px 1fr; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line-soft);
+  }
+  .task:last-child { border-bottom: none; }
+  .task .time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--ink-2);
+    padding-top: 2px;
+  }
+  .task .body .title {
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .task .body .title .lang {
+    font-size: 10px; padding: 1px 7px; border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .task .body .title .lang.en { background: var(--primary-soft); color: var(--primary); }
+  .task .body .title .lang.zh { background: var(--warm-soft); color: var(--warm); }
+  .task .body .title .lang.math { background: var(--math-soft); color: var(--math); }
+  .task .body .desc { font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+  .task .body .desc ul { margin: 4px 0 0; padding-left: 18px; }
+  .task .body .desc li { margin-bottom: 2px; }
+  .task .body .desc code {
+    background: var(--line-soft); padding: 1px 6px; border-radius: 4px;
+    font-size: 11.5px; font-family: 'JetBrains Mono', monospace;
+  }
+  .task .body .desc .tip {
+    margin-top: 6px; padding: 6px 10px;
+    background: var(--gold-soft); border-left: 2px solid var(--gold);
+    border-radius: 0 6px 6px 0; font-size: 12px;
+  }
+  .task .body .desc .pat {
+    margin-top: 6px; padding: 6px 10px;
+    background: var(--rose-soft); border-left: 2px solid var(--rose);
+    border-radius: 0 6px 6px 0; font-size: 12px;
+  }
+
+  /* Materials list */
+  .materials {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px dashed var(--line-soft);
+    font-size: 12px; color: var(--muted);
+  }
+  .materials strong { color: var(--ink-2); font-weight: 600; }
+  .materials .pill {
+    display: inline-block; padding: 2px 8px; background: var(--line-soft);
+    border-radius: 8px; margin: 2px 4px 2px 0;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  }
+
+  /* Reward bar */
+  .reward-bar {
+    margin-top: 16px; padding: 12px 16px;
+    background: linear-gradient(90deg, var(--gold-soft) 0%, transparent 100%);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px;
+  }
+  .reward-bar .label { color: var(--ink-2); }
+  .reward-bar .stickers {
+    font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    color: var(--gold);
+  }
+
+  /* Reflect box */
+  .reflect {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 16px; margin-top: 12px;
+    font-size: 12px; color: var(--muted);
+  }
+  .reflect strong { color: var(--ink-2); display: block; margin-bottom: 4px; font-size: 13px; }
+
+  /* Phase overview */
+  .phase-strip {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .phase-strip .pt {
+    font-size: 11px; color: var(--primary); font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em; margin-bottom: 4px;
+  }
+  .phase-strip .pn { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .phase-strip .pg { font-size: 13px; color: var(--ink-2); }
+  .phase-strip .pg strong { color: var(--primary); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0; text-align: center;
+    color: var(--muted); font-size: 12px;
+  }
+
+  @media (max-width: 880px) {
+    .hero h1 { font-size: 28px; }
+    h2 { font-size: 22px; }
+    .day-head { grid-template-columns: 60px 1fr auto; gap: 12px; }
+    .day-head .dnum { font-size: 22px; }
+    .task { grid-template-columns: 1fr; gap: 4px; }
+    .task .time { padding-top: 0; }
+    section { padding: 28px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 共享顶部导航（由 wenjie-shared.js 渲染）-->
+<div data-shared="top-bar"></div>
+<div data-shared="breadcrumb"></div>
+
+<main>
+<div class="container">
+
+<!-- ========== HERO ========== -->
+<section class="hero" style="padding-top: 24px; border: none;">
+  <div class="eyebrow">
+    📅 20 周每日任务清单 · <strong>v4.2 · 5:2:1 节奏</strong> · 三门功课齐头并进
+  </div>
+  <h1>今晚到睡前，<br><em>50 分钟</em> <strong>三门功课齐头并进</strong><br><span style="font-size: 18px; color: var(--ink-2);">+ 每天 21:00 前睡觉</span></h1>
+  <p class="lede">
+    <strong>5:2:1 节奏</strong>（v4 修订）：<strong>5 天学习</strong>（50 min/天）→ <strong>1 天轻量</strong>（周四，只 20 min）→ <strong>1 天休息</strong>（周二，钢琴课）。每天 3 个认知块（珠算 + Phonics + 练习册轮换），不是 5 个。
+  </p>
+
+  <div class="legend">
+    <div class="item"><span class="dot en"></span>EN 英文任务</div>
+    <div class="item"><span class="dot zh"></span>ZH 中文任务</div>
+    <div class="item"><span class="dot math"></span>MATH 数学任务</div>
+    <div class="item"><span class="dot warm"></span>周末项目</div>
+    <div class="item"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #d8d2bf;"></span>🟢 休息日</div>
+    <div class="item"><span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #c5dec0;"></span>🟢 轻量日</div>
+    <div class="item" style="margin-left: auto; font-style: italic;">每天 19:15 开始 · 20:15 结束</div>
+  </div>
+</section>
+
+<!-- ========== PHASE 概览 ========== -->
+<section style="border: none; padding-top: 0;">
+  <div class="phase-strip">
+    <div class="pt">PHASE 01 · W01 · 2026.08.15 (周六) - 08.21 (周五) · v4 修订</div>
+    <div class="pn">5:2:1 节奏 · 50 min/天 · 21:00 睡觉</div>
+    <div class="pg">
+      <strong>本周结构</strong>：周六（今天）项目日 ✅ → 周日休整 ✅ → <strong>周一满</strong>（数学主）→ <strong>周二🟢无任务</strong>（钢琴课）→ <strong>周三满</strong>（英文主）→ <strong>周四🟢轻量</strong>（只珠算+Phonics）→ <strong>周五满</strong>（中文主）。<strong>每天 50 分钟</strong>（原 80 min，减 37%）。
+    </div>
+  </div>
+</section>
+
+<!-- ========== W01 ========== -->
+<section id="w01">
+  <div class="sec-num">W01 · 2026.08.15 (周六) - 08.21 (周五) · v4 · 5:2:1 节奏</div>
+  <h2>第一周 · 起点 + 基础 + 节奏建立</h2>
+  <p class="sec-sub">5 天学习（周一/三/五/六/日）+ 1 天轻量（周四，只 20 min）+ 1 天休息（周二·钢琴课）。每天 50 分钟 = 珠算 10 + Phonics 10 + 练习册轮换 30（含 2 次 5 min micro-break）。21:00 睡觉。</p>
+
+  <div class="week-header">
+    <div class="wnum">WEEK 01 · 2026.08.15 (周六) - 08.21 (周五) · v4</div>
+    <div class="wt">基础周 · 5:2:1 节奏建立</div>
+    <div class="wg"><strong>5 天学习</strong>（周一/三/五/六/日，满 50 min）+ <strong>1 天轻量</strong>（周四，只 20 min）+ <strong>1 天休息</strong>（周二·钢琴课，无任务）。每天 3 块：珠算 10 + Phonics 10 + 练习册轮换 30。3 本练习册轮换：Intensive Maths（数学）/ One-stop English（英文）/ 快乐练习2.0（中文）。</div>
+    <div class="wnav">
+      <a href="#w01" class="current">W01 当前</a>
+      <a href="#w02">W02</a>
+      <a href="#w03">W03</a>
+      <a href="#w04">W04</a>
+    </div>
+  </div>
+
+  <!-- Day 1: 8/15 周六 - 项目日 ✅ 已完成 -->
+  <div class="day-card weekend completed">
+    <div class="day-head">
+      <div class="dnum">D1<small>SATURDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.15 · 周六 · 🟠 项目日 · ✅ 已完成 ~30%</div>
+        <div class="dtitle">起点摸底（项目日 · 旧版 v3 计划）</div>
+      </div>
+      <div class="dtag done">已完成</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 90 分钟 · 上午 9:30-11:00 · 综合应用 + 起点摸底</div>
+
+      <div class="task">
+        <div class="time">9:30<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>暖身 + Timed Reading 牛津树 L6</div>
+          <div class="desc">
+            5 本连续读（你家已有的 L6），计时。算 WPM（每分钟词数）。记录到 Wiki——这是 D1 的英文基线。
+            <div class="tip"><strong>操作：</strong>家长拿手机计时，读完一本记一次时间，错 3 次以上的词圈出来给 Wiki。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:40<br>30 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>周末项目：用英文讲"我的一周"</div>
+          <div class="desc">
+            准备 5 句话讲这周（或最近）发生的事，每句至少 8 个词。可以先口头讲 3 遍，再让他写下来（写不出来用拼音代替也行）。
+            <div class="tip">
+              <strong>示范：</strong>"On Monday I went to the park with my dad. We saw a big dog. The dog was brown. I played with the dog. It was fun!"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">10:10<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>中文阅读：独立读 L5 任 2 本</div>
+          <div class="desc">
+            连续读 2 本 L5 故事，录音，给奶奶/外婆发语音讲故事。<br>
+            <strong>顺手记录：</strong>卡壳超过 3 秒的字 → 晚上写进 Wiki。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">10:20<br>30 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>周末项目：用中文写一张"周记卡"</div>
+          <div class="desc">
+            一张 A4 纸，对折。让他画 1 幅画 + 写 3-5 句话。不会写的字用拼音+插画代替。
+            <div class="tip">
+              <strong>格式建议：</strong>抬头"我的第一周"，画 + "我今天去了___。我看到了___。我喜欢___。"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">10:50<br>10 min</div>
+        <div class="body">
+          <div class="title">复盘 + Wiki 记录（不用填仪表盘）</div>
+          <div class="desc">
+            家长今晚睡前打开仪表盘填数据：
+            <ul>
+              <li>5 本 L6 WPM 速度</li>
+              <li>"我的一周" 5 句的拼对比例</li>
+              <li>L5 独立读卡壳的字（10 个以内）</li>
+              <li>周记卡句数 + 拼音替代的字数</li>
+            </ul>
+            这些是 D1 的基线，下周 W02 复测看进步。
+          </div>
+        </div>
+      </div>
+
+      <div class="materials">
+        <strong>需要准备：</strong>
+        <span class="pill">牛津树 L6 5 本</span>
+        <span class="pill">小羊上山 L5 2 本</span>
+        <span class="pill">A4 纸 + 彩笔</span>
+        <span class="pill">手机（计时 + 录音）</span>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">完成 D1 周末项目 → 奖励</div>
+        <div class="stickers">🎁 5 张贴纸（共 5/10）· 距"周末活动选择权"还差 5 张</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 2: 8/16 周日 - 休整日 ✅ 已完成 -->
+  <div class="day-card completed">
+    <div class="day-head">
+      <div class="dnum">D2<small>SUNDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.16 · 周日 · 休整日 · ✅ 已完成</div>
+        <div class="dtitle">家庭日 + 轻量（v3 旧版）</div>
+      </div>
+      <div class="dtag done">已完成</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 15-20 分钟 · 晚上 19:30 顺带做 · 轻量</div>
+
+      <div class="task">
+        <div class="time">19:30<br>5 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>听英文童谣 + 跟跳</div>
+          <div class="desc">
+            推荐：<a href="https://www.youtube.com/results?search_query=super+simple+songs" target="_blank">Super Simple Songs</a> 或 Cocomelon 英文儿歌 1-2 首。<br>
+            目的：让文杰在游戏状态接触英语，不烧脑。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:35<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>中文绘本共读 1 本</div>
+          <div class="desc">
+            挑一本他喜欢的（不一定是分级），爸妈陪读 10 分钟。聊 1-2 个故事里的问题。<br>
+            <strong>不在于学什么，在于让他感受到"中文阅读是放松不是任务"</strong>。
+          </div>
+        </div>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">D2 完成 → 奖励</div>
+        <div class="stickers">🏆 1 张贴纸（共 6/10）</div>
+      </div>
+
+      <div class="reflect">
+        <strong>📝 家长提示：</strong>周日不要强推任何测评。一周一次家庭日，让他对学习保持好感比多学一个字重要。
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 3: 8/17 周一 - 起点测评 Day 1（满 · 50 min · v4 新结构） -->
+  <div class="day-card today">
+    <div class="day-head">
+      <div class="dnum">D3<small>MONDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.17 · 周一 · 🟠 起点测评 Day 1</div>
+        <div class="dtitle">Phonics + 数学主 · 新节奏第一天</div>
+      </div>
+      <div class="dtag today">TODAY</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 50 分钟硬学习（含 10 min micro-break）+ 早 15 min 描红 + 17:15-17:35 钢琴 + 17:35-18:30 玩耍 · 8:15 / 17:15 / 17:35 / 18:30 / 19:15 / 21:00</div>
+
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 🆕 新增</div>
+          <div class="desc">
+            描红 1 个新字。每天 1 字不间断，到 9 月开学前（4 个月）= 60+ 字独立写。<br>
+            <strong>2027 年 1 月小学后</strong>改到放学后 16:00-16:30（早上 7:30 到校没时间）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:15<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 钢琴练习（每天 · 妈妈原则）</div>
+          <div class="desc">
+            <strong>妈妈给的日常时间表（v4.2）：</strong>"晚上 5:15-5:35 弹琴，5:35-6:30 玩儿"。<br>
+            钢琴老师布置的作业 / 复习上周内容。<br>
+            <strong>周二除外</strong>（当天有外部钢琴课，不在家练）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（妈妈原则）</div>
+          <div class="desc">自由玩耍 / 户外 / 公园。5:35-6:30 = 55 min。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span>🔢 珠算（妈妈陪 · 每天必需）</div>
+          <div class="desc">
+            心算 6 级刷题 <strong>5 道</strong>（3 道错题重做 + 2 道新题）。<br>
+            <div class="tip"><strong>妈妈原则 v4：</strong>"珠心算每天必须有 10 分钟左右"，不管什么日子（除周二钢琴课外），都不跳过。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:25<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>Phonics（每天必需）</div>
+          <div class="desc">
+            KAK Vowel Sounds · <strong>Long E: ee, ea</strong>。文杰自己看视频 + 做互动练习，妈妈陪玩 + 严格 10 min。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:35<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break（喝水 / 上厕所 / 选下一项）</div>
+          <div class="desc">
+            让文杰自己选下一本练习册（"今天你想做数学还是中文？"）。<br>
+            <strong>关键设计：</strong>给他"选择权"，减少抗拒。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:40<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span>主练习册 · Intensive Maths Drills P1</div>
+          <div class="desc">
+            <strong>Intensive Maths Drills P1</strong>（Issac）· <strong>4-6 页</strong>。<br>
+            内容：加减计算 + 1 道英文应用题 + 2 个英文数学词。<br>
+            <div class="tip"><strong>妈妈原则 v3：</strong>"让文杰自己读题，英文答问题"——模拟考试环境。妈妈/爸爸<strong>不帮读题，不翻译</strong>。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:55<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 活动 5 分钟。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:00<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>副练习册 · 快乐练习2.0 🆕</div>
+          <div class="desc">
+            <strong>快乐练习2.0</strong>（中文 P1 配套，妈妈 8/17 买）· <strong>短节</strong>。<br>
+            内容：识字 L5 抽测 5 字 + 1 个新字描红。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>5 min</div>
+        <div class="body">
+          <div class="title">🌙 Wiki 记录 · 告诉 Mavis</div>
+          <div class="desc">
+            <ul>
+              <li>珠算 5 道对了几个 / 错了哪几个</li>
+              <li>KAK Long E lesson 完成率</li>
+              <li>Intensive Maths 做了几页</li>
+              <li>快乐练习2.0 识字抽测对了几个</li>
+              <li>描红的 1 个新字是什么</li>
+              <li>文杰状态（主动 / 抗拒 / 顺利 / 累了）</li>
+            </ul>
+            <strong>21:00 前必须填完</strong>，否则文杰睡前看不到自己的花。
+          </div>
+        </div>
+      </div>
+
+      <div class="materials">
+        <strong>需要准备：</strong>
+        <span class="pill">心算 6 级题本</span>
+        <span class="pill">KAK iPad</span>
+        <span class="pill">Intensive Maths Drills P1</span>
+        <span class="pill">快乐练习2.0</span>
+        <span class="pill">5 min + 15 min 沙漏</span>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">今晚 4 任务完成 → 奖励</div>
+        <div class="stickers">🏆 2 张贴纸（共 2/10）· 🌙 21:00 准时睡觉奖</div>
+      </div>
+
+      <div class="reflect">
+        <strong>📝 v4 节奏校验：</strong>今天是 <strong>5:2:1 节奏第一天</strong>。观察文杰反应：① 50 min 是否合理（太长/刚好/太短）？② 3 个认知块是否清晰？③ 21:00 熄灯能否执行？
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 4: 8/18 周二 - 🟢 无任务日 + 奶奶轻量（钢琴课）· v4.2 -->
+  <div class="day-card rest-day">
+    <div class="day-head">
+      <div class="dnum">D4<small>TUESDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.18 · 周二 · 🟢 无任务 + 奶奶轻量（v4.2）</div>
+        <div class="dtitle">钢琴课 + 奶奶 17:15-17:45 陪做 + 玩耍 + 早洗澡</div>
+      </div>
+      <div class="dtag rest">🟢 半休息</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 <strong>30 min</strong> 奶奶陪学习（17:15-17:45）+ 早上 15 min 描红 · 钢琴课 + 玩耍 + 早洗澡 + 早睡</div>
+
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 微习惯</div>
+          <div class="desc">
+            描红 1 个新字。<strong>早上微习惯</strong>——不依赖精力，只是机械动作。<br>
+            <strong>2027 年 1 月小学后</strong>改到放学后 16:00-16:30。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">下午<br>灵活</div>
+        <div class="body">
+          <div class="title">🎹 钢琴课（外部，时间由钢琴老师定）</div>
+          <div class="desc">
+            文杰在钢琴课上需要专注，回家后已经累。<strong>这是不安排"文杰自己学"的核心理由</strong>。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:15<br><strong>30 min</strong></div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>🆕 <strong>奶奶陪做：快乐练习2.0 OR 写字</strong>（v4.2 新增）</div>
+          <div class="desc">
+            <strong>妈妈原则 v4.2（8/18 第二次更新）：</strong>"周二晚上回家奶奶可以在 5:15-5:45 带着做做快乐练习或者写写字，但是别的做不了啥"。<br>
+            <br>
+            <strong>选项 A：快乐练习2.0</strong>（30 min 完整节）
+            <ul>
+              <li>识字 L5-L6 抽测 + 新字 + 拼音 + 看图说话</li>
+              <li>适合：本周中文需要强化</li>
+            </ul>
+            <strong>选项 B：写字</strong>（30 min 加深版）
+            <ul>
+              <li>描红 2-3 个新字（vs 早上 1 字）</li>
+              <li>抄写 1 个新词（描红 → 抄写 进阶）</li>
+              <li>适合：本周中文写作需要强化</li>
+            </ul>
+            <strong>建议：</strong>本周开始按<strong>选项 C</strong>（每周轮换：A → B → A → B...）<br>
+            <div class="tip"><strong>PM 洞察：</strong>奶奶的陪伴 = 文杰不需要调动自己的"学习精力"，所以可以继续。这与"文杰自己学"是不同的能量账户。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:45<br>45 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍 / 户外</div>
+          <div class="desc">自由玩耍 / 公园 / 看动画（妈妈允许）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">18:30<br>45 min</div>
+        <div class="body">
+          <div class="title">🍚 晚饭</div>
+          <div class="desc">家庭晚饭。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>60 min</div>
+        <div class="body">
+          <div class="title">🚫 <strong>不安排"文杰自己学"</strong>（自由时段）</div>
+          <div class="desc">
+            <strong>🛑 不做事清单：</strong>
+            <ul>
+              <li>❌ Intensive Maths Drills（数学）</li>
+              <li>❌ One-stop English（英文）</li>
+              <li>❌ KAK / Khan Academy Kids（iPad）</li>
+              <li>❌ 珠算（除了早上描红）</li>
+              <li>❌ 拼音 / 识字 / 应用题（晚上不做）</li>
+              <li>❌ ~~亲子共读~~（妈妈 8/18）</li>
+            </ul>
+            <strong>✅ 仅保留的事：</strong>写汉字（早上）+ 钢琴课 + 奶奶陪做（17:15-17:45）+ 户外 + <strong>早洗澡早睡</strong>。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:15<br>25 min</div>
+        <div class="body">
+          <div class="title">🛁 洗澡刷牙（<strong>提前 25 min</strong>）</div>
+          <div class="desc">
+            <strong>v4.1 更新：</strong>洗澡从 20:15 开始（比工作日早 25 min）。<br>
+            没有亲子共读，妈妈也早点休息。21:00 准时熄灯。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>—</div>
+        <div class="body">
+          <div class="title">🌙 睡觉（早睡）</div>
+          <div class="desc">21:00 准时熄灯。身体需要更多休息。</div>
+        </div>
+      </div>
+
+      <div class="materials">
+        <strong>需要准备：</strong>
+        <span class="pill">描红字帖 + 笔</span>
+        <span class="pill">快乐练习2.0（A 选项）</span>
+        <span class="pill">写字加深材料（B 选项）</span>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">今天任务 = 钢琴课 + 奶奶 30 min + 早睡</div>
+        <div class="stickers">🌿 30 min 奶奶陪 = 妈妈休息 + 中文保持 · 🛁 早洗澡奖</div>
+      </div>
+
+      <div class="reflect">
+        <strong>📝 v4.2 周二设计：</strong>① 钢琴课占用文杰精力 ② <strong>奶奶陪伴</strong>= 不依赖文杰精力（关键洞察）③ 17:15-17:45 是奶奶的"30 min 黄金时段" ④ 17:45 之后完全空（连共读也没空）⑤ 早洗澡 20:15 + 早睡 21:00 = 第二天精力恢复明显。
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 5: 8/19 周三 - 起点测评 Day 2（满 · 50 min · 英文主）· v4 -->
+  <div class="day-card">
+    <div class="day-head">
+      <div class="dnum">D5<small>WEDNESDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.19 · 周三 · 🟠 起点测评 Day 2</div>
+        <div class="dtitle">Phonics + 英文主 · One-stop English 重头</div>
+      </div>
+      <div class="dtag">周三</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 50 分钟硬学习（含 10 min micro-break）+ 早 15 min 描红 + 17:15-17:35 钢琴 + 17:35-18:30 玩耍 · 8:15 / 17:15 / 17:35 / 18:30 / 19:15 / 21:00</div>
+
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 每天 1 字</div>
+          <div class="desc">描红 1 个新字。今天目标字：<code>爱</code> 或 <code>家</code>（挑简单的）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:15<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 钢琴练习（每天 · 妈妈原则）</div>
+          <div class="desc">17:15-17:35 弹琴 20 min（妈妈原则 v4.2）。钢琴老师作业 / 复习上周内容。<br><strong>周二除外</strong>（当天有外部钢琴课）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（妈妈原则）</div>
+          <div class="desc">5:35-6:30 自由玩耍 / 户外 / 公园。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span>🔢 珠算（妈妈陪）· 每天必需</div>
+          <div class="desc">心算 6 级刷题 <strong>5 道</strong>（错题重做 + 新题）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:25<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>Phonics（每天必需）</div>
+          <div class="desc">KAK Vowel Sounds · <strong>Long O: oa, ow</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:35<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 选下一本练习册。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:40<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>主练习册 · One-stop English P1 🆕</div>
+          <div class="desc">
+            <strong>One-stop English P1</strong>（CASCO，妈妈 8/16 买）· <strong>Phonics + Sight Words 段</strong>。<br>
+            文杰自己读题，妈妈<strong>不翻译</strong>。
+            <div class="tip">Phonics / Sight Words / 简单阅读——按书的顺序走，文杰自己选下一题。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:55<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 活动 5 分钟。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:00<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>副练习册 · 快乐练习2.0</div>
+          <div class="desc">
+            内容：<strong>拼音 zh/ch/sh 5 min</strong>（舌尖位置，用镜子 + 跟读）+ <strong>识字 L6 5 字 10 min</strong>。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>5 min</div>
+        <div class="body">
+          <div class="title">🌙 Wiki 记录</div>
+          <div class="desc">
+            <ul>
+              <li>珠算 5 道对了几个</li>
+              <li>KAK Long O lesson 完成率</li>
+              <li>One-stop English 做到哪个 section</li>
+              <li>快乐练习2.0 拼音抽测对了几个 + 识字对了几个</li>
+              <li>描红的 1 个新字</li>
+              <li>文杰状态</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="materials">
+        <strong>需要准备：</strong>
+        <span class="pill">心算 6 级题本</span>
+        <span class="pill">KAK iPad</span>
+        <span class="pill">One-stop English P1 🆕</span>
+        <span class="pill">快乐练习2.0</span>
+        <span class="pill">小镜子（拼音用）</span>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">今晚 4 任务完成 → 奖励</div>
+        <div class="stickers">🏆 2 张贴纸（共 4/10）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 6: 8/20 周四 - 🟢 轻量日（只珠算 + Phonics = 20 min）· v4 -->
+  <div class="day-card light-day">
+    <div class="day-head">
+      <div class="dnum">D6<small>THURSDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.20 · 周四 · 🟢 轻量日</div>
+        <div class="dtitle">只珠算 + Phonics · 其他自由</div>
+      </div>
+      <div class="dtag light">🟢 轻量</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 <strong>20 分钟</strong>硬学习（仅珠算 + Phonics）+ 早 15 min 描红 + 17:15-17:35 钢琴 + 17:35-18:30 玩耍 · 8:15 / 17:15 / 17:35 / 18:30 / 19:15 / 21:00</div>
+
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 保留微习惯</div>
+          <div class="desc">描红 1 个新字。今天目标字：<code>笑</code> 或 <code>好</code>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:15<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 钢琴练习（每天 · 妈妈原则）</div>
+          <div class="desc">17:15-17:35 弹琴 20 min（妈妈原则 v4.2）。<br>周四<strong>不例外</strong>——钢琴练习是日常，不因为是轻量日就跳过。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（妈妈原则）</div>
+          <div class="desc">5:35-6:30 自由玩耍。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span>🔢 珠算（妈妈陪）· 轻量版</div>
+          <div class="desc">
+            心算 6 级刷题 <strong>3-5 道</strong>（<strong>轻量版</strong>）。<br>
+            不强求 5 道，做对 3 道也 OK。<strong>错题不重做</strong>（避免疲劳）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:25<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>Phonics · 每天必需</div>
+          <div class="desc">KAK Vowel Sounds · <strong>Long I: ie, igh</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:35<br>40 min</div>
+        <div class="body">
+          <div class="title">🚶 <strong>自由时段</strong>（不安排任何任务）</div>
+          <div class="desc">
+            <strong>🛑 不要做的事：</strong>
+            <ul>
+              <li>❌ Intensive Maths Drills（今天跳过）</li>
+              <li>❌ One-stop English（今天跳过）</li>
+              <li>❌ 快乐练习2.0（今天跳过）</li>
+              <li>❌ 任何测评 / 练习册</li>
+              <li>❌ 任何加任务（哪怕"只做 1 道"）</li>
+            </ul>
+            <strong>✅ 可以做的事：</strong>
+            <ul>
+              <li>⚽ 玩耍 / 看动画（妈妈允许）</li>
+              <li>🚶 散步 / 户外</li>
+              <li>👨‍👩‍👦 家庭互动</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:40<br>20 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>亲子共读（保留习惯）</div>
+          <div class="desc">爸妈陪读 20 分钟。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>—</div>
+        <div class="body">
+          <div class="title">🌙 睡觉</div>
+          <div class="desc">21:00 准时睡觉（每天都要守这个时间）。</div>
+        </div>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">今晚任务 = 珠算 + Phonics</div>
+        <div class="stickers">🌿 轻量完成 = <strong>保护学习新鲜感</strong></div>
+      </div>
+
+      <div class="reflect">
+        <strong>📝 轻量日的目的：</strong>① 保护学习新鲜感（周四减量，周五文杰会更期待）② 避免疲劳积累（周一到周三连续 3 天学习）③ 妈妈也休息 ④ 5:2:1 节奏的关键缓冲。
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 7: 8/21 周五 - 起点测评 Day 3（满 · 50 min · 中文主）· v4 -->
+  <div class="day-card">
+    <div class="day-head">
+      <div class="dnum">D7<small>FRIDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.21 · 周五 · 🟠 起点测评 Day 3</div>
+        <div class="dtitle">Phonics + 中文主 · 快乐练习2.0 重头</div>
+      </div>
+      <div class="dtag">周五</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 50 分钟硬学习（含 10 min micro-break）+ 早 15 min 描红 + 17:15-17:35 钢琴 + 17:35-18:30 玩耍 · 8:15 / 17:15 / 17:35 / 18:30 / 19:15 / 21:00</div>
+
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 每天 1 字</div>
+          <div class="desc">描红 1 个新字。今天目标字：<code>书</code> 或 <code>学</code>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:15<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 钢琴练习（每天 · 妈妈原则）</div>
+          <div class="desc">17:15-17:35 弹琴 20 min（妈妈原则 v4.2）。钢琴老师作业 / 复习。<br><strong>周二除外</strong>（当天有外部钢琴课）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（妈妈原则）</div>
+          <div class="desc">5:35-6:30 自由玩耍 / 户外。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span>🔢 珠算（妈妈陪）· 每天必需</div>
+          <div class="desc">心算 6 级刷题 <strong>5 道</strong>（错题重做 + 新题）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:25<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>Phonics · 每天必需</div>
+          <div class="desc">KAK Vowel Sounds · <strong>Long U: ue, ui + Long U: ew, oo</strong>（2 lesson 一起）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:35<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 选下一本练习册。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:40<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>主练习册 · 快乐练习2.0 🆕</div>
+          <div class="desc">
+            <strong>快乐练习2.0</strong>· <strong>拼音复习 + 看图说话 1 段 + 写句子 1 句</strong>。<br>
+            <div class="tip">写句子：妈妈帮写，文杰说。3-5 字为佳。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:55<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 活动 5 分钟。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:00<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>副练习册 · One-stop English</div>
+          <div class="desc">
+            <strong>One-stop English</strong>（短 section）· Phonics 或 Sight Words（按书进度）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>30 min</div>
+        <div class="body">
+          <div class="title">🟠 <strong>Wiki batch · W01 收尾</strong></div>
+          <div class="desc">
+            <strong>21:00-21:30 Wiki 复盘</strong>（30 min）：<br>
+            <ul>
+              <li>填仪表盘（W01 5 天数据）</li>
+              <li>标出 pattern-XXX（错题模式）</li>
+              <li>标出文杰状态最高 / 最低的一天</li>
+              <li>决定 W02 重点（最弱项 = 强化）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="materials">
+        <strong>需要准备：</strong>
+        <span class="pill">心算 6 级题本</span>
+        <span class="pill">KAK iPad</span>
+        <span class="pill">快乐练习2.0</span>
+        <span class="pill">One-stop English P1</span>
+        <span class="pill">Wiki 笔记本</span>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">W01 收尾完成 → 奖励</div>
+        <div class="stickers">🏆 3 张贴纸（共 7/10）· 📚 W01 完成奖</div>
+      </div>
+
+      <div class="reflect">
+        <strong>📝 W01 总复盘：</strong>5:2:1 节奏跑了 5 天（周一满 + 周二休 + 周三满 + 周四轻 + 周五满）。文杰状态最高 / 最低的一天？妈妈最累的一天？W02 重点是什么？
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 8: 8/22 周六 - 🟠 项目日（早上版）· v4.3 -->
+  <div class="day-card project-day">
+    <div class="day-head">
+      <div class="dnum">D8<small>SATURDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.22 · 周六 · 🟠 项目日（早上版 · v4.3）</div>
+        <div class="dtitle">8:30-9:50 早上学习集群（描红 + 项目 + 钢琴）· 晚上完全自由</div>
+      </div>
+      <div class="dtag project">🟠 项目日</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 <strong>50 min</strong> 硬学习（早 8:30-9:30）+ 早 15 min 描红 + <strong>🆕 9:30-9:50 钢琴（早上）</strong> + 17:35-18:30 玩耍 + 上午游泳 · <strong>晚上完全自由</strong></div>
+
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 每天 1 字</div>
+          <div class="desc">描红 1 个新字。今天目标字：<code>水</code> 或 <code>鱼</code>（配合游泳主题）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">8:30<br>10 min</div>
+        <div class="body">
+          <div class="title">🇬🇧 <strong>🆕 暖身：Timed Reading</strong></div>
+          <div class="desc">
+            5 本牛津树 L6 连续读，计时算 WPM。<br>
+            错 3 次以上的词圈出来记 Wiki。<strong>8/22 是 D8 的英文基线</strong>。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">8:40<br>20 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span><strong>🆕 主练习册 · Intensive Maths（综合）</strong></div>
+          <div class="desc">
+            综合计算 + 应用题（含本周所学 4 个英文数学词）。<br>
+            让文杰自己读题，妈妈不翻译。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:00<br>10 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 选下一项（让文杰选下一本练习册）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:10<br>20 min</div>
+        <div class="body">
+          <div class="title">🟠 <strong>🆕 副练习册 · 3 本自由轮换</strong></div>
+          <div class="desc">
+            <strong>5 min × 4 本</strong>（项目日特色）：
+            <ul>
+              <li>5 min：快乐练习2.0（中文）</li>
+              <li>5 min：One-stop English（英文）</li>
+              <li>5 min：Intensive Maths（数学 · 加深）</li>
+              <li>5 min：妈妈挑当周最弱项</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:30<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 <strong>🆕 钢琴练习（周末早上版）</strong></div>
+          <div class="desc">
+            <strong>🆕 周末钢琴改到早上</strong>（妈妈原则："周末练琴也完全可以放在早上"）。<br>
+            9:30-9:50 弹琴 20 min，正好衔接项目后 + 玩耍前。<br>
+            <strong>傍晚 17:15-17:35 取消</strong>（周末已早上练过）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:50<br>—</div>
+        <div class="body">
+          <div class="title">🟠 <strong>🆕 全部早上学习结束</strong>· 全天玩耍时间开始</div>
+          <div class="desc">8:15 写汉字 → 8:30 项目 → 9:30 钢琴 → <strong>9:50 全部结束</strong>。<br>接下来是游泳 + 户外 + 自由。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">上午<br>灵活</div>
+        <div class="body">
+          <div class="title">🏊 游泳训练（校外俱乐部 2-3 次/周）</div>
+          <div class="desc">Swim Safe 3 级冲刺。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（妈妈原则）</div>
+          <div class="desc">5:35-6:30 自由玩耍 / 户外。<br><strong>17:15 钢琴已移到早上，傍晚直接玩耍</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">18:30<br>45 min</div>
+        <div class="body">
+          <div class="title">🍚 晚饭</div>
+          <div class="desc">家庭晚饭。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>60 min</div>
+        <div class="body">
+          <div class="title">🟠 <strong>🆕 v4.3 晚上完全自由</strong>（之前是项目日学习时间）</div>
+          <div class="desc">
+            <strong>v4.3 关键变化：</strong>项目日活动改到早上，<strong>晚上 19:15-20:15 完全自由</strong>。<br>
+            家庭时间 / 看动画 / 户外 / 自由活动。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:15<br>25 min</div>
+        <div class="body">
+          <div class="title">🛁 洗澡刷牙</div>
+          <div class="desc">20:15-20:40 洗澡。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:40<br>20 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>亲子共读（保留）</div>
+          <div class="desc">爸妈陪读 20 分钟。<strong>不教不测</strong>，纯粹享受阅读。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>—</div>
+        <div class="body">
+          <div class="title">🌙 睡觉</div>
+          <div class="desc">21:00 准时睡觉。</div>
+        </div>
+      </div>
+
+      <div class="materials">
+        <strong>需要准备（早上 8:30-9:50 学习集群）：</strong>
+        <span class="pill">牛津树 L6 5 本</span>
+        <span class="pill">手机（计时）</span>
+        <span class="pill">Intensive Maths P1</span>
+        <span class="pill">One-stop English P1</span>
+        <span class="pill">快乐练习2.0</span>
+        <span class="pill">钢琴谱 / 练习本</span>
+        <span class="pill">游泳包</span>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">项目日早上完成 → 奖励</div>
+        <div class="stickers">🏆 3 张贴纸（共 10/10）🎉 周末活动选择权</div>
+      </div>
+
+      <div class="reflect">
+        <strong>📝 v4.3 早上学习集群：</strong>① 8:30-9:30 项目 + ② <strong>9:30-9:50 钢琴</strong> + ③ 9:50 全天玩耍开始 ④ <strong>周末钢琴移到早上</strong>（手部状态好）⑤ 傍晚 17:15 钢琴取消 → 17:35 直接玩耍。
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 9: 8/23 周日 - 🟠 项目日（早上版）+ Wiki 复盘 · v4.3 -->
+  <div class="day-card project-day">
+    <div class="day-head">
+      <div class="dnum">D9<small>SUNDAY</small></div>
+      <div class="dinfo">
+        <div class="ddate">2026.08.23 · 周日 · 🟠 项目日（早上版 · v4.3）</div>
+        <div class="dtitle">8:30-9:50 早上学习集群（描红 + 项目 + 钢琴）· 晚上 Wiki 复盘</div>
+      </div>
+      <div class="dtag project">🟠 项目日</div>
+    </div>
+    <div class="day-body">
+      <div class="total">总时长 <strong>50 min</strong> 硬学习（早 8:30-9:30）+ 早 15 min 描红 + <strong>🆕 9:30-9:50 钢琴（早上）</strong> + 17:35-18:30 玩耍 + 21:00-21:30 Wiki 复盘 · <strong>晚上自由</strong></div>
+
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 每天 1 字</div>
+          <div class="desc">描红 1 个新字。今天目标字：<code>木</code> 或 <code>花</code>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">8:30<br>10 min</div>
+        <div class="body">
+          <div class="title">🇬🇧 <strong>🆕 暖身：Timed Reading</strong></div>
+          <div class="desc">
+            5 本牛津树 L6 连续读，计时算 WPM。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">8:40<br>20 min</div>
+        <div class="body">
+          <div class="title">🟠 <strong>🆕 主练习册 · 妈妈挑当周最弱项</strong></div>
+          <div class="desc">
+            <strong>基于 W01 数据</strong>：<br>
+            例：Phonics 弱 → 重点 One-stop English 的 Phonics 部分<br>
+            例：Math 弱 → 重点 Intensive Maths 的应用题<br>
+            例：中文弱 → 重点 快乐练习2.0 的拼音 + 识字
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:00<br>10 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 选下一项。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:10<br>20 min</div>
+        <div class="body">
+          <div class="title">📚 <strong>🆕 副练习册 · 自由复习</strong></div>
+          <div class="desc">
+            看回本周错题（3 道以上错同一类）/ 看回练习册 / 中文专项（如拼音 / 写字）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:30<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 <strong>🆕 钢琴练习（周末早上版）</strong></div>
+          <div class="desc">
+            <strong>🆕 周末钢琴改到早上</strong>（妈妈原则："周末练琴也完全可以放在早上"）。<br>
+            9:30-9:50 弹琴 20 min。<strong>傍晚 17:15-17:35 取消</strong>。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:50<br>—</div>
+        <div class="body">
+          <div class="title">🟠 <strong>🆕 全部早上学习结束</strong>· 全天玩耍开始</div>
+          <div class="desc">8:15 描红 → 8:30 项目 → 9:30 钢琴 → <strong>9:50 全部结束</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（妈妈原则）</div>
+          <div class="desc">5:35-6:30 自由玩耍 / 户外。<br><strong>17:15 钢琴已移到早上，傍晚直接玩耍</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">18:30<br>45 min</div>
+        <div class="body">
+          <div class="title">🍚 晚饭</div>
+          <div class="desc">家庭晚饭。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>60 min</div>
+        <div class="body">
+          <div class="title">🟠 <strong>🆕 v4.3 晚上完全自由</strong>（家庭时间）</div>
+          <div class="desc">
+            项目日活动改到早上，<strong>晚上 19:15-20:15 完全自由</strong>。<br>
+            看动画 / 户外 / 家庭时间。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:15<br>25 min</div>
+        <div class="body">
+          <div class="title">🛁 洗澡</div>
+          <div class="desc">20:15-20:40 洗澡。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">20:40<br>20 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>亲子共读（保留）</div>
+          <div class="desc">爸妈陪读 20 分钟。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>30 min</div>
+        <div class="body">
+          <div class="title">🟠 <strong>Wiki batch · W01 收官</strong>（妈妈整理数据）</div>
+          <div class="desc">
+            <strong>21:00-21:30 Wiki 复盘</strong>（30 min，妈妈时间，不是文杰学习）：<br>
+            <ul>
+              <li><strong>W01 数据汇总</strong>：5 天做了几页 × 3 本、KAK Vowel Sounds 完成情况、珠算总正确率</li>
+              <li><strong>W01 状态总结</strong>：文杰最累的一天、最精神的一天、妈妈最累的一天</li>
+              <li><strong>W02 重点</strong>：哪 1-2 项强化、哪 1 项放缓</li>
+              <li><strong>错题 pattern 更新</strong>：是否新建 mistakes/pattern-XXX</li>
+              <li><strong>资源更新</strong>：练习册进度</li>
+            </ul>
+            <strong>30 min 严格控制</strong>——不要变成 1 小时。
+          </div>
+        </div>
+      </div>
+
+      <div class="materials">
+        <strong>需要准备（早上 8:30-9:50 学习集群）：</strong>
+        <span class="pill">牛津树 L6 5 本</span>
+        <span class="pill">手机（计时）</span>
+        <span class="pill">3 本练习册</span>
+        <span class="pill">钢琴谱 / 练习本</span>
+        <span class="pill">本周错题记录</span>
+        <span class="pill">Wiki 笔记本（妈妈晚上用）</span>
+      </div>
+
+      <div class="reward-bar">
+        <div class="label">项目日早上完成 + Wiki 复盘 → 奖励</div>
+        <div class="stickers">🏆 5 张贴纸（重置累计）· 🌟 W01 完整奖</div>
+      </div>
+
+      <div class="reflect">
+        <strong>📝 v4.3 设计：</strong>① 项目日活动改到早上 8:30-9:30（精力好时段）② <strong>🆕 周末钢琴 9:30-9:50（早上版）</strong> ③ 晚上 Wiki 复盘 21:00-21:30（妈妈整理数据）④ 30 min Wiki 严格控制。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 通用：每日时间表模板 ========== -->
+<section id="daily-rhythm">
+  <div class="sec-num">D · 通用节奏</div>
+  <h2>工作日的 <strong>50 分钟</strong>长这样（v4 · 5:2:1 节奏）</h2>
+  <p class="sec-sub">上文是 D1-D9 的具体内容，下方是 W02 起会反复使用的标准节奏。<strong>3 段式：珠算 → Phonics → 练习册轮换</strong>（不是 5 段）。每段含 5 min micro-break。家长照着节奏，Wiki 自动塞入当天的具体内容。</p>
+
+  <div class="day-card">
+    <div class="day-head">
+      <div class="dnum">📋<small>TEMPLATE</small></div>
+      <div class="dinfo">
+        <div class="ddate">工作日标准节奏 · 8:15 / 17:15 / 17:35 / 18:30 / 19:15-20:15 / 21:00</div>
+        <div class="dtitle">3 段式：珠算 10 → Phonics 10 → 练习册轮换 30（含钢琴 17:15 + 玩耍 17:35）</div>
+      </div>
+    </div>
+    <div class="day-body">
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>微习惯：写汉字（奶奶）</div>
+          <div class="desc">描红 1 个新字。每天不间断，<strong>2027 年 1 月小学后</strong>改到放学后 16:00-16:30。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:15<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 钢琴练习（每天 · 妈妈原则 v4.2）</div>
+          <div class="desc">
+            17:15-17:35 弹琴 20 min（妈妈给的日常时间表）。<br>
+            <strong>周二除外</strong>（当天有外部钢琴课）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（妈妈原则）</div>
+          <div class="desc">5:35-6:30 自由玩耍 / 户外 / 公园。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span>🔢 必段 1：珠算（每天必需）</div>
+          <div class="desc">
+            心算 6 级刷题 <strong>5 道</strong>（错题重做 + 新题）。<br>
+            <strong>妈妈原则 v4：</strong>"珠心算每天必须有 10 分钟左右"——不跳过（除周二钢琴课外，周二 17:15-17:45 是奶奶陪做）。
+          </div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">19:25<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>必段 2：Phonics（每天必需）</div>
+          <div class="desc">
+            KAK Vowel Sounds 路径推进，或 One-stop English 的 Phonics 段。<br>
+            <strong>10 min 严格</strong>——妈妈陪玩 + 沙漏计时。
+          </div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">19:35<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break #1</div>
+          <div class="desc">喝水 / 上厕所 / 让文杰<strong>选下一本练习册</strong>（给他选择权）。</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">19:40<br>15 min</div>
+        <div class="body">
+          <div class="title">📚 必段 3a：主练习册（每天轮换）</div>
+          <div class="desc">
+            <strong>周一 / 周三 / 周五 / 周六 / 周日</strong>：从 3 本里挑 1 本做 15 min。<br>
+            <table style="width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 6px;">
+              <tr><td style="padding: 2px 6px;">周一</td><td style="padding: 2px 6px;"><strong>Intensive Maths Drills P1</strong>（数学）</td></tr>
+              <tr><td style="padding: 2px 6px;">周三</td><td style="padding: 2px 6px;"><strong>One-stop English P1</strong>（英文）</td></tr>
+              <tr><td style="padding: 2px 6px;">周五</td><td style="padding: 2px 6px;"><strong>快乐练习2.0</strong>（中文）</td></tr>
+              <tr><td style="padding: 2px 6px;">周六</td><td style="padding: 2px 6px;">3 本都做一点（综合）</td></tr>
+              <tr><td style="padding: 2px 6px;">周日</td><td style="padding: 2px 6px;">妈妈挑当周最弱项</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">19:55<br>5 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break #2</div>
+          <div class="desc">喝水 / 活动 5 分钟。</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">20:00<br>15 min</div>
+        <div class="body">
+          <div class="title">📚 必段 3b：副练习册（每天轮换）</div>
+          <div class="desc">
+            <strong>15 min</strong>——和主练习册不同：<br>
+            <table style="width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 6px;">
+              <tr><td style="padding: 2px 6px;">周一</td><td style="padding: 2px 6px;">快乐练习2.0（短）</td></tr>
+              <tr><td style="padding: 2px 6px;">周三</td><td style="padding: 2px 6px;">快乐练习2.0（短）</td></tr>
+              <tr><td style="padding: 2px 6px;">周五</td><td style="padding: 2px 6px;">One-stop English（短）</td></tr>
+              <tr><td style="padding: 2px 6px;">周六</td><td style="padding: 2px 6px;">3 本自由轮换 5 min × 3</td></tr>
+              <tr><td style="padding: 2px 6px;">周日</td><td style="padding: 2px 6px;">自由复习</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 轻量日 / 休息日模板 -->
+  <div class="day-card light-day">
+    <div class="day-head">
+      <div class="dnum">🟢<small>LIGHT</small></div>
+      <div class="dinfo">
+        <div class="ddate">轻量日模板 · 周四 · 19:15-19:35 硬学习 20 min</div>
+        <div class="dtitle">钢琴 + 玩耍保留 · 硬学习只珠算 + Phonics · 其他自由</div>
+      </div>
+      <div class="dtag light">🟢 轻量</div>
+    </div>
+    <div class="day-body">
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>微习惯：写汉字（奶奶）</div>
+          <div class="desc">描红 1 个新字。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:15<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 钢琴练习（周四不例外）</div>
+          <div class="desc">17:15-17:35 弹琴 20 min。钢琴是日常，<strong>不因为是轻量日就跳过</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍</div>
+          <div class="desc">5:35-6:30 自由玩耍 / 户外。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang math">MATH</span>🔢 珠算（轻量版）</div>
+          <div class="desc">心算刷题 <strong>3-5 道</strong>（不强求 5 道）。错题不重做。</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">19:25<br>10 min</div>
+        <div class="body">
+          <div class="title"><span class="lang en">EN</span>Phonics</div>
+          <div class="desc">KAK 1 lesson。</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">19:35<br>40 min</div>
+        <div class="body">
+          <div class="title">🚶 自由时段（不安排任何任务）</div>
+          <div class="desc"><strong>不要加任何任务</strong>——玩耍 / 户外 / 家庭互动。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card rest-day">
+    <div class="day-head">
+      <div class="dnum">🟢<small>REST+</small></div>
+      <div class="dinfo">
+        <div class="ddate">半休息日模板 · 周二（钢琴课）· 30 min 奶奶陪 + 0 min 妈妈陪 · v4.2</div>
+        <div class="dtitle">钢琴课 + 奶奶 17:15-17:45 陪做 + 玩耍 + 早洗澡早睡</div>
+      </div>
+      <div class="dtag rest">🟢 半休</div>
+    </div>
+    <div class="day-body">
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>写汉字（奶奶）· 微习惯</div>
+          <div class="desc">早上微习惯——不依赖精力。</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">下午<br>—</div>
+        <div class="body">
+          <div class="title">🎹 钢琴课（外部）</div>
+          <div class="desc">回家后已累，<strong>不安排"文杰自己学"</strong>。</div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">17:15<br>30 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>🆕 <strong>奶奶陪做：快乐练习2.0 OR 写字</strong></div>
+          <div class="desc">
+            <strong>v4.2 新增：</strong>奶奶的陪伴 = 不依赖文杰精力。<br>
+            选项 A：快乐练习2.0（30 min 完整节）<br>
+            选项 B：写字加深版（描红 2-3 字 + 抄写 1 词）<br>
+            建议<strong>每周轮换</strong>（A → B → A → B）
+          </div>
+        </div>
+      </div>
+      <div class="task">
+        <div class="time">20:15<br>25 min</div>
+        <div class="body">
+          <div class="title">🛁 洗澡刷牙</div>
+          <div class="desc"><strong>提前 25 min</strong>（没有亲子共读）。21:00 准时熄灯。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 周末项目模板 ========== -->
+<section id="weekend-template">
+  <div class="sec-num">D · 周末项目模板</div>
+  <h2>周末 <strong>50 分钟</strong>· "项目"模式（<strong>v4.3 早上版</strong>）</h2>
+  <p class="sec-sub"><strong>v4.3 修订：</strong>周末项目日活动改到<strong>早上 8:30-9:30</strong>（不是晚上 19:15）。<strong>v4.3 补充：周末钢琴也改到早上 9:30-9:50</strong>（妈妈原则："周末练琴也完全可以放在早上"）。总硬学习仍 50 min + 描红 15 min + 钢琴 20 min。"learning + play 结合"——早上学习 + 白天游泳 / 户外 + <strong>晚上完全自由</strong>。</p>
+
+  <div class="day-card project-day">
+    <div class="day-head">
+      <div class="dnum">🟠<small>PROJECT-AM</small></div>
+      <div class="dinfo">
+        <div class="ddate">周六或周日 · 8:15-9:50 早上学习集群（描红 + 项目 + 钢琴）</div>
+        <div class="dtitle">早上 8:30-9:50：暖身 + 主 + 副 + 钢琴（70 min）</div>
+      </div>
+      <div class="dtag project">🟠 项目日</div>
+    </div>
+    <div class="day-body">
+      <div class="task">
+        <div class="time">8:15<br>15 min</div>
+        <div class="body">
+          <div class="title"><span class="lang zh">ZH</span>微习惯：写汉字（奶奶）</div>
+          <div class="desc">描红 1 个新字。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">8:30<br>10 min</div>
+        <div class="body">
+          <div class="title">🇬🇧 暖身：Timed Reading</div>
+          <div class="desc">5 本牛津树 L6 连续读，计时算 WPM。<strong>周末 DTM 基线</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">8:40<br>20 min</div>
+        <div class="body">
+          <div class="title">📚 <strong>主练习册 · 综合</strong></div>
+          <div class="desc">
+            <strong>周六</strong>：Intensive Maths（综合 + 应用题）<br>
+            <strong>周日</strong>：妈妈挑当周最弱项
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:00<br>10 min</div>
+        <div class="body">
+          <div class="title">🚶 micro-break</div>
+          <div class="desc">喝水 / 选下一项（让文杰选下一本练习册）。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:10<br>20 min</div>
+        <div class="body">
+          <div class="title">📚 <strong>副练习册 · 3 本轮换 / 自由复习</strong></div>
+          <div class="desc">
+            <strong>周六</strong>：3 本各做 5 min + 妈妈挑最弱 5 min（5×4=20）<br>
+            <strong>周日</strong>：看回本周错题 + 中文专项
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:30<br>20 min</div>
+        <div class="body">
+          <div class="title">🎹 <strong>🆕 钢琴练习（周末早上版）</strong></div>
+          <div class="desc">
+            <strong>🆕 周末钢琴改到早上</strong>（妈妈原则："周末练琴也完全可以放在早上"）。<br>
+            9:30-9:50 弹琴 20 min。手部状态好 + 衔接玩耍。<br>
+            <strong>傍晚 17:15-17:35 钢琴取消</strong>（已早上练过）。
+          </div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">9:50<br>—</div>
+        <div class="body">
+          <div class="title">🟠 <strong>🆕 全部早上学习结束</strong>· 全天玩耍开始</div>
+          <div class="desc">8:15 描红 → 8:30 项目 → 9:30 钢琴 → <strong>9:50 全部结束</strong>。<br>接下来是游泳 / 户外 / 自由。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">17:35<br>55 min</div>
+        <div class="body">
+          <div class="title">⚽ 玩耍（白天户外 + 游泳）</div>
+          <div class="desc">5:35-6:30 自由玩耍。<br><strong>17:15 钢琴已移到早上，傍晚直接玩耍</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">19:15<br>60 min</div>
+        <div class="body">
+          <div class="title">🚫 <strong>晚上完全自由</strong></div>
+          <div class="desc"><strong>v4.3 关键变化：</strong>项目日学习改到早上，<strong>晚上完全自由</strong>。</div>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="time">21:00<br>—</div>
+        <div class="body">
+          <div class="title">🌙 睡觉</div>
+          <div class="desc">21:00 准时睡觉（Wiki 复盘可在 D9 妈妈 21:00-21:30 单独进行）。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+
+<!-- 共享页脚（由 wenjie-shared.js 渲染）-->
+<div data-shared="footer" data-updated="2026-08-16"></div>
+
+<script src="wenjie-shared.js"></script>
+<script src="wenjie-shared-search.js"></script>
+</body>
+</html>
