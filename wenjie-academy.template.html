@@ -167,9 +167,18 @@
       font-size: 12px;
     }
     .stat-label {
-      color: #87ceeb;
+      color: #ffd700;
       font-family: 'JetBrains Mono', monospace;
-      min-width: 60px;
+      min-width: 70px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .stat-label small {
+      color: #87ceeb;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
     }
     .stat-bar {
       flex: 1;
@@ -339,6 +348,182 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* ===== Power Up 攻略（Do X → Get Y） ===== */
+    .powerup-section {
+      max-width: 600px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .powerup-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      color: #ffd700;
+      margin: 0 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .powerup-list {
+      display: grid;
+      gap: 8px;
+    }
+    .powerup-card {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(135, 206, 235, 0.05) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .powerup-icon {
+      font-size: 24px;
+      filter: drop-shadow(0 0 6px currentColor);
+    }
+    .powerup-action {
+      color: #fff;
+      line-height: 1.4;
+    }
+    .powerup-action .label {
+      color: rgba(255,255,255,0.6);
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .powerup-arrow {
+      color: #ffd700;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .powerup-reward {
+      background: linear-gradient(135deg, #ffd700 0%, #ff6b35 100%);
+      color: #0a0e27;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      white-space: nowrap;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    }
+
+    /* ===== Arena modal ===== */
+    .arena-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .arena-modal.open { display: flex; }
+    .arena-modal-bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 39, 0.85);
+      backdrop-filter: blur(4px);
+    }
+    .arena-modal-content {
+      position: relative;
+      max-width: 500px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      background: linear-gradient(135deg, #1a1a3e 0%, #2d1b4e 100%);
+      border: 2px solid #ffd700;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+      color: #fff;
+    }
+    .arena-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,215,0,0.3);
+      color: #ffd700;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .arena-modal-close:hover { background: rgba(255,215,0,0.2); }
+    .arena-modal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      color: #ffd700;
+      margin: 0 0 4px;
+    }
+    .arena-modal-boss {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 16px;
+    }
+    .arena-section {
+      margin: 16px 0;
+    }
+    .arena-section h3 {
+      font-size: 12px;
+      color: #ffd700;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 0 0 8px;
+    }
+    .mission-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .mission-list li {
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,215,0,0.2);
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mission-list li::before {
+      content: '⚔️';
+      flex-shrink: 0;
+    }
+    .milestone-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .milestone-list li {
+      padding: 6px 0;
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .milestone-list li.done { color: #87ceeb; }
+    .milestone-list li.active { color: #ffd700; }
+    .arena-modal-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      margin: 4px 0;
+      font-size: 13px;
+    }
+    .arena-modal-stat .label { color: rgba(255,255,255,0.7); }
+    .arena-modal-stat .value { color: #ffd700; font-weight: 700; }
+
     /* ===== 奖杯柜 ===== */
     .trophy-cabinet {
       max-width: 600px;
@@ -429,19 +614,19 @@
       <div class="hero-level">等级 __LEVEL__ · ⚡ __XP__/__XP_MAX__ XP</div>
 
       <div class="stat-row">
-        <span class="stat-label">💪 POWER</span>
+        <span class="stat-label">💪 力量<br><small>POWER</small></span>
         <div class="stat-bar"><div class="stat-fill" style="width: __POWER__%;"></div></div>
         <span class="stat-value">__POWER__%</span>
       </div>
 
       <div class="stat-row">
-        <span class="stat-label">🧠 智力</span>
+        <span class="stat-label">🧠 智力<br><small>INTEL</small></span>
         <div class="stat-bar"><div class="stat-fill" style="width: __INTEL__%;"></div></div>
         <span class="stat-value">__INTEL__%</span>
       </div>
 
       <div class="stat-row">
-        <span class="stat-label">⚡ 速度</span>
+        <span class="stat-label">⚡ 速度<br><small>SPEED</small></span>
         <div class="stat-bar"><div class="stat-fill" style="width: __SPEED__%;"></div></div>
         <span class="stat-value">__SPEED__%</span>
       </div>
@@ -458,43 +643,146 @@
 
 <!-- 5 大战场 -->
 <div class="arena-map">
-  <h2 class="arena-title">🗺 5 大战场 · 怪兽分布</h2>
+  <h2 class="arena-title">🗺 5 大战场 · 怪兽分布（点我！→）</h2>
 
   <div class="arena-grid">
-    <div class="arena-card" style="--arena-color-1: #1a3a4a; --arena-color-2: #4a90a4; --arena-border: #87ceeb;">
+    <div class="arena-card" data-arena="math" style="--arena-color-1: #1a3a4a; --arena-color-2: #4a90a4; --arena-border: #87ceeb;">
       <div class="arena-icon">🔴</div>
       <h3 class="arena-name">数学山</h3>
       <div class="arena-boss">Boss: 加法怪兽</div>
       <div class="arena-progress">__MATH_PROGRESS__</div>
+      <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 6px;">👆 点我看任务</div>
     </div>
 
-    <div class="arena-card" style="--arena-color-1: #1a3a2a; --arena-color-2: #2f6f5e; --arena-border: #87ceeb;">
+    <div class="arena-card" data-arena="english" style="--arena-color-1: #1a3a2a; --arena-color-2: #2f6f5e; --arena-border: #87ceeb;">
       <div class="arena-icon">🔵</div>
       <h3 class="arena-name">英文海</h3>
       <div class="arena-boss">Boss: 拼写怪兽</div>
       <div class="arena-progress">__ENGLISH_PROGRESS__</div>
+      <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 6px;">👆 点我看任务</div>
     </div>
 
-    <div class="arena-card" style="--arena-color-1: #4a2a1a; --arena-color-2: #c97b3f; --arena-border: #ff6b35;">
+    <div class="arena-card" data-arena="chinese" style="--arena-color-1: #4a2a1a; --arena-color-2: #c97b3f; --arena-border: #ff6b35;">
       <div class="arena-icon">🟠</div>
       <h3 class="arena-name">中文沙漠</h3>
       <div class="arena-boss">Boss: 识字怪兽</div>
       <div class="arena-progress">__CHINESE_PROGRESS__</div>
+      <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 6px;">👆 点我看任务</div>
     </div>
 
-    <div class="arena-card" style="--arena-color-1: #4a3a1a; --arena-color-2: #b58a3b; --arena-border: #ffd700;">
+    <div class="arena-card" data-arena="piano" style="--arena-color-1: #4a3a1a; --arena-color-2: #b58a3b; --arena-border: #ffd700;">
       <div class="arena-icon">🟡</div>
       <h3 class="arena-name">钢琴星球</h3>
       <div class="arena-boss">Boss: 节拍怪兽</div>
       <div class="arena-progress">__PIANO_PROGRESS__</div>
+      <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 6px;">👆 点我看任务</div>
     </div>
 
-    <div class="arena-card" style="--arena-color-1: #1a4a2a; --arena-color-2: #2f8f5e; --arena-border: #87ceeb;">
+    <div class="arena-card" data-arena="reading" style="--arena-color-1: #1a4a2a; --arena-color-2: #2f8f5e; --arena-border: #87ceeb;">
       <div class="arena-icon">🟢</div>
       <h3 class="arena-name">阅读森林</h3>
       <div class="arena-boss">Boss: 故事怪兽</div>
       <div class="arena-progress">__READING_PROGRESS__</div>
+      <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 6px;">👆 点我看任务</div>
     </div>
+  </div>
+</div>
+
+<!-- ⚡ Power Up 攻略 · Do X → Get Y -->
+<div class="powerup-section">
+  <h2 class="powerup-title">⚡ Power Up 攻略 · Do X → Get Y</h2>
+  <p style="font-size: 11px; color: rgba(135, 206, 235, 0.7); margin: 0 0 12px; font-family: 'JetBrains Mono', monospace;">
+    怎么做才能升级？→ 看下面这些攻略
+  </p>
+
+  <div class="powerup-list">
+    <div class="powerup-card">
+      <div class="powerup-icon">💪</div>
+      <div class="powerup-action">
+        <div class="label">POWER 力量</div>
+        <div>做完 1 小时运动（跑步/游泳/跆拳道）</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">+10 POWER</div>
+    </div>
+
+    <div class="powerup-card">
+      <div class="powerup-icon">💪</div>
+      <div class="powerup-action">
+        <div class="label">POWER 力量</div>
+        <div>练琴 20 分钟</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">+5 POWER</div>
+    </div>
+
+    <div class="powerup-card">
+      <div class="powerup-icon">🧠</div>
+      <div class="powerup-action">
+        <div class="label">INTEL 智力</div>
+        <div>完成 1 套练习册（10 页）</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">+15 INTEL</div>
+    </div>
+
+    <div class="powerup-card">
+      <div class="powerup-icon">🧠</div>
+      <div class="powerup-action">
+        <div class="label">INTEL 智力</div>
+        <div>击败 1 个错题怪兽（复习）</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">+20 INTEL</div>
+    </div>
+
+    <div class="powerup-card">
+      <div class="powerup-icon">⚡</div>
+      <div class="powerup-action">
+        <div class="label">SPEED 速度</div>
+        <div>珠算 10 题 &lt; 10 分钟</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">+15 SPEED</div>
+    </div>
+
+    <div class="powerup-card">
+      <div class="powerup-icon">⚡</div>
+      <div class="powerup-action">
+        <div class="label">SPEED 速度</div>
+        <div>心算 10 题 &lt; 3 分钟</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">+10 SPEED</div>
+    </div>
+
+    <div class="powerup-card">
+      <div class="powerup-icon">⭐</div>
+      <div class="powerup-action">
+        <div class="label">XP 经验</div>
+        <div>完成今日所有任务（每天）</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">+90 XP</div>
+    </div>
+
+    <div class="powerup-card">
+      <div class="powerup-icon">🔥</div>
+      <div class="powerup-action">
+        <div class="label">STREAK 连续</div>
+        <div>连续 7 天完成所有任务</div>
+      </div>
+      <div class="powerup-arrow">→</div>
+      <div class="powerup-reward">特殊奖杯 🏆</div>
+    </div>
+  </div>
+</div>
+
+<!-- Arena Modal（点击怪兽时显示） -->
+<div id="arena-modal" class="arena-modal">
+  <div class="arena-modal-bg"></div>
+  <div class="arena-modal-content" id="arena-modal-content">
+    <!-- 内容由 JS 注入 -->
   </div>
 </div>
 
@@ -536,6 +824,9 @@
 <!-- 共享组件 -->
 <script src="wenjie-shared.js"></script>
 <script src="wenjie-shared-search.js"></script>
+
+<!-- 英雄学院专用 · 怪兽 modal -->
+<script src="wenjie-academy-arenas.js"></script>
 
 </body>
 </html>
