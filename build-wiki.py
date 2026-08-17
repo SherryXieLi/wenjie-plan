@@ -823,6 +823,9 @@ def build_progress_page(daily_perf):
     # CCA 钢琴曲库
     piano_repertoire = render_piano_repertoire()
 
+    # CCA 游泳里程碑
+    swimming_milestones, swimming_ability = render_swimming_milestones()
+
     html = template
     html = html.replace('__TOTAL_DAYS__', str(total_days))
     html = html.replace('__WEEK_RANGE__', week_range)
@@ -840,6 +843,8 @@ def build_progress_page(daily_perf):
     html = html.replace('__MISTAKE_TABLE_HTML__', mistake_table)
     html = html.replace('__PIANO_MILESTONES_HTML__', piano_milestones)
     html = html.replace('__PIANO_REPERTOIRE_HTML__', piano_repertoire)
+    html = html.replace('__SWIMMING_MILESTONES_HTML__', swimming_milestones)
+    html = html.replace('__SWIMMING_ABILITY_HTML__', swimming_ability)
     html = html.replace('__BUILD_TIME__', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     PROGRESS_OUTPUT.write_text(html, encoding='utf-8')
@@ -927,6 +932,109 @@ def render_piano_repertoire():
         return '<div class="empty-state">曲库数据待补</div>'
 
     return repertoire_html
+
+
+def render_swimming_milestones():
+    """渲染游泳里程碑（从 wiki/subjects/swimming/milestones.md 读取）"""
+    milestones_md = BASE / 'wiki' / 'subjects' / 'swimming' / 'milestones.md'
+    if not milestones_md.exists():
+        return '<div class="empty-state">游泳里程碑数据未找到</div>', ''
+
+    md_text = milestones_md.read_text(encoding='utf-8')
+
+    # 解析 M1-M6 里程碑
+    # 匹配 "## M1 · ...\n- 详情"
+    milestone_blocks = re.findall(r'## (M\d+) · ([^\n]+)\n((?:-[^\n]+\n?)+)', md_text)
+    # 也匹配没有 bullets 的（以防格式不同）
+    if not milestone_blocks:
+        milestone_blocks = re.findall(r'## (M\d+) · ([^\n]+)\n([^#]+?)(?=\n##|\Z)', md_text, re.DOTALL)
+
+    # 当前时间判断状态（基于 P1=2027 等时间）
+    current_year = 2026
+    p_grades = {
+        'M1': ('P1', 2027),
+        'M2': ('P2', 2028),
+        'M3': ('P3', 2029),
+        'M4': ('P4', 2030),
+        'M5': ('P5', 2031),
+        'M6': ('P6', 2032),
+    }
+
+    rows = ''
+    for m_id, m_title, m_body in milestone_blocks:
+        # 提取 bullets
+        bullets = re.findall(r'-\s*(.+)', m_body)
+        bullets_html = '<ul style="margin: 4px 0; padding-left: 20px; font-size: 12px; color: var(--ink-2);">' + \
+                       ''.join(f'<li>{b.strip()}</li>' for b in bullets) + '</ul>'
+
+        # 状态判断
+        p_grade, target_year = p_grades.get(m_id, ('?', 0))
+        if target_year <= current_year:
+            status_class = 'status-done'
+            status_icon = '✅'
+        elif target_year == current_year + 1:
+            status_class = 'status-active'
+            status_icon = '🔄'
+        else:
+            status_class = 'status-future'
+            status_icon = '⏳'
+
+        rows += f'''<div class="cca-row">
+            <div class="grade">{m_id}<br><small>{p_grade}</small></div>
+            <div class="milestone">
+                <strong>{m_title.strip()}</strong>
+                {bullets_html}
+            </div>
+            <div class="status {status_class}">
+                {status_icon}<br><small>{target_year}</small>
+            </div>
+        </div>'''
+
+    milestones_html = f'''<div class="cca-timeline">{rows}</div>'''
+
+    # 游泳当前能力（从 mastery.md 读取）
+    mastery_md = BASE / 'wiki' / 'subjects' / 'swimming' / 'mastery.md'
+    ability_html = ''
+    if mastery_md.exists():
+        mastery_text = mastery_md.read_text(encoding='utf-8')
+        # 找"## 当前能力"section
+        ability_match = re.search(r'## 当前能力\s*\n((?:\|[^\n]+\n?)+)', mastery_text)
+        if ability_match:
+            table_text = ability_match.group(1).strip()
+            lines = table_text.split('\n')
+            if len(lines) >= 3:
+                # 解析 markdown 表格
+                header = [c.strip() for c in lines[0].strip('|').split('|')]
+                rows_data = []
+                for line in lines[2:]:  # skip separator
+                    cells = [c.strip() for c in line.strip('|').split('|')]
+                    rows_data.append(cells)
+
+                table_rows = ''.join(
+                    '<tr>' + ''.join(f'<td>{c}</td>' for c in r) + '</tr>'
+                    for r in rows_data
+                )
+
+                ability_html = f'''<table class="data-table">
+                    <thead>
+                        <tr>{''.join(f'<th>{h}</th>' for h in header)}</tr>
+                    </thead>
+                    <tbody>{table_rows}</tbody>
+                </table>'''
+
+    if not ability_html:
+        ability_html = '''<div class="empty-state">
+            <table class="data-table">
+                <tr><th>泳姿</th><th>进度</th><th>备注</th></tr>
+                <tr><td>自由泳</td><td>50m ≈ 1:10</td><td>主攻项目</td></tr>
+                <tr><td>仰泳</td><td>50m ≈ 1:10</td><td>主攻项目</td></tr>
+                <tr><td>Board Kicking</td><td>业余银牌</td><td>海豚腿 / 打水</td></tr>
+                <tr><td>蛙泳</td><td>基础</td><td>待加强</td></tr>
+                <tr><td>蝶泳</td><td>入门</td><td>待加强</td></tr>
+            </table>
+        </div>'''
+
+    return milestones_html, ability_html
 
 
 if __name__ == '__main__':
