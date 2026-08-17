@@ -9,14 +9,14 @@
   const FILENAME = location.pathname.split('/').pop() || 'index.html';
   const PAGE_ID = FILENAME.replace('wenjie-', '').replace('.html', '');
 
-  // ---- 全局导航 ----
+  // ---- 全局导航 + 层级标记 ----
   const NAV_ITEMS = [
-    { id: 'daily',     href: 'wenjie-daily-plan.html',        label: '📅 每日计划' },
-    { id: 'garden',    href: 'wenjie-growth-garden.html',     label: '🌱 成长花园' },
-    { id: 'overview',  href: 'wenjie-master-overview.html',   label: '🗺 6年总览' },
-    { id: 'progress',  href: 'wenjie-progress-dashboard.html',label: '📊 进度' },
-    { id: 'readiness', href: 'wenjie-school-readiness.html',  label: '🏫 入学' },
-    { id: 'cca',       href: 'wenjie-cca-tracker.html',       label: '🎹 CCA' }
+    { id: 'overview',  href: 'wenjie-master-overview.html',   label: '🗺 6年总览', layer: '战略层' },
+    { id: 'readiness', href: 'wenjie-school-readiness.html',  label: '🏫 入学评分', layer: '评估层' },
+    { id: 'progress',  href: 'wenjie-progress-dashboard.html',label: '📊 进度仪表盘', layer: '诊断层' },
+    { id: 'daily',     href: 'wenjie-daily-plan.html',        label: '📅 每日计划', layer: '操作层' },
+    { id: 'cca',       href: 'wenjie-cca-tracker.html',       label: '🎹 CCA追踪', layer: '边角层' },
+    { id: 'garden',    href: 'wenjie-growth-garden.html',     label: '🌱 成长花园', layer: '娃看版' }
   ];
 
   // ---- 页面标题（top bar crumb）----
@@ -47,7 +47,7 @@
       const navHTML = NAV_ITEMS.map(function (item) {
         const isCurrent = item.id === PAGE_ID;
         const cls = isCurrent ? 'current' : '';
-        return '<a href="' + item.href + '" class="' + cls + '">' + item.label + '</a>';
+        return '<a href="' + item.href + '" class="' + cls + '" data-layer="' + item.layer + '">' + item.label + '</a>';
       }).join('');
 
       el.innerHTML =
@@ -56,9 +56,36 @@
             '<span class="dot"></span>' +
             '<a href="index.html" style="color: var(--ink); text-decoration: none;"><strong>' + (PAGE_TITLES[PAGE_ID] || '文杰') + '</strong></a>' +
             (PAGE_PHASE[PAGE_ID] ? '<span>· ' + PAGE_PHASE[PAGE_ID] + '</span>' : '') +
+            '<button class="hamburger" aria-label="菜单">☰ 导航</button>' +
           '</div>' +
           '<nav class="top-nav">' + navHTML + '</nav>' +
         '</div>';
+
+      // 绑定汉堡菜单点击事件
+      const hamburger = el.querySelector('.hamburger');
+      const nav = el.querySelector('.top-nav');
+      const inner = el.querySelector('.top-bar-inner');
+      if (hamburger && nav) {
+        hamburger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          nav.classList.toggle('open');
+          hamburger.classList.toggle('open');
+          inner.classList.toggle('collapsed');
+        });
+      }
+    });
+  }
+
+  // ---- 渲染面包屑 ----
+  function renderBreadcrumb() {
+    const placeholders = document.querySelectorAll('[data-shared="breadcrumb"]');
+    placeholders.forEach(function (el) {
+      const current = NAV_ITEMS.find(function (item) { return item.id === PAGE_ID; });
+      if (!current) return;
+      el.innerHTML =
+        '<a href="index.html">文杰学习计划</a>' +
+        '<span class="sep">›</span>' +
+        '<span class="current">' + current.label + ' <small>· ' + current.layer + '</small></span>';
     });
   }
 
@@ -97,11 +124,13 @@
     document.addEventListener('DOMContentLoaded', function () {
       injectFonts();
       renderTopBar();
+      renderBreadcrumb();
       renderFooter();
     });
   } else {
     injectFonts();
     renderTopBar();
+    renderBreadcrumb();
     renderFooter();
   }
 })();
