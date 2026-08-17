@@ -29,3 +29,8 @@ wenjie-*-old.html
 wenjie-*-backup.html
 wenjie-*-draft.html
 wenjie-wiki.zip
+
+# inbox · 错题照片（不提交仓库，OCR 用完可删）
+inbox/
+*.ocr.png
+*.ocr.jpg
