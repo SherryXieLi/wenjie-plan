@@ -80,13 +80,15 @@
       if (PAGE_ID === 'index' || PAGE_ID === '') return;
 
       el.innerHTML =
-        '<a href="index.html" class="back-btn" aria-label="返回主页">' +
-          '<span class="arrow">←</span>' +
-          '<span>返回主页</span>' +
-        '</a>' +
-        '<span class="sep">›</span>' +
-        '<span class="current">' + current.label + '</span>' +
-        '<small>· ' + current.layer + '</small>';
+        '<div class="breadcrumb-inner">' +
+          '<a href="index.html" class="back-btn" aria-label="返回主页">' +
+            '<span class="arrow">←</span>' +
+            '<span>返回主页</span>' +
+          '</a>' +
+          '<span class="sep">›</span>' +
+          '<span class="current">' + current.label + '</span>' +
+          '<small>· ' + current.layer + '</small>' +
+        '</div>';
     });
   }
 
