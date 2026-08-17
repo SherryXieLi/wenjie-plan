@@ -70,16 +70,23 @@
     });
   }
 
-  // ---- 渲染面包屑 ----
+  // ---- 渲染面包屑（明显的返回键） ----
   function renderBreadcrumb() {
     const placeholders = document.querySelectorAll('[data-shared="breadcrumb"]');
     placeholders.forEach(function (el) {
       const current = NAV_ITEMS.find(function (item) { return item.id === PAGE_ID; });
       if (!current) return;
+      // 检查是否 index 页（不显示返回）
+      if (PAGE_ID === 'index' || PAGE_ID === '') return;
+
       el.innerHTML =
-        '<a href="index.html">文杰学习计划</a>' +
+        '<a href="index.html" class="back-btn" aria-label="返回主页">' +
+          '<span class="arrow">←</span>' +
+          '<span>返回主页</span>' +
+        '</a>' +
         '<span class="sep">›</span>' +
-        '<span class="current">' + current.label + ' <small>· ' + current.layer + '</small></span>';
+        '<span class="current">' + current.label + '</span>' +
+        '<small>· ' + current.layer + '</small>';
     });
   }
 
