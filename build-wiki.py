@@ -15,6 +15,8 @@ OUTPUT_HTML = BASE / 'wenjie-daily-plan.html'
 TEMPLATE = BASE / 'wenjie-daily-plan.template.html'
 DASHBOARD_OUTPUT = BASE / 'wenjie-progress-dashboard.html'
 DASHBOARD_TEMPLATE = BASE / 'wenjie-progress-dashboard.template.html'
+ACADEMY_OUTPUT = BASE / 'wenjie-growth-garden.html'
+ACADEMY_TEMPLATE = BASE / 'wenjie-growth-garden.template.html'
 
 # 间隔重复算法（Karpathy ML 视角）
 SR_INTERVALS = [1, 3, 7, 14, 30]  # days
@@ -289,6 +291,11 @@ def build():
     # ===== 生成仪表盘 =====
     print(f"\n📊 生成仪表盘...")
     build_dashboard(daily_perf)
+
+    # ===== 生成英雄学院 =====
+    print(f"\n🦸 生成英雄学院...")
+    build_academy(daily_data, daily_perf, default_date)
+
     return True
 
 
@@ -421,6 +428,192 @@ def render_mistake_table(mistakes):
         </thead>
         <tbody>{rows}</tbody>
     </table>'''
+
+
+def build_academy(daily_data, daily_perf, today_date):
+    """生成奥特曼英雄学院页面"""
+    if not ACADEMY_TEMPLATE.exists():
+        print(f"⚠️  英雄学院模板不存在: {ACADEMY_TEMPLATE}")
+        return
+
+    template = ACADEMY_TEMPLATE.read_text(encoding='utf-8')
+
+    # 计算统计数据
+    total_days = sum(1 for d in daily_perf.values() if d.get('completed', True))
+    xp = total_days * 90  # 每个完成日 90 XP
+    monsters_defeated = sum(1 for m in _get_all_mistakes() if m.get('status') == 'mastered')
+    streak = 1  # TODO: 计算 streak
+    level = max(1, total_days // 2 + 1)
+    xp_max = level * 100
+
+    # 进度百分比（每个 subject）
+    math_p = int(_subject_progress(daily_perf, 'math_correct', 'math_total') * 100)
+    english_p = 0  # TODO: 跟踪 English 进度
+    chinese_p = 0
+    piano_p = 0
+    reading_p = 0
+
+    # 渲染今日怪兽任务
+    today_day = next((d for d in daily_data if d['date'] == today_date), None)
+    missions_html = render_monster_missions(today_day, daily_perf, today_date)
+
+    # 替换占位符
+    html = template
+    html = html.replace('__LEVEL__', str(level))
+    html = html.replace('__XP__', str(xp))
+    html = html.replace('__XP_MAX__', str(xp_max))
+    html = html.replace('__POWER__', str(min(100, total_days * 10)))
+    html = html.replace('__INTEL__', str(min(100, xp // 5)))
+    html = html.replace('__SPEED__', str(min(100, 50 + total_days * 5)))
+    html = html.replace('__MISSIONS_HTML__', missions_html)
+    html = html.replace('__MISSION_COUNT__', str(missions_html.count('mission-card')))
+    html = html.replace('__MATH_PROGRESS__', f'{math_p}% 击败')
+    html = html.replace('__ENGLISH_PROGRESS__', f'{english_p}% 击败')
+    html = html.replace('__CHINESE_PROGRESS__', f'{chinese_p}% 击败')
+    html = html.replace('__PIANO_PROGRESS__', f'{piano_p}% 击败')
+    html = html.replace('__READING_PROGRESS__', f'{reading_p}% 击败')
+    html = html.replace('__MONSTERS_DEFEATED__', str(monsters_defeated))
+    html = html.replace('__STREAK__', str(streak))
+    html = html.replace('__BUILD_TIME__', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+    ACADEMY_OUTPUT.write_text(html, encoding='utf-8')
+    print(f"  ✅ 生成 {ACADEMY_OUTPUT}")
+    print(f"  - 等级 {level} · XP {xp}/{xp_max}")
+    print(f"  - 怪兽任务 {missions_html.count('mission-card')} 个")
+
+
+def render_monster_missions(day_data, daily_perf, today_date):
+    """渲染怪兽任务卡"""
+    if not day_data:
+        return '<div class="mission-card"><div class="mission-body">今天没有任务哦！休息一下 💤</div></div>'
+
+    monsters = []
+    perf = daily_perf.get(today_date, {})
+
+    # 珠算怪兽
+    if perf.get('math_correct') is not None:
+        monsters.append({
+            'emoji': '🦖',
+            'name': '数学怪兽·进位加法',
+            'subject': 'math',
+            'tag': 'MATH',
+            'hp': f'HP {perf["math_correct"]}/{perf["math_total"]}',
+            'desc': f'做 {perf["math_total"]} 道进位加法 · 已击败 {perf["math_total"] - perf["math_correct"]} 个怪兽',
+            'rewards': ['+50 XP', '⚡闪电拳', '💎 宝石']
+        })
+
+    # 心算怪兽
+    if perf.get('mental_correct') is not None:
+        monsters.append({
+            'emoji': '👾',
+            'name': '心算怪兽·快速计算',
+            'subject': 'math',
+            'tag': 'MATH',
+            'hp': f'HP {perf["mental_correct"]}/{perf["mental_total"]}',
+            'desc': f'3 min 心算挑战 · 已击败 {perf["mental_total"] - perf["mental_correct"]} 个怪兽',
+            'rewards': ['+30 XP', '🛡️防护盾']
+        })
+
+    # Phonics 怪兽
+    for sec in day_data.get('sections', []):
+        if 'Phonics' in sec['heading'] or 'phonics' in sec['heading'].lower():
+            monsters.append({
+                'emoji': '🦕',
+                'name': '英文怪兽·Long E 怪兽',
+                'subject': 'english',
+                'tag': 'EN',
+                'hp': 'HP ???/10',
+                'desc': 'KAK Vowel Sounds · Long E: ee, ea',
+                'rewards': ['+30 XP', '📚 词汇书']
+            })
+            break
+
+    # 主练习册怪兽
+    for sec in day_data.get('sections', []):
+        if '主练习册' in sec['heading'] or 'Intensive Maths' in sec['heading']:
+            monsters.append({
+                'emoji': '🐲',
+                'name': '练习册怪兽·4-6 页',
+                'subject': 'math',
+                'tag': 'MATH',
+                'hp': 'HP 4-6 页',
+                'desc': 'Intensive Maths Drills P1 · 加减计算 + 英文应用题',
+                'rewards': ['+40 XP', '🏆 奖杯']
+            })
+            break
+
+    # 副练习册怪兽
+    for sec in day_data.get('sections', []):
+        if '副练习册' in sec['heading'] or '快乐练习' in sec['heading']:
+            monsters.append({
+                'emoji': '👹',
+                'name': '中文怪兽·识字 + 描红',
+                'subject': 'chinese',
+                'tag': '中文',
+                'hp': 'HP 5+1 字',
+                'desc': '快乐练习2.0 · 识字 L5 抽测 + 1 个新字描红',
+                'rewards': ['+40 XP', '🖌️ 毛笔']
+            })
+            break
+
+    # 钢琴怪兽
+    monsters.append({
+        'emoji': '🎹',
+        'name': '钢琴怪兽·节拍挑战',
+        'subject': 'piano',
+        'tag': 'PIANO',
+        'hp': 'HP 20 min',
+        'desc': '17:15-17:35 · 钢琴练习（妈妈陪或独立）',
+        'rewards': ['+25 XP', '🎵 音符']
+    })
+
+    # 如果没怪兽，加占位
+    if not monsters:
+        return '<div class="mission-card"><div class="mission-body">🎮 今天没有怪兽！休息日或自由日 💤</div></div>'
+
+    # 渲染
+    html = ''
+    for m in monsters:
+        rewards_html = ''.join([f'<span class="reward-item">{r}</span>' for r in m['rewards']])
+        html += f'''<div class="mission-card">
+            <div class="mission-head">
+                <div class="monster-emoji">{m['emoji']}</div>
+                <div class="monster-info">
+                    <h3 class="monster-name">{m['name']}</h3>
+                    <span class="monster-tag tag-{m['subject']}">{m['tag']}</span>
+                    <span class="monster-hp">{m['hp']}</span>
+                </div>
+            </div>
+            <div class="mission-body">{m['desc']}</div>
+            <div class="mission-reward">🎁 击败奖励：{rewards_html}</div>
+        </div>'''
+
+    return html
+
+
+def _get_all_mistakes():
+    """获取所有错题"""
+    all_mistakes = []
+    for md_file in WIKI_MISTAKES.rglob('*.md'):
+        if md_file.name == 'index.md':
+            continue
+        fm, _ = load_mistake_frontmatter(md_file)
+        if fm:
+            all_mistakes.append(fm)
+    return all_mistakes
+
+
+def _subject_progress(daily_perf, correct_key, total_key):
+    """计算某科的整体正确率"""
+    correct_sum = 0
+    total_sum = 0
+    for perf in daily_perf.values():
+        c = perf.get(correct_key)
+        t = perf.get(total_key)
+        if c is not None and t:
+            correct_sum += c
+            total_sum += t
+    return correct_sum / total_sum if total_sum > 0 else 0
 
 
 if __name__ == '__main__':

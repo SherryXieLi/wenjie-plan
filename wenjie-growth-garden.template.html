@@ -426,24 +426,24 @@
     <div class="hero-avatar">🦸‍♂️</div>
     <div class="hero-info">
       <h2 class="hero-name">文杰奥特曼</h2>
-      <div class="hero-level">等级 3 · ⚡ 450/300 XP</div>
+      <div class="hero-level">等级 __LEVEL__ · ⚡ __XP__/__XP_MAX__ XP</div>
 
       <div class="stat-row">
         <span class="stat-label">💪 POWER</span>
-        <div class="stat-bar"><div class="stat-fill" style="width: 50%;"></div></div>
-        <span class="stat-value">50%</span>
+        <div class="stat-bar"><div class="stat-fill" style="width: __POWER__%;"></div></div>
+        <span class="stat-value">__POWER__%</span>
       </div>
 
       <div class="stat-row">
         <span class="stat-label">🧠 智力</span>
-        <div class="stat-bar"><div class="stat-fill" style="width: 90%;"></div></div>
-        <span class="stat-value">90%</span>
+        <div class="stat-bar"><div class="stat-fill" style="width: __INTEL__%;"></div></div>
+        <span class="stat-value">__INTEL__%</span>
       </div>
 
       <div class="stat-row">
         <span class="stat-label">⚡ 速度</span>
-        <div class="stat-bar"><div class="stat-fill" style="width: 75%;"></div></div>
-        <span class="stat-value">75%</span>
+        <div class="stat-bar"><div class="stat-fill" style="width: __SPEED__%;"></div></div>
+        <span class="stat-value">__SPEED__%</span>
       </div>
     </div>
   </div>
@@ -451,20 +451,9 @@
 
 <!-- 今日任务 -->
 <div class="mission-board">
-  <h2 class="mission-title">📋 今日任务 · 1 个怪兽</h2>
+  <h2 class="mission-title">📋 今日任务 · __MISSION_COUNT__ 个怪兽</h2>
 
-  <div class="mission-card">
-            <div class="mission-head">
-                <div class="monster-emoji">🎹</div>
-                <div class="monster-info">
-                    <h3 class="monster-name">钢琴怪兽·节拍挑战</h3>
-                    <span class="monster-tag tag-piano">PIANO</span>
-                    <span class="monster-hp">HP 20 min</span>
-                </div>
-            </div>
-            <div class="mission-body">17:15-17:35 · 钢琴练习（妈妈陪或独立）</div>
-            <div class="mission-reward">🎁 击败奖励：<span class="reward-item">+25 XP</span><span class="reward-item">🎵 音符</span></div>
-        </div>
+  __MISSIONS_HTML__
 </div>
 
 <!-- 5 大战场 -->
@@ -476,35 +465,35 @@
       <div class="arena-icon">🔴</div>
       <h3 class="arena-name">数学山</h3>
       <div class="arena-boss">Boss: 加法怪兽</div>
-      <div class="arena-progress">0% 击败</div>
+      <div class="arena-progress">__MATH_PROGRESS__</div>
     </div>
 
     <div class="arena-card" style="--arena-color-1: #1a3a2a; --arena-color-2: #2f6f5e; --arena-border: #87ceeb;">
       <div class="arena-icon">🔵</div>
       <h3 class="arena-name">英文海</h3>
       <div class="arena-boss">Boss: 拼写怪兽</div>
-      <div class="arena-progress">0% 击败</div>
+      <div class="arena-progress">__ENGLISH_PROGRESS__</div>
     </div>
 
     <div class="arena-card" style="--arena-color-1: #4a2a1a; --arena-color-2: #c97b3f; --arena-border: #ff6b35;">
       <div class="arena-icon">🟠</div>
       <h3 class="arena-name">中文沙漠</h3>
       <div class="arena-boss">Boss: 识字怪兽</div>
-      <div class="arena-progress">0% 击败</div>
+      <div class="arena-progress">__CHINESE_PROGRESS__</div>
     </div>
 
     <div class="arena-card" style="--arena-color-1: #4a3a1a; --arena-color-2: #b58a3b; --arena-border: #ffd700;">
       <div class="arena-icon">🟡</div>
       <h3 class="arena-name">钢琴星球</h3>
       <div class="arena-boss">Boss: 节拍怪兽</div>
-      <div class="arena-progress">0% 击败</div>
+      <div class="arena-progress">__PIANO_PROGRESS__</div>
     </div>
 
     <div class="arena-card" style="--arena-color-1: #1a4a2a; --arena-color-2: #2f8f5e; --arena-border: #87ceeb;">
       <div class="arena-icon">🟢</div>
       <h3 class="arena-name">阅读森林</h3>
       <div class="arena-boss">Boss: 故事怪兽</div>
-      <div class="arena-progress">0% 击败</div>
+      <div class="arena-progress">__READING_PROGRESS__</div>
     </div>
   </div>
 </div>
@@ -516,19 +505,19 @@
   <div class="trophy-grid">
     <div class="trophy-card">
       <div class="trophy-icon">⚡</div>
-      <div class="trophy-value">450</div>
+      <div class="trophy-value">__XP__</div>
       <div class="trophy-label">累计 XP</div>
     </div>
 
     <div class="trophy-card">
       <div class="trophy-icon">🐲</div>
-      <div class="trophy-value">0</div>
+      <div class="trophy-value">__MONSTERS_DEFEATED__</div>
       <div class="trophy-label">击败怪兽</div>
     </div>
 
     <div class="trophy-card">
       <div class="trophy-icon">🔥</div>
-      <div class="trophy-value">1</div>
+      <div class="trophy-value">__STREAK__</div>
       <div class="trophy-label">连续打卡(天)</div>
     </div>
   </div>
@@ -536,7 +525,7 @@
 
 <!-- 数据来源 -->
 <div class="data-footer">
-  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-17 22:54:17
+  ⚡ 实时数据 · Wiki 驱动 · 构建时间 __BUILD_TIME__
 </div>
 
 </main>
