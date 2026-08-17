@@ -32,7 +32,7 @@
 
 | 时间 | 里程碑 |
 |---|---|
-| P1 · 2027 | Trinity 2 考完 |
+| P1 · 2027 | ~~Trinity 2~~ 跳过 → Trinity 3 准备 |
 | P2 · 2028 | Trinity 3 考过 |
 | P3 · 2029 | Trinity 4 + SPAF 2 级 |
 | P4 · 2030 | SYF / SPAF 校内选拔 |

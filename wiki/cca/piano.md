@@ -5,9 +5,24 @@
 
 ## 当前状态（2026.08）
 - Trinity 1 级：✅ Distinct（已考完）
+- ~~Trinity 2 级~~：**跳过不考**（直接 1 → 3）
 - Trinity 3 级：🔄 备考中
 - SPAF 1 级：✅ Gold（2025-09）
 - SPAF 3 级：🔄 准备中（2026-09）
+
+## 📚 曲库（实际）
+
+### Trinity 1（已通过）· 4 首
+- ✅ Enchanted Garden
+- ✅ Minuette
+- ✅ [忘记名字 · 待补]
+- ✅ [忘记名字 · 待补]
+
+### Trinity 3（备考中）· 4 首
+- 🔄 Ballade
+- 🔄 Rain
+- 🔄 Between the Fingers
+- 🔄 Wild
 
 ## 重要说明
 **SPAF = Singapore Performing Arts Festival（spaf.sg）**
@@ -21,7 +36,7 @@
 - 校内钢琴 CCA 主奏 / 领奏角色
 - 不与 PSLE 准备冲突
 
-## 关键里程碑
+## 关键里程碑（修正：去掉 Trinity 2）
 - P3 (2029)：Trinity 4 + SPAF 2 级
 - P4 (2030)：SYF 校内选拔 / SPAF 3 级
 - P5 (2031)：SYF 主奏 + Trinity 6

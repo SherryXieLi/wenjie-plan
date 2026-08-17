@@ -850,8 +850,8 @@ def render_piano_milestones():
     """渲染钢琴里程碑"""
     milestones = [
         ('K2 末', 'Trinity 1', 'done', '已考完 Distinct'),
-        ('P1 末', 'Trinity 3', 'active', '备考中'),
-        ('P2 末', 'SPAF 1', 'done', '2025-09 Gold'),
+        ('P1', '⏭ Trinity 2 跳过', 'done', '直跳 Trinity 3'),
+        ('P2 末', 'Trinity 3 + SPAF 1', 'active', '2025-09 SPAF Gold'),
         ('P3 末', 'Trinity 4 + SPAF 2', 'future', '2029'),
         ('P4 末', 'SYF 校内选拔 + SPAF 3', 'future', '2030'),
         ('P5 末', 'SYF 主奏 + Trinity 6', 'future', '2031'),
@@ -871,22 +871,62 @@ def render_piano_milestones():
 
 
 def render_piano_repertoire():
-    """渲染钢琴曲库"""
-    return '''<table class="data-table">
-        <thead>
-            <tr>
-                <th>曲目</th>
-                <th>级别</th>
-                <th>状态</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>Bach · Minuet in G</td><td>Trinity 1</td><td><span class="badge badge-done">已通过</span></td></tr>
-            <tr><td>Schumann · Album for the Young</td><td>Trinity 2</td><td><span class="badge badge-mastered">熟练</span></td></tr>
-            <tr><td>Chopin · Prelude</td><td>Trinity 3</td><td><span class="badge badge-active">练习中</span></td></tr>
-            <tr><td>Debussy · Children's Corner</td><td>Trinity 4</td><td><span class="badge badge-warn">待开始</span></td></tr>
-        </tbody>
-    </table>'''
+    """渲染钢琴曲库（从 wiki/cca/piano.md 读取）"""
+    piano_md = BASE / 'wiki' / 'cca' / 'piano.md'
+    if not piano_md.exists():
+        return '<div class="empty-state">曲库数据未找到</div>'
+
+    md_text = piano_md.read_text(encoding='utf-8')
+    sections = parse_md_sections(md_text)
+
+    # 找曲库 section
+    repertoire_html = ''
+    in_repertoire = False
+    for sec in sections['sections']:
+        if '曲库' in sec['heading']:
+            in_repertoire = True
+            # 找子 sections
+            body = '\n'.join(sec['body'])
+            sub_sections = re.split(r'### (.+)', body)
+            # sub_sections[0] = intro, then alternating title + content
+            i = 1
+            current_title = ''
+            rows = ''
+            while i < len(sub_sections):
+                current_title = sub_sections[i].strip()
+                content = sub_sections[i + 1] if i + 1 < len(sub_sections) else ''
+                i += 2
+
+                # 提取列表项
+                pieces = re.findall(r'[-*]\s*(.+?)(?:\n|$)', content)
+                for piece in pieces:
+                    piece = piece.strip()
+                    # 判断级别和状态
+                    if 'Trinity 1' in current_title:
+                        level = 'Trinity 1'
+                        badge = '<span class="badge badge-done">✅ 已通过</span>'
+                    elif 'Trinity 3' in current_title:
+                        level = 'Trinity 3'
+                        badge = '<span class="badge badge-active">🔄 练习中</span>'
+                    else:
+                        level = current_title.replace('### ', '').strip()
+                        badge = ''
+
+                    rows += f'<tr><td>{piece}</td><td>{level}</td><td>{badge}</td></tr>'
+
+            if rows:
+                repertoire_html = f'''<table class="data-table">
+                    <thead>
+                        <tr><th>曲目</th><th>级别</th><th>状态</th></tr>
+                    </thead>
+                    <tbody>{rows}</tbody>
+                </table>'''
+            break
+
+    if not repertoire_html:
+        return '<div class="empty-state">曲库数据待补</div>'
+
+    return repertoire_html
 
 
 if __name__ == '__main__':
