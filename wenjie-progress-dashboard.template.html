@@ -182,68 +182,49 @@
 <div class="kpi-grid">
   <div class="kpi-card">
     <div class="kpi-label">📚 累计学习天数</div>
-    <div class="kpi-value">5<span class="kpi-unit">天</span></div>
-    <div class="kpi-trend">08-15 ~ 08-23</div>
+    <div class="kpi-value">__TOTAL_DAYS__<span class="kpi-unit">天</span></div>
+    <div class="kpi-trend">__WEEK_RANGE__</div>
   </div>
   <div class="kpi-card">
     <div class="kpi-label">🔥 待复习错题</div>
-    <div class="kpi-value">1<span class="kpi-unit">道</span></div>
-    <div class="kpi-trend down">1 道待复习</div>
+    <div class="kpi-value">__DUE_COUNT__<span class="kpi-unit">道</span></div>
+    <div class="kpi-trend __DUE_TREND__">__DUE_TREND_TEXT__</div>
   </div>
   <div class="kpi-card">
     <div class="kpi-label">✅ 已掌握</div>
-    <div class="kpi-value">0<span class="kpi-unit">道</span></div>
-    <div class="kpi-trend">0% 掌握率</div>
+    <div class="kpi-value">__MASTERED_COUNT__<span class="kpi-unit">道</span></div>
+    <div class="kpi-trend">__MASTERED_PCT__</div>
   </div>
   <div class="kpi-card">
     <div class="kpi-label">📈 本周完成度</div>
-    <div class="kpi-value">66<span class="kpi-unit">%</span></div>
-    <div class="kpi-trend">已 2/3 天</div>
+    <div class="kpi-value">__WEEK_COMPLETION__<span class="kpi-unit">%</span></div>
+    <div class="kpi-trend">__WEEK_TREND_TEXT__</div>
   </div>
 </div>
 
 <!-- 珠算曲线 -->
 <div class="chart-section">
   <h3>🧮 珠算正确率曲线（每日）</h3>
-  <div class="spark-line"><div class="empty-state" style="grid-column: 1 / -1;">还没数据 · 多做几天就有曲线</div></div>
-  <div class="spark-labels"></div>
+  __MATH_CURVE_HTML__
+  <div class="spark-labels">__MATH_LABELS__</div>
 </div>
 
 <!-- 心算曲线 -->
 <div class="chart-section">
   <h3>🧠 心算完成度曲线（每日）</h3>
-  <div class="spark-line"><div class="empty-state" style="grid-column: 1 / -1;">还没数据 · 多做几天就有曲线</div></div>
-  <div class="spark-labels"></div>
+  __MENTAL_CURVE_HTML__
+  <div class="spark-labels">__MENTAL_LABELS__</div>
 </div>
 
 <!-- 错题分布 -->
 <div class="chart-section">
   <h3>📋 错题本 · 当前状态</h3>
-  <table class="mistake-table">
-        <thead>
-            <tr>
-                <th>状态</th>
-                <th>ID</th>
-                <th>科目</th>
-                <th>错因</th>
-                <th>题面</th>
-                <th>发现日</th>
-            </tr>
-        </thead>
-        <tbody><tr>
-            <td><span class="badge badge-pending">待复习</span></td>
-            <td><strong>math-001</strong></td>
-            <td>math</td>
-            <td>进位加法</td>
-            <td><code>7 + 5 = ?</code></td>
-            <td>2026-08-17</td>
-        </tr></tbody>
-    </table>
+  __MISTAKE_TABLE_HTML__
 </div>
 
 <!-- 数据来源 -->
 <div class="data-source">
-  <strong>📚 数据来源</strong>：<code>wiki/log.md</code> · <code>wiki/mistakes/</code> · 构建时间 2026-08-17 22:50:06
+  <strong>📚 数据来源</strong>：<code>wiki/log.md</code> · <code>wiki/mistakes/</code> · 构建时间 __BUILD_TIME__
 </div>
 
 </div>

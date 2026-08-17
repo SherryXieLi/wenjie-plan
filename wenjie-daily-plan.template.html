@@ -166,6 +166,91 @@
       margin: 20px 0;
     }
 
+    /* 错题复习 section */
+    .review-section {
+      background: linear-gradient(135deg, rgba(176,99,103,0.08) 0%, rgba(181,138,59,0.06) 100%);
+      border: 1px solid var(--rose);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .review-section h2 {
+      color: var(--rose);
+      font-size: 16px;
+      margin: 0 0 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--rose);
+    }
+    .review-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
+    .review-hint a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .review-list {
+      display: grid;
+      gap: 10px;
+    }
+    .review-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+    .review-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .review-tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .review-tag[data-subject="math"] { background: var(--math-soft); color: var(--math); }
+    .review-tag[data-subject="english"] { background: var(--primary-soft); color: var(--primary); }
+    .review-tag[data-subject="chinese"] { background: var(--warm-soft); color: var(--warm); }
+    .review-tag[data-subject="piano"] { background: var(--gold-soft); color: var(--gold); }
+    .review-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .review-problem {
+      font-size: 14px;
+      margin: 4px 0;
+    }
+    .review-problem .wrong {
+      color: var(--rose);
+      font-weight: 600;
+      text-decoration: line-through;
+    }
+    .review-problem .right {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .review-type {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .review-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 4px;
+    }
+
     /* 模板链接区 */
     .templates-section {
       background: var(--bg-card);
@@ -227,7 +312,7 @@
 <!-- HERO -->
 <section class="hero" style="padding-top: 24px;">
   <div class="eyebrow">
-    📅 每日任务清单 · <strong>Wiki 单一源 · 构建时渲染</strong> · v5
+    📅 每日任务清单 · <strong>DeepSeek 驱动 · 间隔重复 v6</strong>
   </div>
   <h1>今晚到睡前，<br><em>50 分钟</em> <strong>三门功课齐头并进</strong><br><span style="font-size: 18px; color: var(--ink-2);">+ 每天 21:00 前睡觉</span></h1>
   <p class="lede">
@@ -236,15 +321,18 @@
   </p>
 
   <div class="page-intro">
-    🆕 <strong>v5 · Wiki 驱动架构</strong> · Wiki (.md) 是单一数据源。
+    🆕 <strong>v6 · DeepSeek 驱动 + 间隔重复</strong> · Wiki 是底层数据源，DeepSeek 帮你安排。
     <br>
-    流程：改 <code>wiki/plans/daily/*.md</code> → <code>pushwenjie</code> → 自动构建 → push → 这里显示新内容。
+    流程：<strong>妈妈跟我汇报</strong>（不用碰文件）→ 我<strong>自动写 Wiki + 安排错题复习</strong> → push → 这里更新。
     <br>
-    📅 点下方日期切换查看其他天 · 默认 = 今天。
+    🔥 <strong>今日复习</strong>见下方红色卡片（基于 <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" style="color: var(--primary);">间隔重复</a> 算法）
   </div>
 
   <!-- 日期 Tabs -->
   <div class="date-tabs" id="date-tabs"></div>
+
+  <!-- 错题复习 section（build 时从 wiki/mistakes/ 注入）-->
+  <div id="reviews-section">__REVIEWS_HTML__</div>
 
   <!-- Wiki 渲染内容（数据已烤入 HTML · 不用 fetch）-->
   <div id="wiki-content" class="wiki-content">
