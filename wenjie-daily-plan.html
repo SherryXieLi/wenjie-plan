@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="文杰每日学习计划 · Wiki 实时驱动 · 妈妈谢莉制作">
-  <title>文杰 · 每日学习计划（Wiki 驱动）</title>
+  <title>文杰 · 每日学习计划（Wiki 构建）</title>
   <link rel="stylesheet" href="wenjie-shared.css">
   <style>
     /* ============================================================
@@ -227,7 +227,7 @@
 <!-- HERO -->
 <section class="hero" style="padding-top: 24px;">
   <div class="eyebrow">
-    📅 每日任务清单 · <strong>Wiki 实时驱动</strong> · v4.3
+    📅 每日任务清单 · <strong>Wiki 单一源 · 构建时渲染</strong> · v5
   </div>
   <h1>今晚到睡前，<br><em>50 分钟</em> <strong>三门功课齐头并进</strong><br><span style="font-size: 18px; color: var(--ink-2);">+ 每天 21:00 前睡觉</span></h1>
   <p class="lede">
@@ -236,19 +236,19 @@
   </p>
 
   <div class="page-intro">
-    🆕 <strong>v5 · Wiki 驱动版</strong> · 所有每日内容从
-    <a href="https://github.com/SherryXieLi/wenjie-plan/tree/main/wiki/plans/daily" target="_blank" style="color: var(--primary);">wiki/plans/daily/</a>
-    实时加载。改 Wiki + push → 这里自动更新。
+    🆕 <strong>v5 · Wiki 驱动架构</strong> · Wiki (.md) 是单一数据源。
     <br>
-    📅 点下方日期切换查看其他天 · 主页默认 = 今天（8/17）。
+    流程：改 <code>wiki/plans/daily/*.md</code> → <code>pushwenjie</code> → 自动构建 → push → 这里显示新内容。
+    <br>
+    📅 点下方日期切换查看其他天 · 默认 = 今天。
   </div>
 
   <!-- 日期 Tabs -->
   <div class="date-tabs" id="date-tabs"></div>
 
-  <!-- Wiki 渲染内容 -->
+  <!-- Wiki 渲染内容（数据已烤入 HTML · 不用 fetch）-->
   <div id="wiki-content" class="wiki-content">
-    <div class="wiki-loading">从 Wiki 加载每日计划…</div>
+    <div class="wiki-loading">加载中…</div>
   </div>
 
   <!-- 模板区（保留，因为模板是 wiki 之外的"通用节奏"）-->
@@ -296,26 +296,1231 @@
 (function () {
   'use strict';
 
-  // 可选日期（按需扩展）
-  const AVAILABLE_DATES = [
-    { date: '2026-08-15', label: '8/15 周五', status: 'past' },
-    { date: '2026-08-16', label: '8/16 周六', status: 'past' },
-    { date: '2026-08-17', label: '8/17 周日', status: 'today' },
-    { date: '2026-08-18', label: '8/18 周一', status: 'future' },
-    { date: '2026-08-19', label: '8/19 周二', status: 'future' },
-    { date: '2026-08-20', label: '8/20 周三', status: 'future' },
-    { date: '2026-08-21', label: '8/21 周四', status: 'future' },
-    { date: '2026-08-22', label: '8/22 周五', status: 'future' },
-    { date: '2026-08-23', label: '8/23 周六', status: 'future' }
-  ];
+  // 烤入的 Wiki 数据（构建时生成）
+  const DAILY_DATA = [
+  {
+    "date": "2026-08-15",
+    "title": "2026-08-15 · 周六 · 周末项目日（D1）",
+    "sections": [
+      {
+        "heading": "状态：✅ 已完成 ~30%",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "实际完成",
+        "body": [
+          "",
+          "| 时间 | 任务 | 状态 |",
+          "|---|---|---|",
+          "| — | 中文：L6 1 本（爸爸陪）· \"采\"\"青\" 询问 | ✅ |",
+          "| — | 英文：牛津树 4-5 页 · length 卡壳 | ✅ |",
+          "| — | 珠算 9 级模拟 · 7:48/10:00 · 80% | ✅ |",
+          "| — | 心算 6 级模拟 · 3:00/3:00 · 70% | ✅ |",
+          "| 9:30 | Timed Reading 5 本 L6 | ⏭ 挪到 8/16 早 |",
+          "| 10:20 | \"我的一周\"双语播报 + 周记卡 | ⏭ 跳过 |",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时间</th><th>任务</th><th>状态</th></tr></thead><tbody><tr><td>—</td><td>中文：L6 1 本（爸爸陪）· \"采\"\"青\" 询问</td><td>✅</td></tr><tr><td>—</td><td>英文：牛津树 4-5 页 · length 卡壳</td><td>✅</td></tr><tr><td>—</td><td>珠算 9 级模拟 · 7:48/10:00 · 80%</td><td>✅</td></tr><tr><td>—</td><td>心算 6 级模拟 · 3:00/3:00 · 70%</td><td>✅</td></tr><tr><td>9:30</td><td>Timed Reading 5 本 L6</td><td>⏭ 挪到 8/16 早</td></tr><tr><td>10:20</td><td>\"我的一周\"双语播报 + 周记卡</td><td>⏭ 跳过</td></tr></tbody></table>"
+      },
+      {
+        "heading": "重要发现",
+        "body": [
+          "",
+          "### 1. 英文 Phonics 实测",
+          "- **length 卡壳** —— 验证 pattern-001（长元音 + silent e + 辅音组合）",
+          "- 见 [[../../subjects/english/mistakes/pattern-001-long-short-vowels]]",
+          "",
+          "### 2. 中文易混字",
+          "- **\"采\"、\"青\" 询问** —— 验证\"识字不等于真认字\"",
+          "- 见 [[../../subjects/chinese/entities/character-recognition]]",
+          "",
+          "### 3. 珠心算模拟",
+          "- 珠算 9 级：7:48/10:00，80% 正确率",
+          "- 心算 6 级：3:00/3:00，70% 正确率（刚刚过线）",
+          "- 距考级 14 天，重点刷心算正确率",
+          "",
+          "### 4. SPAF 信息确认",
+          "- SPAF = Singapore Performing Arts Festival（spaf.sg）",
+          "- 文杰 2025-09 拿 SPAF 1 级 Gold",
+          "- 2026-09 参加 SPAF 3 级",
+          "- **等同于 SYF 地位**，DSA 时算硬证据",
+          ""
+        ],
+        "html": "<h3>1. 英文 Phonics 实测</h3>\n<ul><li><strong>length 卡壳</strong> —— 验证 pattern-001（长元音 + silent e + 辅音组合）</li>\n<li>见 [[../../subjects/english/mistakes/pattern-001-long-short-vowels]]</li>\n</ul>\n<h3>2. 中文易混字</h3>\n<ul><li><strong>\"采\"、\"青\" 询问</strong> —— 验证\"识字不等于真认字\"</li>\n<li>见 [[../../subjects/chinese/entities/character-recognition]]</li>\n</ul>\n<h3>3. 珠心算模拟</h3>\n<ul><li>珠算 9 级：7:48/10:00，80% 正确率</li>\n<li>心算 6 级：3:00/3:00，70% 正确率（刚刚过线）</li>\n<li>距考级 14 天，重点刷心算正确率</li>\n</ul>\n<h3>4. SPAF 信息确认</h3>\n<ul><li>SPAF = Singapore Performing Arts Festival（spaf.sg）</li>\n<li>文杰 2025-09 拿 SPAF 1 级 Gold</li>\n<li>2026-09 参加 SPAF 3 级</li>\n<li><strong>等同于 SYF 地位</strong>，DSA 时算硬证据</li>\n</ul>"
+      },
+      {
+        "heading": "评估",
+        "body": [
+          "文杰的\"听说\"没问题，核心要补：",
+          "- 英文：Phonics + 写",
+          "- 中文：识字深度 + 拼音 + 写",
+          "- 数学：计算远超 P1，**重点是英文数学词 + 应用题**",
+          ""
+        ],
+        "html": "<p>文杰的\"听说\"没问题，核心要补：\n<ul><li>英文：Phonics + 写</li>\n<li>中文：识字深度 + 拼音 + 写</li>\n<li>数学：计算远超 P1，<strong>重点是英文数学词 + 应用题</strong></li>\n</ul></p>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[../../subjects/english/mastery]] · [[../../subjects/chinese/mastery]] · [[../../subjects/math/mastery]]",
+          "- [[2026-08-16]] · [[../weekly/W01]]",
+          ""
+        ],
+        "html": "<ul><li>[[../../subjects/english/mastery]] · [[../../subjects/chinese/mastery]] · [[../../subjects/math/mastery]]</li>\n<li>[[2026-08-16]] · [[../weekly/W01]]</li>\n</ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-16",
+    "title": "2026-08-16 · 周日 · 休整日（D2）",
+    "sections": [
+      {
+        "heading": "主题",
+        "body": [
+          "轻量日 + 补 Timed Reading",
+          ""
+        ],
+        "html": "<p>轻量日 + 补 Timed Reading</p>"
+      },
+      {
+        "heading": "时间表",
+        "body": [
+          "",
+          "| 时间 | 任务 | 备注 |",
+          "|---|---|---|",
+          "| 9:00 | **英文** Timed Reading L6 × 5 + 算 WPM | 10 min |",
+          "| 9:10 | **英文** Super Simple Songs 1-2 首 | 5 min |",
+          "| 9:15 | **中文** 绘本共读 1 本 | 10 min |",
+          "| 9:25 | Wiki 复盘 | 5 min |",
+          "",
+          "**总 ~30 分钟** · 不加新内容 · 留缓冲给 W01 工作日",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时间</th><th>任务</th><th>备注</th></tr></thead><tbody><tr><td>9:00</td><td><strong>英文</strong> Timed Reading L6 × 5 + 算 WPM</td><td>10 min</td></tr><tr><td>9:10</td><td><strong>英文</strong> Super Simple Songs 1-2 首</td><td>5 min</td></tr><tr><td>9:15</td><td><strong>中文</strong> 绘本共读 1 本</td><td>10 min</td></tr><tr><td>9:25</td><td>Wiki 复盘</td><td>5 min</td></tr></tbody></table>\n<strong>总 ~30 分钟</strong> · 不加新内容 · 留缓冲给 W01 工作日"
+      },
+      {
+        "heading": "实际完成（9:48 妈妈报告）",
+        "body": [
+          "",
+          "| 时间 | 任务 | 状态 |",
+          "|---|---|---|",
+          "| 早 | **英文** Timed Reading L6 *The treasure chest* | ✅ 23:35 |",
+          "| 早 | **中文** 小羊上山 L6 80 字 | ⚠️ 16 个不熟 |",
+          "| 上午 | **Khan Academy Kids** | ✅ 30 min 控制住 |",
+          "| 上午 | Phonics · Long A: ai, ay | ✅ 新学 |",
+          "",
+          "### 重点",
+          "",
+          "#### 1. Timed Reading 实际时长",
+          "- 牛津树 L6 *The treasure chest* = **23:35 一本**",
+          "- 比预估 5 本 × ~2 min = 10 min 多很多",
+          "- 实际是 **1 本 23:35**（含讲解 + 听音频 + 自己读 + 提问）",
+          "- 明天 D3 WPM 参考：23:35 / 字数 ≈ WPM 真实值",
+          "",
+          "#### 2. 小羊上山 L6 新增 80 字 · 16 个不熟",
+          "不熟悉字清单（按学习难度排序）：",
+          "> 句、芽、杏、莲、诗、词、采、参、练、念、摇、落、近、冷、短、旁",
+          "",
+          "按字族分组：",
+          "- **形近易混**：采 / 参（左右结构混淆）· 念 / 练（心字底）",
+          "- **生僻字**：芽、杏、莲、诗、词（生活高频但字形生）",
+          "- **常用但字形易错**：句、落、近、短、旁、旁",
+          "- **\"X 上下结构\"**：摇 / 落（左右容易写反）",
+          "",
+          "**行动**：",
+          "- 9/4 前 L6 16 字 + L5 + L4 全部认完",
+          "- 9/4 前 L7 60 字（L7 共 60 字，每周 15 字）",
+          "- 目标：9/4 识字 390 → 500",
+          "",
+          "#### 3. Khan Academy Kids · Long A: ai, ay",
+          "- 8/15 已知：length 卡壳（长元音 + silent e 词卡壳）= pattern-001",
+          "- 8/16 新学：**Long Vowel Team** ai / ay（Khan Academy Kids Reading 路径）",
+          "- 路径：短元音 CVC → Long Vowel Silent e → **Long Vowel Teams**（新阶段）",
+          "- 接下来应该学：**Long E: ee, ea** · **Long I: ie, igh** · **Long O: oa, ow** · **Long U: ue, ui**",
+          "- 见 [[../../subjects/english/entities/phonics-path]]",
+          "",
+          "#### 4. 重要决策点",
+          "- 文杰对 Khan Academy Kids 兴趣极高（\"非常容易上瘾\"）",
+          "- 妈妈**主动控制 30 min**（✅ 防御做得好）",
+          "- 接下来 4 天（D3-D6）Khan Academy Kids 应该 assign 什么？基于视频内容（妈妈拍视频）+ 文杰当前 Phonics 阶段",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时间</th><th>任务</th><th>状态</th></tr></thead><tbody><tr><td>早</td><td><strong>英文</strong> Timed Reading L6 <em>The treasure chest</em></td><td>✅ 23:35</td></tr><tr><td>早</td><td><strong>中文</strong> 小羊上山 L6 80 字</td><td>⚠️ 16 个不熟</td></tr><tr><td>上午</td><td><strong>Khan Academy Kids</strong></td><td>✅ 30 min 控制住</td></tr><tr><td>上午</td><td>Phonics · Long A: ai, ay</td><td>✅ 新学</td></tr></tbody></table>\n<h3>重点</h3>\n<p>#### 1. Timed Reading 实际时长\n<ul><li>牛津树 L6 <em>The treasure chest</em> = <strong>23:35 一本</strong></li>\n<li>比预估 5 本 × ~2 min = 10 min 多很多</li>\n<li>实际是 <strong>1 本 23:35</strong>（含讲解 + 听音频 + 自己读 + 提问）</li>\n<li>明天 D3 WPM 参考：23:35 / 字数 ≈ WPM 真实值</li>\n</ul>\n#### 2. 小羊上山 L6 新增 80 字 · 16 个不熟\n不熟悉字清单（按学习难度排序）：\n<blockquote>句、芽、杏、莲、诗、词、采、参、练、念、摇、落、近、冷、短、旁</blockquote></p>\n<p>按字族分组：\n<ul><li><strong>形近易混</strong>：采 / 参（左右结构混淆）· 念 / 练（心字底）</li>\n<li><strong>生僻字</strong>：芽、杏、莲、诗、词（生活高频但字形生）</li>\n<li><strong>常用但字形易错</strong>：句、落、近、短、旁、旁</li>\n<li><strong>\"X 上下结构\"</strong>：摇 / 落（左右容易写反）</li>\n</ul>\n<strong>行动</strong>：\n<ul><li>9/4 前 L6 16 字 + L5 + L4 全部认完</li>\n<li>9/4 前 L7 60 字（L7 共 60 字，每周 15 字）</li>\n<li>目标：9/4 识字 390 → 500</li>\n</ul>\n#### 3. Khan Academy Kids · Long A: ai, ay\n<ul><li>8/15 已知：length 卡壳（长元音 + silent e 词卡壳）= pattern-001</li>\n<li>8/16 新学：<strong>Long Vowel Team</strong> ai / ay（Khan Academy Kids Reading 路径）</li>\n<li>路径：短元音 CVC → Long Vowel Silent e → <strong>Long Vowel Teams</strong>（新阶段）</li>\n<li>接下来应该学：<strong>Long E: ee, ea</strong> · <strong>Long I: ie, igh</strong> · <strong>Long O: oa, ow</strong> · <strong>Long U: ue, ui</strong></li>\n<li>见 [[../../subjects/english/entities/phonics-path]]</li>\n</ul>\n#### 4. 重要决策点\n<ul><li>文杰对 Khan Academy Kids 兴趣极高（\"非常容易上瘾\"）</li>\n<li>妈妈<strong>主动控制 30 min</strong>（✅ 防御做得好）</li>\n<li>接下来 4 天（D3-D6）Khan Academy Kids 应该 assign 什么？基于视频内容（妈妈拍视频）+ 文杰当前 Phonics 阶段</li>\n</ul></p>"
+      },
+      {
+        "heading": "今天不做",
+        "body": [
+          "- ❌ 数学测评（明天 D3 才是）",
+          "- ❌ Phonics 26 字母音测评（明天）",
+          "- ❌ 中文新字（明天）",
+          "- ❌ 珠算 / 心算（每天 1 道应用题就够了，不加新题）",
+          ""
+        ],
+        "html": "<ul><li>❌ 数学测评（明天 D3 才是）</li>\n<li>❌ Phonics 26 字母音测评（明天）</li>\n<li>❌ 中文新字（明天）</li>\n<li>❌ 珠算 / 心算（每天 1 道应用题就够了，不加新题）</li>\n</ul>"
+      },
+      {
+        "heading": "目标产出",
+        "body": [
+          "- L6 5 本的 WPM（明天填仪表盘）",
+          "- 文杰状态反馈（\"想继续学\" / \"需要休息\"）",
+          "- Wiki 复盘（D1 数据整理）",
+          ""
+        ],
+        "html": "<ul><li>L6 5 本的 WPM（明天填仪表盘）</li>\n<li>文杰状态反馈（\"想继续学\" / \"需要休息\"）</li>\n<li>Wiki 复盘（D1 数据整理）</li>\n</ul>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-15]] · [[2026-08-17]] · [[../weekly/W01]]",
+          ""
+        ],
+        "html": "<ul><li>[[2026-08-15]] · [[2026-08-17]] · [[../weekly/W01]]</li>\n</ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-17",
+    "title": "2026-08-17 · 周一 · 起点测评 Day 1（D3）· **新时间表 v4**",
+    "sections": [
+      {
+        "heading": "状态：🔜 今天（按新 v4 W01 计划）",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "主题",
+        "body": [
+          "**新节奏第一天**：建立 5:2 节奏（5 天学习 + 1 天轻量 + 1 天休息）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>新节奏第一天</strong>：建立 5:2 节奏（5 天学习 + 1 天轻量 + 1 天休息）\n<hr>"
+      },
+      {
+        "heading": "⏰ 今日时间表（K2 末 / 假期版）",
+        "body": [
+          "",
+          "| 时段 | 任务 | 时长 | 谁 |",
+          "|---|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 15 min | 奶奶 |",
+          "| 上午 | 自由 + 户外 | 灵活 | — |",
+          "| 下午 | 自由 + 户外 | 灵活 | — |",
+          "| 17:15-17:35 | 钢琴 | 20 min | 奶奶/自己 |",
+          "| 17:35-18:30 | 玩耍 | 55 min | 自己 |",
+          "| 18:30-19:15 | 晚饭 | 45 min | 家庭 |",
+          "| **19:15-20:15** | **学习（含 micro-break）**| **60 min** | 妈妈 |",
+          "| 20:15-20:40 | 洗澡刷牙 | 25 min | 妈妈 |",
+          "| 20:40-21:00 | 亲子共读 | 20 min | 妈妈 |",
+          "| 21:00 | 睡觉 | — | — |",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>任务</th><th>时长</th><th>谁</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>15 min</td><td>奶奶</td></tr><tr><td>上午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>下午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>17:15-17:35</td><td>钢琴</td><td>20 min</td><td>奶奶/自己</td></tr><tr><td>17:35-18:30</td><td>玩耍</td><td>55 min</td><td>自己</td></tr><tr><td>18:30-19:15</td><td>晚饭</td><td>45 min</td><td>家庭</td></tr><tr><td><strong>19:15-20:15</strong></td><td><strong>学习（含 micro-break）</strong></td><td><strong>60 min</strong></td><td>妈妈</td></tr><tr><td>20:15-20:40</td><td>洗澡刷牙</td><td>25 min</td><td>妈妈</td></tr><tr><td>20:40-21:00</td><td>亲子共读</td><td>20 min</td><td>妈妈</td></tr><tr><td>21:00</td><td>睡觉</td><td>—</td><td>—</td></tr></tbody></table>\n<hr>"
+      },
+      {
+        "heading": "📐 学习块（19:15-20:15）",
+        "body": [
+          "",
+          "### 19:15-19:25 · 珠算 10 min",
+          "- 心算 6 级刷题 5 道（3 道错题重做 + 2 道新题）",
+          "- 目标正确率 ≥ 80%",
+          "",
+          "### 19:25-19:35 · Phonics 10 min",
+          "- KAK Vowel Sounds · Long E: ee, ea",
+          "- 文杰自己看视频 + 做互动练习",
+          "- 妈妈陪玩 + 严格 10 min",
+          "",
+          "### 19:35-19:40 · 🚶 micro-break 5 min",
+          "- 喝水 / 上厕所 / 选下一项（让文杰自己选下一本练习册）",
+          "",
+          "### 19:40-19:55 · 主练习册 15 min",
+          "- **Intensive Maths Drills P1** 4-6 页",
+          "- 内容：加减计算 + 1 道英文应用题 + 2 个英文数学词",
+          "- 让文杰自己读题，**妈妈不翻译**",
+          "",
+          "### 19:55-20:00 · 🚶 micro-break 5 min",
+          "",
+          "### 20:00-20:15 · 副练习册 15 min",
+          "- **快乐练习2.0** 短节",
+          "- 内容：识字 L5 抽测 5 字 + 1 个新字描红",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<h3>19:15-19:25 · 珠算 10 min</h3>\n<ul><li>心算 6 级刷题 5 道（3 道错题重做 + 2 道新题）</li>\n<li>目标正确率 ≥ 80%</li>\n</ul>\n<h3>19:25-19:35 · Phonics 10 min</h3>\n<ul><li>KAK Vowel Sounds · Long E: ee, ea</li>\n<li>文杰自己看视频 + 做互动练习</li>\n<li>妈妈陪玩 + 严格 10 min</li>\n</ul>\n<h3>19:35-19:40 · 🚶 micro-break 5 min</h3>\n<ul><li>喝水 / 上厕所 / 选下一项（让文杰自己选下一本练习册）</li>\n</ul>\n<h3>19:40-19:55 · 主练习册 15 min</h3>\n<ul><li><strong>Intensive Maths Drills P1</strong> 4-6 页</li>\n<li>内容：加减计算 + 1 道英文应用题 + 2 个英文数学词</li>\n<li>让文杰自己读题，<strong>妈妈不翻译</strong></li>\n</ul>\n<h3>19:55-20:00 · 🚶 micro-break 5 min</h3>\n<h3>20:00-20:15 · 副练习册 15 min</h3>\n<ul><li><strong>快乐练习2.0</strong> 短节</li>\n<li>内容：识字 L5 抽测 5 字 + 1 个新字描红</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "📚 已正确（KAK + 5 岁 K2）",
+        "body": [
+          "- 文杰 5 岁 K2，KAK 按能力 push 到 Grade 2",
+          "- 课程总进度 2/176 lesson",
+          "- Vowel Sounds 路径：Long A ✅ 94% → Long E → ...",
+          "- **没有 silent e 基础 lesson** → Oxford Phonics 1-5 补",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<ul><li>文杰 5 岁 K2，KAK 按能力 push 到 Grade 2</li>\n<li>课程总进度 2/176 lesson</li>\n<li>Vowel Sounds 路径：Long A ✅ 94% → Long E → ...</li>\n<li><strong>没有 silent e 基础 lesson</strong> → Oxford Phonics 1-5 补</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🎯 今天要做的（妈妈 21:00 前告诉 Mavis）",
+        "body": [
+          "1. 珠算 5 道对了几个 / 错了哪几个",
+          "2. KAK Long E lesson 完成率",
+          "3. Intensive Maths 做了几页（4-6 页）",
+          "4. 快乐练习2.0 识字抽测对了几个",
+          "5. 描红的 1 个新字是什么",
+          "6. 文杰状态（主动 / 抗拒 / 顺利 / 累了）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li>珠算 5 道对了几个 / 错了哪几个</li>\n<li>KAK Long E lesson 完成率</li>\n<li>Intensive Maths 做了几页（4-6 页）</li>\n<li>快乐练习2.0 识字抽测对了几个</li>\n<li>描红的 1 个新字是什么</li>\n<li>文杰状态（主动 / 抗拒 / 顺利 / 累了）</li>\n<hr>"
+      },
+      {
+        "heading": "🎯 14 天内硬指标",
+        "body": [
+          "- 心算 6 级正确率 80%+",
+          "- Intensive Maths 做完前 1/3",
+          "- 快乐练习2.0 完成识字 + 拼音基础",
+          "- KAK Vowel Sounds 9/9 全部完成",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<ul><li>心算 6 级正确率 80%+</li>\n<li>Intensive Maths 做完前 1/3</li>\n<li>快乐练习2.0 完成识字 + 拼音基础</li>\n<li>KAK Vowel Sounds 9/9 全部完成</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-15]] · [[2026-08-16]] · [[2026-08-18]] · [[2026-08-19]] · [[2026-08-20]] · [[2026-08-21]]",
+          "- [[../weekly/W01]]",
+          "- [[../../subjects/english/mistakes/pattern-001-long-short-vowels]]",
+          "- [[../../subjects/chinese/entities/character-recognition]]",
+          "- [[../../subjects/math/entities/english-math-vocab]]",
+          "- [[../../subjects/math/entities/mental-arithmetic]]"
+        ],
+        "html": "<ul><li>[[2026-08-15]] · [[2026-08-16]] · [[2026-08-18]] · [[2026-08-19]] · [[2026-08-20]] · [[2026-08-21]]</li>\n<li>[[../weekly/W01]]</li>\n<li>[[../../subjects/english/mistakes/pattern-001-long-short-vowels]]</li>\n<li>[[../../subjects/chinese/entities/character-recognition]]</li>\n<li>[[../../subjects/math/entities/english-math-vocab]]</li>\n<li>[[../../subjects/math/entities/mental-arithmetic]]</li></ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-18",
+    "title": "2026-08-18 · 周二 · 🟢 **无任务日 + 奶奶轻量**（钢琴课）",
+    "sections": [
+      {
+        "heading": "状态：🔜 明天",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "主题",
+        "body": [
+          "**周二傍晚奶奶陪做 30 min**：钢琴课前/后，奶奶带着做 快乐练习2.0 OR 写字，其他时段完全空",
+          "",
+          "> 妈妈原则（8/17 v4.2 · 8/18 第二次更新）：",
+          "> - **不安排主要学习任务**——钢琴课占用精神能量",
+          "> - **🆕 傍晚 17:15-17:45 奶奶可以带着做**：快乐练习2.0 OR 写字（30 min）",
+          "> - **傍晚之后（17:45 之后）**：完全无任务（连亲子共读也没空）",
+          "> - **早上 8:15-8:30**：写汉字 1 字微习惯保留",
+          "> - 早洗澡（20:15） + 早睡（21:00）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>周二傍晚奶奶陪做 30 min</strong>：钢琴课前/后，奶奶带着做 快乐练习2.0 OR 写字，其他时段完全空\n<blockquote>妈妈原则（8/17 v4.2 · 8/18 第二次更新）：</blockquote>\n<blockquote>- <strong>不安排主要学习任务</strong>——钢琴课占用精神能量</blockquote>\n<blockquote>- <strong>🆕 傍晚 17:15-17:45 奶奶可以带着做</strong>：快乐练习2.0 OR 写字（30 min）</blockquote>\n<blockquote>- <strong>傍晚之后（17:45 之后）</strong>：完全无任务（连亲子共读也没空）</blockquote>\n<blockquote>- <strong>早上 8:15-8:30</strong>：写汉字 1 字微习惯保留</blockquote>\n<blockquote>- 早洗澡（20:15） + 早睡（21:00）</blockquote>\n<hr>"
+      },
+      {
+        "heading": "⏰ 今日时间表",
+        "body": [
+          "",
+          "| 时段 | 任务 | 时长 | 谁 |",
+          "|---|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 15 min | 奶奶 |",
+          "| 上午 | 自由 + 户外 | 灵活 | — |",
+          "| 下午 | **钢琴课**（外部，时间由钢琴老师定）| 灵活 | 钢琴老师 |",
+          "| **🆕 17:15-17:45** | **快乐练习2.0 OR 写字**（奶奶带）| **30 min** | **奶奶** |",
+          "| 17:45-18:30 | 玩耍 | 45 min | 自己 |",
+          "| 18:30-19:15 | 晚饭 | 45 min | 家庭 |",
+          "| **19:15-20:15** | **🚫 完全自由**（不安排学习）| 60 min | 自己 / 家庭 |",
+          "| **20:15-20:40** | **洗澡刷牙**（提前 25 min）| 25 min | 妈妈 |",
+          "| ~~20:40-21:00 亲子共读~~ | ❌ 移除（妈妈 8/18）| — | — |",
+          "| 21:00 | 睡觉（早睡）| — | — |",
+          "",
+          "> **🆕 与 v4.1 关键变化：**",
+          "> - 原本 17:15-17:35 的钢琴练习 → **周二取消**（因为当天有钢琴课）",
+          "> - 17:15-17:45 新增奶奶陪做时段：快乐练习2.0 OR 写字",
+          "> - 其他时段不变",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>任务</th><th>时长</th><th>谁</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>15 min</td><td>奶奶</td></tr><tr><td>上午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>下午</td><td><strong>钢琴课</strong>（外部，时间由钢琴老师定）</td><td>灵活</td><td>钢琴老师</td></tr><tr><td><strong>🆕 17:15-17:45</strong></td><td><strong>快乐练习2.0 OR 写字</strong>（奶奶带）</td><td><strong>30 min</strong></td><td><strong>奶奶</strong></td></tr><tr><td>17:45-18:30</td><td>玩耍</td><td>45 min</td><td>自己</td></tr><tr><td>18:30-19:15</td><td>晚饭</td><td>45 min</td><td>家庭</td></tr><tr><td><strong>19:15-20:15</strong></td><td><strong>🚫 完全自由</strong>（不安排学习）</td><td>60 min</td><td>自己 / 家庭</td></tr><tr><td><strong>20:15-20:40</strong></td><td><strong>洗澡刷牙</strong>（提前 25 min）</td><td>25 min</td><td>妈妈</td></tr><tr><td>~~20:40-21:00 亲子共读~~</td><td>❌ 移除（妈妈 8/18）</td><td>—</td><td>—</td></tr><tr><td>21:00</td><td>睡觉（早睡）</td><td>—</td><td>—</td></tr></tbody></table>\n<blockquote><strong>🆕 与 v4.1 关键变化：</strong></blockquote>\n<blockquote>- 原本 17:15-17:35 的钢琴练习 → <strong>周二取消</strong>（因为当天有钢琴课）</blockquote>\n<blockquote>- 17:15-17:45 新增奶奶陪做时段：快乐练习2.0 OR 写字</blockquote>\n<blockquote>- 其他时段不变</blockquote>\n<hr>"
+      },
+      {
+        "heading": "🟢 周二\"半学习\"日的设计",
+        "body": [
+          "",
+          "| 时段 | 活动 | 性质 |",
+          "|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 🟢 微习惯（机械动作，不依赖精力）|",
+          "| 17:15-17:45 | **快乐练习2.0 OR 写字**（奶奶带）| 🟢 **🆕 奶奶陪伴学习**（不依赖文杰精力）|",
+          "| 17:45-21:00 | 完全自由 + 洗澡 + 睡觉 | 🚫 无任务 |",
+          "",
+          "**核心洞察**：奶奶的陪伴 = 文杰不需要调动自己的\"学习精力\"，所以可以继续。这与\"文杰自己学\"是不同的能量账户。",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>活动</th><th>性质</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>🟢 微习惯（机械动作，不依赖精力）</td></tr><tr><td>17:15-17:45</td><td><strong>快乐练习2.0 OR 写字</strong>（奶奶带）</td><td>🟢 <strong>🆕 奶奶陪伴学习</strong>（不依赖文杰精力）</td></tr><tr><td>17:45-21:00</td><td>完全自由 + 洗澡 + 睡觉</td><td>🚫 无任务</td></tr></tbody></table>\n<strong>核心洞察</strong>：奶奶的陪伴 = 文杰不需要调动自己的\"学习精力\"，所以可以继续。这与\"文杰自己学\"是不同的能量账户。\n<hr>"
+      },
+      {
+        "heading": "🆕 17:15-17:45 奶奶时段怎么用？",
+        "body": [
+          "",
+          "**妈妈选择（每次选 1 个）：**",
+          "",
+          "### 选项 A：快乐练习2.0（30 min 完整节）",
+          "- 识字 L5-L6 抽测 + 新字 + 拼音 + 看图说话",
+          "- 适合：本周中文需要强化",
+          "",
+          "### 选项 B：写字（30 min 加深版）",
+          "- 描红 2-3 个新字（vs 早上的 1 字）",
+          "- 抄写 1 个新词（描红 → 抄写 进阶）",
+          "- 适合：本周中文写作需要强化",
+          "",
+          "### 选项 C：周末/隔周切换",
+          "- W01 偶数周二 → 快乐练习2.0",
+          "- W01 奇数周二 → 写字加深",
+          "- 灵活轮换",
+          "",
+          "> **妈妈决策 v4.2**：本周开始按 **选项 C**（每周轮换），看看哪个效果好。",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>妈妈选择（每次选 1 个）：</strong>\n<h3>选项 A：快乐练习2.0（30 min 完整节）</h3>\n<ul><li>识字 L5-L6 抽测 + 新字 + 拼音 + 看图说话</li>\n<li>适合：本周中文需要强化</li>\n</ul>\n<h3>选项 B：写字（30 min 加深版）</h3>\n<ul><li>描红 2-3 个新字（vs 早上的 1 字）</li>\n<li>抄写 1 个新词（描红 → 抄写 进阶）</li>\n<li>适合：本周中文写作需要强化</li>\n</ul>\n<h3>选项 C：周末/隔周切换</h3>\n<ul><li>W01 偶数周二 → 快乐练习2.0</li>\n<li>W01 奇数周二 → 写字加深</li>\n<li>灵活轮换</li>\n</ul>\n<blockquote><strong>妈妈决策 v4.2</strong>：本周开始按 <strong>选项 C</strong>（每周轮换），看看哪个效果好。</blockquote>\n<hr>"
+      },
+      {
+        "heading": "⚠️ 不做的事清单（妈妈）",
+        "body": [
+          "- ❌ 不安排 Intensive Maths（数学）",
+          "- ❌ 不安排 One-stop English（英文）",
+          "- ❌ 不安排 KAK / Khan Academy Kids（iPad）",
+          "- ❌ 不安排珠算（除了早上描红）",
+          "- ❌ 不安排拼音 / 识字 / 应用题（**🆕 这些周二晚上都不做了**）",
+          "- ❌ ~~亲子共读~~（妈妈 8/18）",
+          ""
+        ],
+        "html": "<ul><li>❌ 不安排 Intensive Maths（数学）</li>\n<li>❌ 不安排 One-stop English（英文）</li>\n<li>❌ 不安排 KAK / Khan Academy Kids（iPad）</li>\n<li>❌ 不安排珠算（除了早上描红）</li>\n<li>❌ 不安排拼音 / 识字 / 应用题（<strong>🆕 这些周二晚上都不做了</strong>）</li>\n<li>❌ ~~亲子共读~~（妈妈 8/18）</li>\n</ul>"
+      },
+      {
+        "heading": "✅ 保留的事",
+        "body": [
+          "- ✅ 早上 8:15-8:30：写汉字 1 字（奶奶陪）",
+          "- ✅ **🆕 17:15-17:45：快乐练习2.0 OR 写字（奶奶陪，30 min）**",
+          "- ✅ 钢琴课（外部，钢琴老师负责）",
+          "- ✅ 户外活动（不安排具体内容）",
+          "- ✅ 早洗澡（20:15 开始）",
+          "- ✅ 21:00 早睡",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<ul><li>✅ 早上 8:15-8:30：写汉字 1 字（奶奶陪）</li>\n<li>✅ <strong>🆕 17:15-17:45：快乐练习2.0 OR 写字（奶奶陪，30 min）</strong></li>\n<li>✅ 钢琴课（外部，钢琴老师负责）</li>\n<li>✅ 户外活动（不安排具体内容）</li>\n<li>✅ 早洗澡（20:15 开始）</li>\n<li>✅ 21:00 早睡</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🎯 今晚要告诉 Mavis（可选）",
+        "body": [
+          "1. 钢琴课学了什么",
+          "2. **🆕 奶奶陪做选了哪个？A（快乐练习）/ B（写字）/ 哪个更顺？**",
+          "3. 文杰状态（精神好 / 一般 / 累）",
+          "4. 自由时段玩了什么",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li>钢琴课学了什么</li>\n<li><strong>🆕 奶奶陪做选了哪个？A（快乐练习）/ B（写字）/ 哪个更顺？</strong></li>\n<li>文杰状态（精神好 / 一般 / 累）</li>\n<li>自由时段玩了什么</li>\n<hr>"
+      },
+      {
+        "heading": "🔄 5:2:1 节奏 vs 真实周二",
+        "body": [
+          "",
+          "| 维度 | 5:2:1 节奏设计 | 周二真实 |",
+          "|---|---|---|",
+          "| **硬学习** | 0 min | **30 min**（奶奶带）|",
+          "| **认知块** | 0 | 1（中文，奶奶负责）|",
+          "| **学习者** | — | 奶奶 + 文杰 |",
+          "| **妈妈参与** | 无 | 无 |",
+          "",
+          "> **结论**：周二仍然属于\"休息日\"，但有奶奶陪伴的轻度中文学习。这比\"完全空\"更好——文杰每周保持中文手感，妈妈完全不累。",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>维度</th><th>5:2:1 节奏设计</th><th>周二真实</th></tr></thead><tbody><tr><td><strong>硬学习</strong></td><td>0 min</td><td><strong>30 min</strong>（奶奶带）</td></tr><tr><td><strong>认知块</strong></td><td>0</td><td>1（中文，奶奶负责）</td></tr><tr><td><strong>学习者</strong></td><td>—</td><td>奶奶 + 文杰</td></tr><tr><td><strong>妈妈参与</strong></td><td>无</td><td>无</td></tr></tbody></table>\n<blockquote><strong>结论</strong>：周二仍然属于\"休息日\"，但有奶奶陪伴的轻度中文学习。这比\"完全空\"更好——文杰每周保持中文手感，妈妈完全不累。</blockquote>\n<hr>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-17]] · [[2026-08-19]]",
+          "- [[../weekly/W01]]",
+          "- [[../../cca/piano]]"
+        ],
+        "html": "<ul><li>[[2026-08-17]] · [[2026-08-19]]</li>\n<li>[[../weekly/W01]]</li>\n<li>[[../../cca/piano]]</li></ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-19",
+    "title": "2026-08-19 · 周三 · 起点测评 Day 2（D5）· **新时间表 v4**",
+    "sections": [
+      {
+        "heading": "状态：🔜 明天",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "主题",
+        "body": [
+          "**英文重头日**：One-stop English + 拼音 zh/ch/sh 专项",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>英文重头日</strong>：One-stop English + 拼音 zh/ch/sh 专项\n<hr>"
+      },
+      {
+        "heading": "⏰ 今日时间表",
+        "body": [
+          "",
+          "| 时段 | 任务 | 时长 | 谁 |",
+          "|---|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 15 min | 奶奶 |",
+          "| 上午 | 自由 + 户外 | 灵活 | — |",
+          "| 下午 | 自由 + 户外 | 灵活 | — |",
+          "| 17:15-17:35 | 钢琴 | 20 min | 奶奶/自己 |",
+          "| 17:35-18:30 | 玩耍 | 55 min | 自己 |",
+          "| 18:30-19:15 | 晚饭 | 45 min | 家庭 |",
+          "| **19:15-20:15** | **学习（含 micro-break）**| **60 min** | 妈妈 |",
+          "| 20:15-20:40 | 洗澡刷牙 | 25 min | 妈妈 |",
+          "| 20:40-21:00 | 亲子共读 | 20 min | 妈妈 |",
+          "| 21:00 | 睡觉 | — | — |",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>任务</th><th>时长</th><th>谁</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>15 min</td><td>奶奶</td></tr><tr><td>上午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>下午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>17:15-17:35</td><td>钢琴</td><td>20 min</td><td>奶奶/自己</td></tr><tr><td>17:35-18:30</td><td>玩耍</td><td>55 min</td><td>自己</td></tr><tr><td>18:30-19:15</td><td>晚饭</td><td>45 min</td><td>家庭</td></tr><tr><td><strong>19:15-20:15</strong></td><td><strong>学习（含 micro-break）</strong></td><td><strong>60 min</strong></td><td>妈妈</td></tr><tr><td>20:15-20:40</td><td>洗澡刷牙</td><td>25 min</td><td>妈妈</td></tr><tr><td>20:40-21:00</td><td>亲子共读</td><td>20 min</td><td>妈妈</td></tr><tr><td>21:00</td><td>睡觉</td><td>—</td><td>—</td></tr></tbody></table>\n<hr>"
+      },
+      {
+        "heading": "📐 学习块（19:15-20:15）",
+        "body": [
+          "",
+          "### 19:15-19:25 · 珠算 10 min",
+          "- 心算 6 级刷题 5 道（错题重做 + 新题）",
+          "",
+          "### 19:25-19:35 · Phonics 10 min",
+          "- KAK Vowel Sounds · Long O: oa, ow",
+          "",
+          "### 19:35-19:40 · 🚶 micro-break 5 min",
+          "",
+          "### 19:40-19:55 · 主练习册 15 min",
+          "- **One-stop English P1**",
+          "- 内容：Phonics section（按书进度走）",
+          "- 让文杰自己读题，**妈妈不翻译**",
+          "",
+          "### 19:55-20:00 · 🚶 micro-break 5 min",
+          "",
+          "### 20:00-20:15 · 副练习册 15 min",
+          "- **快乐练习2.0**",
+          "- 内容：拼音 zh/ch/sh 5 min + 识字 L6 5 字 10 min",
+          "- 拼音重点：舌尖位置（用镜子 + 跟读）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<h3>19:15-19:25 · 珠算 10 min</h3>\n<ul><li>心算 6 级刷题 5 道（错题重做 + 新题）</li>\n</ul>\n<h3>19:25-19:35 · Phonics 10 min</h3>\n<ul><li>KAK Vowel Sounds · Long O: oa, ow</li>\n</ul>\n<h3>19:35-19:40 · 🚶 micro-break 5 min</h3>\n<h3>19:40-19:55 · 主练习册 15 min</h3>\n<ul><li><strong>One-stop English P1</strong></li>\n<li>内容：Phonics section（按书进度走）</li>\n<li>让文杰自己读题，<strong>妈妈不翻译</strong></li>\n</ul>\n<h3>19:55-20:00 · 🚶 micro-break 5 min</h3>\n<h3>20:00-20:15 · 副练习册 15 min</h3>\n<ul><li><strong>快乐练习2.0</strong></li>\n<li>内容：拼音 zh/ch/sh 5 min + 识字 L6 5 字 10 min</li>\n<li>拼音重点：舌尖位置（用镜子 + 跟读）</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🎯 今晚要告诉 Mavis",
+        "body": [
+          "1. 珠算 5 道对了几个",
+          "2. KAK Long O lesson 完成率",
+          "3. One-stop English 做到哪个 section",
+          "4. 快乐练习2.0 拼音抽测对了几个 + 识字对了几个",
+          "5. 文杰状态",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li>珠算 5 道对了几个</li>\n<li>KAK Long O lesson 完成率</li>\n<li>One-stop English 做到哪个 section</li>\n<li>快乐练习2.0 拼音抽测对了几个 + 识字对了几个</li>\n<li>文杰状态</li>\n<hr>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-17]] · [[2026-08-18]] · [[2026-08-20]]",
+          "- [[../weekly/W01]]",
+          "- [[../../subjects/english/entities/sight-words-dolch-k]]",
+          "- [[../../subjects/chinese/mistakes/pattern-001-zh-ch-sh]]"
+        ],
+        "html": "<ul><li>[[2026-08-17]] · [[2026-08-18]] · [[2026-08-20]]</li>\n<li>[[../weekly/W01]]</li>\n<li>[[../../subjects/english/entities/sight-words-dolch-k]]</li>\n<li>[[../../subjects/chinese/mistakes/pattern-001-zh-ch-sh]]</li></ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-20",
+    "title": "2026-08-20 · 周四 · 🟢 **轻量日**（D6）",
+    "sections": [
+      {
+        "heading": "状态：🔜 明天",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "主题",
+        "body": [
+          "**轻量日**：只 珠算 + Phonics（20 min），其他自由",
+          "",
+          "> 妈妈原则（8/17 v4）：周四\"可以轻量\"",
+          "> - 不安排练习册（避免疲劳积累）",
+          "> - 珠算 + Phonics 保留（每天必需）",
+          "> - 19:35-20:15 自由（玩耍 / 家庭时间）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>轻量日</strong>：只 珠算 + Phonics（20 min），其他自由\n<blockquote>妈妈原则（8/17 v4）：周四\"可以轻量\"</blockquote>\n<blockquote>- 不安排练习册（避免疲劳积累）</blockquote>\n<blockquote>- 珠算 + Phonics 保留（每天必需）</blockquote>\n<blockquote>- 19:35-20:15 自由（玩耍 / 家庭时间）</blockquote>\n<hr>"
+      },
+      {
+        "heading": "⏰ 今日时间表",
+        "body": [
+          "",
+          "| 时段 | 任务 | 时长 | 谁 |",
+          "|---|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 15 min | 奶奶 |",
+          "| 上午 | 自由 + 户外 | 灵活 | — |",
+          "| 下午 | 自由 + 户外 | 灵活 | — |",
+          "| 17:15-17:35 | 钢琴 | 20 min | 奶奶/自己 |",
+          "| 17:35-18:30 | 玩耍 | 55 min | 自己 |",
+          "| 18:30-19:15 | 晚饭 | 45 min | 家庭 |",
+          "| **19:15-19:35** | **轻量学习 20 min** | **20 min** | 妈妈 |",
+          "| **19:35-20:15** | **🚶 自由** | 40 min | 自己 / 家庭 |",
+          "| 20:15-20:40 | 洗澡刷牙 | 25 min | 妈妈 |",
+          "| 20:40-21:00 | 亲子共读 | 20 min | 妈妈 |",
+          "| 21:00 | 睡觉 | — | — |",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>任务</th><th>时长</th><th>谁</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>15 min</td><td>奶奶</td></tr><tr><td>上午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>下午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>17:15-17:35</td><td>钢琴</td><td>20 min</td><td>奶奶/自己</td></tr><tr><td>17:35-18:30</td><td>玩耍</td><td>55 min</td><td>自己</td></tr><tr><td>18:30-19:15</td><td>晚饭</td><td>45 min</td><td>家庭</td></tr><tr><td><strong>19:15-19:35</strong></td><td><strong>轻量学习 20 min</strong></td><td><strong>20 min</strong></td><td>妈妈</td></tr><tr><td><strong>19:35-20:15</strong></td><td><strong>🚶 自由</strong></td><td>40 min</td><td>自己 / 家庭</td></tr><tr><td>20:15-20:40</td><td>洗澡刷牙</td><td>25 min</td><td>妈妈</td></tr><tr><td>20:40-21:00</td><td>亲子共读</td><td>20 min</td><td>妈妈</td></tr><tr><td>21:00</td><td>睡觉</td><td>—</td><td>—</td></tr></tbody></table>\n<hr>"
+      },
+      {
+        "heading": "📐 学习块（19:15-19:35 · 20 min 总）",
+        "body": [
+          "",
+          "### 19:15-19:25 · 珠算 10 min",
+          "- 心算 6 级刷题 3-5 道（**轻量版**）",
+          "- 不强求 5 道，做对 3 道也 OK",
+          "- 错题不重做（避免疲劳）",
+          "",
+          "### 19:25-19:35 · Phonics 10 min",
+          "- KAK Vowel Sounds · Long I: ie, igh",
+          "- 妈妈陪玩（10 min 即可）",
+          "",
+          "### 19:35-20:15 · 🚶 自由（不安排任何任务）",
+          "- 玩耍 / 看动画（妈妈允许）/ 家庭互动",
+          "- **不要**再加练习册",
+          "- **不要**再加任何测评",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<h3>19:15-19:25 · 珠算 10 min</h3>\n<ul><li>心算 6 级刷题 3-5 道（<strong>轻量版</strong>）</li>\n<li>不强求 5 道，做对 3 道也 OK</li>\n<li>错题不重做（避免疲劳）</li>\n</ul>\n<h3>19:25-19:35 · Phonics 10 min</h3>\n<ul><li>KAK Vowel Sounds · Long I: ie, igh</li>\n<li>妈妈陪玩（10 min 即可）</li>\n</ul>\n<h3>19:35-20:15 · 🚶 自由（不安排任何任务）</h3>\n<ul><li>玩耍 / 看动画（妈妈允许）/ 家庭互动</li>\n<li><strong>不要</strong>再加练习册</li>\n<li><strong>不要</strong>再加任何测评</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🟢 轻量的目的",
+        "body": [
+          "",
+          "1. **保护学习新鲜感**——周四减量，周五文杰会更期待",
+          "2. **避免疲劳积累**——周一到周三连续 3 天学习，需要缓冲",
+          "3. **妈妈也休息**——不用准备练习册、不用批改",
+          "4. **5:2:1 节奏**——5 天学习 + 1 天轻量 + 1 天休息",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li><strong>保护学习新鲜感</strong>——周四减量，周五文杰会更期待</li>\n<li><strong>避免疲劳积累</strong>——周一到周三连续 3 天学习，需要缓冲</li>\n<li><strong>妈妈也休息</strong>——不用准备练习册、不用批改</li>\n<li><strong>5:2:1 节奏</strong>——5 天学习 + 1 天轻量 + 1 天休息</li>\n<hr>"
+      },
+      {
+        "heading": "🎯 今晚要告诉 Mavis（可选）",
+        "body": [
+          "1. 珠算做了几道（不强求 5 道）",
+          "2. KAK Long I 完成率",
+          "3. 文杰自由时段做什么了",
+          "4. 文杰状态",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li>珠算做了几道（不强求 5 道）</li>\n<li>KAK Long I 完成率</li>\n<li>文杰自由时段做什么了</li>\n<li>文杰状态</li>\n<hr>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-19]] · [[2026-08-21]]",
+          "- [[../weekly/W01]]"
+        ],
+        "html": "<ul><li>[[2026-08-19]] · [[2026-08-21]]</li>\n<li>[[../weekly/W01]]</li></ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-21",
+    "title": "2026-08-21 · 周五 · 起点测评 Day 3（D7）· **新时间表 v4**",
+    "sections": [
+      {
+        "heading": "状态：🔜 明天",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "主题",
+        "body": [
+          "**中文重头日**：快乐练习2.0 + One-stop English 短 section + 写句子 1 句",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>中文重头日</strong>：快乐练习2.0 + One-stop English 短 section + 写句子 1 句\n<hr>"
+      },
+      {
+        "heading": "⏰ 今日时间表",
+        "body": [
+          "",
+          "| 时段 | 任务 | 时长 | 谁 |",
+          "|---|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 15 min | 奶奶 |",
+          "| 上午 | 自由 + 户外 | 灵活 | — |",
+          "| 下午 | 自由 + 户外 | 灵活 | — |",
+          "| 17:15-17:35 | 钢琴 | 20 min | 奶奶/自己 |",
+          "| 17:35-18:30 | 玩耍 | 55 min | 自己 |",
+          "| 18:30-19:15 | 晚饭 | 45 min | 家庭 |",
+          "| **19:15-20:15** | **学习（含 micro-break）**| **60 min** | 妈妈 |",
+          "| 20:15-20:40 | 洗澡刷牙 | 25 min | 妈妈 |",
+          "| 20:40-21:00 | 亲子共读 | 20 min | 妈妈 |",
+          "| 21:00 | 睡觉 | — | — |",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>任务</th><th>时长</th><th>谁</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>15 min</td><td>奶奶</td></tr><tr><td>上午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>下午</td><td>自由 + 户外</td><td>灵活</td><td>—</td></tr><tr><td>17:15-17:35</td><td>钢琴</td><td>20 min</td><td>奶奶/自己</td></tr><tr><td>17:35-18:30</td><td>玩耍</td><td>55 min</td><td>自己</td></tr><tr><td>18:30-19:15</td><td>晚饭</td><td>45 min</td><td>家庭</td></tr><tr><td><strong>19:15-20:15</strong></td><td><strong>学习（含 micro-break）</strong></td><td><strong>60 min</strong></td><td>妈妈</td></tr><tr><td>20:15-20:40</td><td>洗澡刷牙</td><td>25 min</td><td>妈妈</td></tr><tr><td>20:40-21:00</td><td>亲子共读</td><td>20 min</td><td>妈妈</td></tr><tr><td>21:00</td><td>睡觉</td><td>—</td><td>—</td></tr></tbody></table>\n<hr>"
+      },
+      {
+        "heading": "📐 学习块（19:15-20:15）",
+        "body": [
+          "",
+          "### 19:15-19:25 · 珠算 10 min",
+          "- 心算 6 级刷题 5 道（错题重做 + 新题）",
+          "",
+          "### 19:25-19:35 · Phonics 10 min",
+          "- KAK Vowel Sounds · Long U: ue, ui + Long U: ew, oo（2 lesson 一起）",
+          "",
+          "### 19:35-19:40 · 🚶 micro-break 5 min",
+          "",
+          "### 19:40-19:55 · 主练习册 15 min",
+          "- **快乐练习2.0**",
+          "- 内容：拼音复习 + 看图说话 1 段 + 写句子 1 句（妈妈帮写，文杰说）",
+          "",
+          "### 19:55-20:00 · 🚶 micro-break 5 min",
+          "",
+          "### 20:00-20:15 · 副练习册 15 min",
+          "- **One-stop English**（短 section）",
+          "- 内容：Phonics 或 Sight Words（按书进度）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<h3>19:15-19:25 · 珠算 10 min</h3>\n<ul><li>心算 6 级刷题 5 道（错题重做 + 新题）</li>\n</ul>\n<h3>19:25-19:35 · Phonics 10 min</h3>\n<ul><li>KAK Vowel Sounds · Long U: ue, ui + Long U: ew, oo（2 lesson 一起）</li>\n</ul>\n<h3>19:35-19:40 · 🚶 micro-break 5 min</h3>\n<h3>19:40-19:55 · 主练习册 15 min</h3>\n<ul><li><strong>快乐练习2.0</strong></li>\n<li>内容：拼音复习 + 看图说话 1 段 + 写句子 1 句（妈妈帮写，文杰说）</li>\n</ul>\n<h3>19:55-20:00 · 🚶 micro-break 5 min</h3>\n<h3>20:00-20:15 · 副练习册 15 min</h3>\n<ul><li><strong>One-stop English</strong>（短 section）</li>\n<li>内容：Phonics 或 Sight Words（按书进度）</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🎯 W01 收尾（21:00-21:30 Wiki batch）",
+        "body": [
+          "",
+          "### Wiki 复盘 30 min",
+          "- 填仪表盘（W01 5 天数据）",
+          "- 标出 pattern-XXX（错题模式）",
+          "- 标出文杰状态最高 / 最低的一天",
+          "- 决定 W02 重点（最弱项 = 强化）",
+          "",
+          "### Wiki 需要更新",
+          "- `subjects/english/mastery.md` —— 12 维度评分更新",
+          "- `subjects/chinese/mastery.md` —— 拼音抽测结果",
+          "- `subjects/math/mastery.md` —— 心算正确率",
+          "- `log.md` —— W01 事件总结",
+          "- `plans/weekly/W02.md` —— 下周计划",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<h3>Wiki 复盘 30 min</h3>\n<ul><li>填仪表盘（W01 5 天数据）</li>\n<li>标出 pattern-XXX（错题模式）</li>\n<li>标出文杰状态最高 / 最低的一天</li>\n<li>决定 W02 重点（最弱项 = 强化）</li>\n</ul>\n<h3>Wiki 需要更新</h3>\n<ul><li><code>subjects/english/mastery.md</code> —— 12 维度评分更新</li>\n<li><code>subjects/chinese/mastery.md</code> —— 拼音抽测结果</li>\n<li><code>subjects/math/mastery.md</code> —— 心算正确率</li>\n<li><code>log.md</code> —— W01 事件总结</li>\n<li><code>plans/weekly/W02.md</code> —— 下周计划</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🎯 今晚要告诉 Mavis",
+        "body": [
+          "1. 珠算 5 道对了几个",
+          "2. KAK Long U lesson 完成率",
+          "3. 快乐练习2.0 看图说话说的什么 + 写句子写了什么",
+          "4. One-stop 短 section 做了什么",
+          "5. 文杰本周总状态（最累的一天 / 最轻松的一天）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li>珠算 5 道对了几个</li>\n<li>KAK Long U lesson 完成率</li>\n<li>快乐练习2.0 看图说话说的什么 + 写句子写了什么</li>\n<li>One-stop 短 section 做了什么</li>\n<li>文杰本周总状态（最累的一天 / 最轻松的一天）</li>\n<hr>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-19]] · [[2026-08-20]] · [[2026-08-22]]",
+          "- [[../weekly/W01]]",
+          "- [[../weekly/W02]]",
+          "- [[../../subjects/chinese/mistakes/pattern-001-zh-ch-sh]]"
+        ],
+        "html": "<ul><li>[[2026-08-19]] · [[2026-08-20]] · [[2026-08-22]]</li>\n<li>[[../weekly/W01]]</li>\n<li>[[../weekly/W02]]</li>\n<li>[[../../subjects/chinese/mistakes/pattern-001-zh-ch-sh]]</li></ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-22",
+    "title": "2026-08-22 · 周六 · 🟠 **项目日（早上版）** · v4.3",
+    "sections": [
+      {
+        "heading": "状态：🔜 明天",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "主题",
+        "body": [
+          "**周末项目改到早上**：8:30-9:30 项目日活动 60 min（精力最好时段），晚上完全自由",
+          "",
+          "> 妈妈原则（8/18 v4.3）：",
+          "> - 周末项目日活动从晚上（19:15-20:15）改到 **早上（8:30-9:30）**",
+          "> - 持续时间 60 min（含 10 min micro-break）",
+          "> - 晚上 19:15-20:15 **🚫 完全自由**（不再安排学习）",
+          "> - 下午/傍晚：玩耍 + 户外 + 钢琴",
+          "> - 21:00 睡觉",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>周末项目改到早上</strong>：8:30-9:30 项目日活动 60 min（精力最好时段），晚上完全自由\n<blockquote>妈妈原则（8/18 v4.3）：</blockquote>\n<blockquote>- 周末项目日活动从晚上（19:15-20:15）改到 <strong>早上（8:30-9:30）</strong></blockquote>\n<blockquote>- 持续时间 60 min（含 10 min micro-break）</blockquote>\n<blockquote>- 晚上 19:15-20:15 <strong>🚫 完全自由</strong>（不再安排学习）</blockquote>\n<blockquote>- 下午/傍晚：玩耍 + 户外 + 钢琴</blockquote>\n<blockquote>- 21:00 睡觉</blockquote>\n<hr>"
+      },
+      {
+        "heading": "⏰ 今日时间表（周末项目日 · 早上版 · v4.3 + 钢琴早上）",
+        "body": [
+          "",
+          "| 时段 | 任务 | 时长 | 谁 |",
+          "|---|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 15 min | 奶奶 |",
+          "| **🆕 8:30-9:30** | **项目日活动（60 min）**| **60 min** | 妈妈陪 |",
+          "| **🆕 9:30-9:50** | **钢琴练习（早上版）**| **20 min** | 奶奶/自己 |",
+          "| 上午 | 游泳训练（校外俱乐部 2-3 次/周）+ 户外 | 灵活 | 教练/自己 |",
+          "| 17:15-17:35 | ~~钢琴练习~~ 取消（周末移到早上）| — | — |",
+          "| 17:35-18:30 | 玩耍 | 55 min | 自己 |",
+          "| 18:30-19:15 | 晚饭 | 45 min | 家庭 |",
+          "| **🆕 19:15-20:15** | **🚫 完全自由**（不安排学习）| 60 min | 自己/家庭 |",
+          "| 20:15-20:40 | 洗澡 | 25 min | 妈妈 |",
+          "| 20:40-21:00 | 亲子共读（保留）| 20 min | 妈妈 |",
+          "| 21:00 | 睡觉 | — | — |",
+          "",
+          "> **🆕 与 v4 关键变化（v4.3）：**",
+          "> - 19:15-20:15 晚上的项目日 → **移到早上 8:30-9:30**",
+          "> - 晚上 19:15-20:15 完全自由（之前是项目日学习时间）",
+          "> - **🆕 周末钢琴 17:15-17:35 → 早上 9:30-9:50**（妈妈原则：\"周末练琴也完全可以放在早上\"）",
+          "> - 总学习时长不变（仍是 50 min 硬学习 + 15 min 描红 + 20 min 钢琴）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>任务</th><th>时长</th><th>谁</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>15 min</td><td>奶奶</td></tr><tr><td><strong>🆕 8:30-9:30</strong></td><td><strong>项目日活动（60 min）</strong></td><td><strong>60 min</strong></td><td>妈妈陪</td></tr><tr><td><strong>🆕 9:30-9:50</strong></td><td><strong>钢琴练习（早上版）</strong></td><td><strong>20 min</strong></td><td>奶奶/自己</td></tr><tr><td>上午</td><td>游泳训练（校外俱乐部 2-3 次/周）+ 户外</td><td>灵活</td><td>教练/自己</td></tr><tr><td>17:15-17:35</td><td>~~钢琴练习~~ 取消（周末移到早上）</td><td>—</td><td>—</td></tr><tr><td>17:35-18:30</td><td>玩耍</td><td>55 min</td><td>自己</td></tr><tr><td>18:30-19:15</td><td>晚饭</td><td>45 min</td><td>家庭</td></tr><tr><td><strong>🆕 19:15-20:15</strong></td><td><strong>🚫 完全自由</strong>（不安排学习）</td><td>60 min</td><td>自己/家庭</td></tr><tr><td>20:15-20:40</td><td>洗澡</td><td>25 min</td><td>妈妈</td></tr><tr><td>20:40-21:00</td><td>亲子共读（保留）</td><td>20 min</td><td>妈妈</td></tr><tr><td>21:00</td><td>睡觉</td><td>—</td><td>—</td></tr></tbody></table>\n<blockquote><strong>🆕 与 v4 关键变化（v4.3）：</strong></blockquote>\n<blockquote>- 19:15-20:15 晚上的项目日 → <strong>移到早上 8:30-9:30</strong></blockquote>\n<blockquote>- 晚上 19:15-20:15 完全自由（之前是项目日学习时间）</blockquote>\n<blockquote>- <strong>🆕 周末钢琴 17:15-17:35 → 早上 9:30-9:50</strong>（妈妈原则：\"周末练琴也完全可以放在早上\"）</blockquote>\n<blockquote>- 总学习时长不变（仍是 50 min 硬学习 + 15 min 描红 + 20 min 钢琴）</blockquote>\n<hr>"
+      },
+      {
+        "heading": "📐 项目日 60 min 结构（早上 8:30-9:30）",
+        "body": [
+          "",
+          "```",
+          "8:30-8:40   暖身 Timed Reading（5 本牛津树 L6 计时）         10 min",
+          "8:40-9:00   主练习册 Intensive Maths（综合 + 应用题）         20 min",
+          "9:00-9:10   🚶 micro-break（喝水 / 选下一项）                  10 min",
+          "9:10-9:30   副练习册 3 本轮换 5 min × 4（数学/英文/中文）       20 min",
+          "```",
+          "",
+          "**总硬学习 = 50 min**（与原 50 min 一致）  ",
+          "**总含休息 = 60 min**  ",
+          "**总窗口 = 8:30-9:30 = 1 小时**",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<pre><code>\n8:30-8:40   暖身 Timed Reading（5 本牛津树 L6 计时）         10 min\n8:40-9:00   主练习册 Intensive Maths（综合 + 应用题）         20 min\n9:00-9:10   🚶 micro-break（喝水 / 选下一项）                  10 min\n9:10-9:30   副练习册 3 本轮换 5 min × 4（数学/英文/中文）       20 min\n</code></pre>\n<strong>总硬学习 = 50 min</strong>（与原 50 min 一致）  \n<strong>总含休息 = 60 min</strong>  \n<strong>总窗口 = 8:30-9:30 = 1 小时</strong>\n<hr>"
+      },
+      {
+        "heading": "🎯 为什么项目日改到早上？",
+        "body": [
+          "",
+          "| 维度 | 晚上（v4 旧）| 早上（v4.3 新）|",
+          "|---|---|---|",
+          "| **精力** | 文杰晚上 6 小时活动后累了 | 早上精力充沛 |",
+          "| **专注力** | 6 岁孩子晚上专注力下降 | 早上专注力最好 |",
+          "| **被打断** | 晚上容易被打断（洗澡/家庭）| 早上无打断 |",
+          "| **晚上** | 学习占用 | 🚫 完全自由（家庭时间）|",
+          "| **学习质量** | 一般 | 更好 |",
+          "| **妈妈状态** | 晚上妈妈也累 | 早上妈妈精力好 |",
+          "",
+          "> **PM 洞察**：这是\"把最重要的工作放到最有精力的时段\"的产品原则。",
+          ""
+        ],
+        "html": "<table><thead><tr><th>维度</th><th>晚上（v4 旧）</th><th>早上（v4.3 新）</th></tr></thead><tbody><tr><td><strong>精力</strong></td><td>文杰晚上 6 小时活动后累了</td><td>早上精力充沛</td></tr><tr><td><strong>专注力</strong></td><td>6 岁孩子晚上专注力下降</td><td>早上专注力最好</td></tr><tr><td><strong>被打断</strong></td><td>晚上容易被打断（洗澡/家庭）</td><td>早上无打断</td></tr><tr><td><strong>晚上</strong></td><td>学习占用</td><td>🚫 完全自由（家庭时间）</td></tr><tr><td><strong>学习质量</strong></td><td>一般</td><td>更好</td></tr><tr><td><strong>妈妈状态</strong></td><td>晚上妈妈也累</td><td>早上妈妈精力好</td></tr></tbody></table>\n<blockquote><strong>PM 洞察</strong>：这是\"把最重要的工作放到最有精力的时段\"的产品原则。</blockquote>"
+      },
+      {
+        "heading": "🎹 为什么周末钢琴也改到早上？",
+        "body": [
+          "",
+          "| 维度 | 晚上（17:15-17:35）| 早上（9:30-9:50）|",
+          "|---|---|---|",
+          "| **手的状态** | 6 小时活动后手部疲劳 | 早上手指灵活 |",
+          "| **精力** | 晚上精力下降 | 早上精力充沛 |",
+          "| **连贯性** | 17:15 紧接着 17:35 玩耍容易赶 | 项目后 9:30 钢琴 → 9:50 后玩耍，无缝衔接 |",
+          "| **傍晚** | 占用傍晚黄金玩耍时间 | 傍晚完全自由（户外 + 玩耍）|",
+          "",
+          "> **PM 洞察**：周末早上形成\"学习集群\"——描红 → 项目 → 钢琴，9:50 全部结束，全天玩耍开始。",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>维度</th><th>晚上（17:15-17:35）</th><th>早上（9:30-9:50）</th></tr></thead><tbody><tr><td><strong>手的状态</strong></td><td>6 小时活动后手部疲劳</td><td>早上手指灵活</td></tr><tr><td><strong>精力</strong></td><td>晚上精力下降</td><td>早上精力充沛</td></tr><tr><td><strong>连贯性</strong></td><td>17:15 紧接着 17:35 玩耍容易赶</td><td>项目后 9:30 钢琴 → 9:50 后玩耍，无缝衔接</td></tr><tr><td><strong>傍晚</strong></td><td>占用傍晚黄金玩耍时间</td><td>傍晚完全自由（户外 + 玩耍）</td></tr></tbody></table>\n<blockquote><strong>PM 洞察</strong>：周末早上形成\"学习集群\"——描红 → 项目 → 钢琴，9:50 全部结束，全天玩耍开始。</blockquote>\n<hr>"
+      },
+      {
+        "heading": "🎯 暖身任务说明",
+        "body": [
+          "",
+          "**Timed Reading**（10 min）：",
+          "- 5 本牛津树 L6 连续读",
+          "- 家长用手机计时",
+          "- 算 WPM（每分钟词数）",
+          "- 错 3 次以上的词圈出来记 Wiki",
+          "- 这是 D8 的英文基线，下周复测看进步",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>Timed Reading</strong>（10 min）：\n<ul><li>5 本牛津树 L6 连续读</li>\n<li>家长用手机计时</li>\n<li>算 WPM（每分钟词数）</li>\n<li>错 3 次以上的词圈出来记 Wiki</li>\n<li>这是 D8 的英文基线，下周复测看进步</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "📚 主练习册（20 min）",
+        "body": [
+          "",
+          "**Intensive Maths Drills P1**（综合版）：",
+          "- 综合计算（加减乘除）+ 应用题",
+          "- 含本周所学 4 个英文数学词",
+          "- 让文杰自己读题，妈妈不翻译",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>Intensive Maths Drills P1</strong>（综合版）：\n<ul><li>综合计算（加减乘除）+ 应用题</li>\n<li>含本周所学 4 个英文数学词</li>\n<li>让文杰自己读题，妈妈不翻译</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "📚 副练习册 3 本轮换（20 min）",
+        "body": [
+          "",
+          "| 顺序 | 练习册 | 时长 | 内容 |",
+          "|---|---|---|---|",
+          "| 1 | 快乐练习2.0 | 5 min | 中文（识字 / 拼音 / 看图说话）|",
+          "| 2 | One-stop English | 5 min | 英文（Phonics / Sight Words）|",
+          "| 3 | Intensive Maths | 5 min | 数学（应用题）|",
+          "| 4 | 妈妈挑当周最弱项 | 5 min | 综合 |",
+          "",
+          "> 项目日特色：**3 本都做一点**（综合），加上当周最弱项强化。",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>顺序</th><th>练习册</th><th>时长</th><th>内容</th></tr></thead><tbody><tr><td>1</td><td>快乐练习2.0</td><td>5 min</td><td>中文（识字 / 拼音 / 看图说话）</td></tr><tr><td>2</td><td>One-stop English</td><td>5 min</td><td>英文（Phonics / Sight Words）</td></tr><tr><td>3</td><td>Intensive Maths</td><td>5 min</td><td>数学（应用题）</td></tr><tr><td>4</td><td>妈妈挑当周最弱项</td><td>5 min</td><td>综合</td></tr></tbody></table>\n<blockquote>项目日特色：<strong>3 本都做一点</strong>（综合），加上当周最弱项强化。</blockquote>\n<hr>"
+      },
+      {
+        "heading": "🎯 今天要做的（妈妈 21:00 前告诉 Mavis）",
+        "body": [
+          "1. 写汉字 1 个新字是什么",
+          "2. 项目日 60 min 完成情况（4 任务）",
+          "3. 5 本 L6 WPM 速度",
+          "4. Intensive Maths 做了几页",
+          "5. 3 本轮换都做了什么",
+          "6. 游泳训练进展",
+          "7. 文杰状态（早上精力 vs 晚上精力的对比）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li>写汉字 1 个新字是什么</li>\n<li>项目日 60 min 完成情况（4 任务）</li>\n<li>5 本 L6 WPM 速度</li>\n<li>Intensive Maths 做了几页</li>\n<li>3 本轮换都做了什么</li>\n<li>游泳训练进展</li>\n<li>文杰状态（早上精力 vs 晚上精力的对比）</li>\n<hr>"
+      },
+      {
+        "heading": "⚠️ 晚上不做的事清单",
+        "body": [
+          "- ❌ Intensive Maths Drills（晚上不做）",
+          "- ❌ One-stop English（晚上不做）",
+          "- ❌ 快乐练习2.0（晚上不做）",
+          "- ❌ KAK（晚上不做）",
+          "- ❌ 珠算（除了早上描红）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<ul><li>❌ Intensive Maths Drills（晚上不做）</li>\n<li>❌ One-stop English（晚上不做）</li>\n<li>❌ 快乐练习2.0（晚上不做）</li>\n<li>❌ KAK（晚上不做）</li>\n<li>❌ 珠算（除了早上描红）</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-21]] · [[2026-08-23]]",
+          "- [[../weekly/W01]]",
+          "- [[../../subjects/english/entities/reading-levels]]（牛津树）",
+          "- [[../../resources/bought]]（3 本练习册）"
+        ],
+        "html": "<ul><li>[[2026-08-21]] · [[2026-08-23]]</li>\n<li>[[../weekly/W01]]</li>\n<li>[[../../subjects/english/entities/reading-levels]]（牛津树）</li>\n<li>[[../../resources/bought]]（3 本练习册）</li></ul>"
+      }
+    ]
+  },
+  {
+    "date": "2026-08-23",
+    "title": "2026-08-23 · 周日 · 🟠 **项目日（早上版）+ Wiki 复盘** · v4.3",
+    "sections": [
+      {
+        "heading": "状态：🔜 明天",
+        "body": [
+          ""
+        ],
+        "html": ""
+      },
+      {
+        "heading": "主题",
+        "body": [
+          "**周末项目早上 8:30-9:30 + Wiki 复盘 21:00-21:30**：最弱项补强 + 周整理",
+          "",
+          "> 妈妈原则（8/18 v4.3）：",
+          "> - 周末项目改到早上 8:30-9:30",
+          "> - Wiki 复盘仍在 21:00-21:30（妈妈时间）",
+          "> - 21:00-21:30 Wiki batch 30 min",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>周末项目早上 8:30-9:30 + Wiki 复盘 21:00-21:30</strong>：最弱项补强 + 周整理\n<blockquote>妈妈原则（8/18 v4.3）：</blockquote>\n<blockquote>- 周末项目改到早上 8:30-9:30</blockquote>\n<blockquote>- Wiki 复盘仍在 21:00-21:30（妈妈时间）</blockquote>\n<blockquote>- 21:00-21:30 Wiki batch 30 min</blockquote>\n<hr>"
+      },
+      {
+        "heading": "⏰ 今日时间表（周末项目日 · 早上版 + Wiki 复盘 · v4.3 + 钢琴早上）",
+        "body": [
+          "",
+          "| 时段 | 任务 | 时长 | 谁 |",
+          "|---|---|---|---|",
+          "| 8:15-8:30 | 写汉字 1 字（奶奶）| 15 min | 奶奶 |",
+          "| **🆕 8:30-9:30** | **项目日活动（60 min）**| **60 min** | 妈妈陪 |",
+          "| **🆕 9:30-9:50** | **钢琴练习（早上版）**| **20 min** | 奶奶/自己 |",
+          "| 上午 | 户外 + 自由玩耍 | 灵活 | — |",
+          "| 17:15-17:35 | ~~钢琴练习~~ 取消（周末移到早上）| — | — |",
+          "| 17:35-18:30 | 玩耍 | 55 min | 自己 |",
+          "| 18:30-19:15 | 晚饭 | 45 min | 家庭 |",
+          "| **🆕 19:15-20:15** | **🚫 完全自由**（不安排学习）| 60 min | 自己/家庭 |",
+          "| 20:15-20:40 | 洗澡 | 25 min | 妈妈 |",
+          "| 20:40-21:00 | 亲子共读（保留）| 20 min | 妈妈 |",
+          "| **🆕 21:00-21:30** | **🟠 Wiki batch · W01 收官** | 30 min | 妈妈 |",
+          "",
+          "> **🆕 与 v4 关键变化（v4.3）：**",
+          "> - 19:15-20:15 晚上的项目日 → **移到早上 8:30-9:30**",
+          "> - 21:00-21:30 Wiki batch 保留（妈妈整理数据）",
+          "> - **🆕 周末钢琴 17:15-17:35 → 早上 9:30-9:50**（妈妈原则：\"周末练琴也完全可以放在早上\"）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<table><thead><tr><th>时段</th><th>任务</th><th>时长</th><th>谁</th></tr></thead><tbody><tr><td>8:15-8:30</td><td>写汉字 1 字（奶奶）</td><td>15 min</td><td>奶奶</td></tr><tr><td><strong>🆕 8:30-9:30</strong></td><td><strong>项目日活动（60 min）</strong></td><td><strong>60 min</strong></td><td>妈妈陪</td></tr><tr><td><strong>🆕 9:30-9:50</strong></td><td><strong>钢琴练习（早上版）</strong></td><td><strong>20 min</strong></td><td>奶奶/自己</td></tr><tr><td>上午</td><td>户外 + 自由玩耍</td><td>灵活</td><td>—</td></tr><tr><td>17:15-17:35</td><td>~~钢琴练习~~ 取消（周末移到早上）</td><td>—</td><td>—</td></tr><tr><td>17:35-18:30</td><td>玩耍</td><td>55 min</td><td>自己</td></tr><tr><td>18:30-19:15</td><td>晚饭</td><td>45 min</td><td>家庭</td></tr><tr><td><strong>🆕 19:15-20:15</strong></td><td><strong>🚫 完全自由</strong>（不安排学习）</td><td>60 min</td><td>自己/家庭</td></tr><tr><td>20:15-20:40</td><td>洗澡</td><td>25 min</td><td>妈妈</td></tr><tr><td>20:40-21:00</td><td>亲子共读（保留）</td><td>20 min</td><td>妈妈</td></tr><tr><td><strong>🆕 21:00-21:30</strong></td><td><strong>🟠 Wiki batch · W01 收官</strong></td><td>30 min</td><td>妈妈</td></tr></tbody></table>\n<blockquote><strong>🆕 与 v4 关键变化（v4.3）：</strong></blockquote>\n<blockquote>- 19:15-20:15 晚上的项目日 → <strong>移到早上 8:30-9:30</strong></blockquote>\n<blockquote>- 21:00-21:30 Wiki batch 保留（妈妈整理数据）</blockquote>\n<blockquote>- <strong>🆕 周末钢琴 17:15-17:35 → 早上 9:30-9:50</strong>（妈妈原则：\"周末练琴也完全可以放在早上\"）</blockquote>\n<hr>"
+      },
+      {
+        "heading": "📐 项目日 60 min 结构（早上 8:30-9:30 · 周日版）",
+        "body": [
+          "",
+          "```",
+          "8:30-8:40   暖身 Timed Reading                              10 min",
+          "8:40-9:00   主练习册 妈妈挑当周最弱项（基于 W01 数据）         20 min",
+          "9:00-9:10   🚶 micro-break                                  10 min",
+          "9:10-9:30   副练习册 自由复习（看回本周错题）                  20 min",
+          "```",
+          "",
+          "**总硬学习 = 50 min**（与周六项目日一致）  ",
+          "**总含休息 = 60 min**  ",
+          "**总窗口 = 8:30-9:30**",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<pre><code>\n8:30-8:40   暖身 Timed Reading                              10 min\n8:40-9:00   主练习册 妈妈挑当周最弱项（基于 W01 数据）         20 min\n9:00-9:10   🚶 micro-break                                  10 min\n9:10-9:30   副练习册 自由复习（看回本周错题）                  20 min\n</code></pre>\n<strong>总硬学习 = 50 min</strong>（与周六项目日一致）  \n<strong>总含休息 = 60 min</strong>  \n<strong>总窗口 = 8:30-9:30</strong>\n<hr>"
+      },
+      {
+        "heading": "🎯 妈妈挑当周最弱项（基于 W01 数据）",
+        "body": [
+          "",
+          "**8/22 周六晚上 Wiki 简记时初步判断**（更精细的判断在 21:00 Wiki batch）：",
+          "",
+          "| 信号 | 最弱项判断 |",
+          "|---|---|",
+          "| 文杰在某个练习册上明显慢 | 那本练习册 |",
+          "| 错同一类错 ≥ 3 次 | 该 pattern 对应的科目 |",
+          "| 文杰抗拒某个科目 | 该科目 |",
+          "| Wiki 上\"状态最累的一天\" | 该天的重点科目 |",
+          "| 文杰自己说\"不喜欢\" | 该科目（轻微参考）|",
+          "",
+          "**示例**：",
+          "- 如果 Phonics 弱 → 重点 One-stop English 的 Phonics 段",
+          "- 如果 Math 弱 → 重点 Intensive Maths 的应用题",
+          "- 如果中文弱 → 重点 快乐练习2.0 的拼音 + 识字",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<strong>8/22 周六晚上 Wiki 简记时初步判断</strong>（更精细的判断在 21:00 Wiki batch）：\n<table><thead><tr><th>信号</th><th>最弱项判断</th></tr></thead><tbody><tr><td>文杰在某个练习册上明显慢</td><td>那本练习册</td></tr><tr><td>错同一类错 ≥ 3 次</td><td>该 pattern 对应的科目</td></tr><tr><td>文杰抗拒某个科目</td><td>该科目</td></tr><tr><td>Wiki 上\"状态最累的一天\"</td><td>该天的重点科目</td></tr><tr><td>文杰自己说\"不喜欢\"</td><td>该科目（轻微参考）</td></tr></tbody></table>\n<strong>示例</strong>：\n<ul><li>如果 Phonics 弱 → 重点 One-stop English 的 Phonics 段</li>\n<li>如果 Math 弱 → 重点 Intensive Maths 的应用题</li>\n<li>如果中文弱 → 重点 快乐练习2.0 的拼音 + 识字</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "📚 副练习册：自由复习（20 min）",
+        "body": [
+          "",
+          "- 看回本周错题（3 道以上错同一类）",
+          "- 看回练习册",
+          "- 中文专项（拼音 / 写字）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<ul><li>看回本周错题（3 道以上错同一类）</li>\n<li>看回练习册</li>\n<li>中文专项（拼音 / 写字）</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🟠 Wiki batch · W01 收官（21:00-21:30, 30 min）",
+        "body": [
+          "",
+          "### 必填字段",
+          "1. **W01 数据汇总**：",
+          "   - 5 天做了几页 Intensive Maths",
+          "   - 5 天做了几页 One-stop English",
+          "   - 5 天做了几页 快乐练习2.0",
+          "   - KAK Vowel Sounds 完成情况",
+          "   - 珠算总正确率",
+          "2. **W01 状态总结**：",
+          "   - 文杰最累的一天",
+          "   - 文杰最精神的一天",
+          "   - 妈妈最累的一天",
+          "3. **W02 重点**：",
+          "   - 哪 1-2 项需要强化",
+          "   - 哪 1 项可以放缓",
+          "4. **错题 pattern 更新**：",
+          "   - 是否有新的 pattern 出现",
+          "   - 是否需要新建 mistakes/pattern-XXX",
+          "5. **资源更新**：",
+          "   - 练习册进度（剩余多少）",
+          "",
+          "### Wiki 更新文件",
+          "- `subjects/english/mastery.md`",
+          "- `subjects/chinese/mastery.md`",
+          "- `subjects/math/mastery.md`",
+          "- `log.md`",
+          "- `plans/weekly/W02.md`（下周计划）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<h3>必填字段</h3>\n<li><strong>W01 数据汇总</strong>：</li>\n   - 5 天做了几页 Intensive Maths\n   - 5 天做了几页 One-stop English\n   - 5 天做了几页 快乐练习2.0\n   - KAK Vowel Sounds 完成情况\n   - 珠算总正确率\n<li><strong>W01 状态总结</strong>：</li>\n   - 文杰最累的一天\n   - 文杰最精神的一天\n   - 妈妈最累的一天\n<li><strong>W02 重点</strong>：</li>\n   - 哪 1-2 项需要强化\n   - 哪 1 项可以放缓\n<li><strong>错题 pattern 更新</strong>：</li>\n   - 是否有新的 pattern 出现\n   - 是否需要新建 mistakes/pattern-XXX\n<li><strong>资源更新</strong>：</li>\n   - 练习册进度（剩余多少）\n<h3>Wiki 更新文件</h3>\n<ul><li><code>subjects/english/mastery.md</code></li>\n<li><code>subjects/chinese/mastery.md</code></li>\n<li><code>subjects/math/mastery.md</code></li>\n<li><code>log.md</code></li>\n<li><code>plans/weekly/W02.md</code>（下周计划）</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🎯 妈妈原则（Wiki 复盘）",
+        "body": [
+          "",
+          "- **30 min 严格控制**——不要变成 1 小时",
+          "- **数据驱动**——不要凭感觉，用具体页数 + 正确率",
+          "- **找 pattern**——3 道以上错同一类 → 新建 pattern-XXX",
+          "- **W02 重点明确**——不超过 2 个强化项",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<ul><li><strong>30 min 严格控制</strong>——不要变成 1 小时</li>\n<li><strong>数据驱动</strong>——不要凭感觉，用具体页数 + 正确率</li>\n<li><strong>找 pattern</strong>——3 道以上错同一类 → 新建 pattern-XXX</li>\n<li><strong>W02 重点明确</strong>——不超过 2 个强化项</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "⚠️ 晚上不做的事清单",
+        "body": [
+          "- ❌ Intensive Maths Drills（晚上不做）",
+          "- ❌ One-stop English（晚上不做）",
+          "- ❌ 快乐练习2.0（晚上不做）",
+          "- ❌ KAK（晚上不做）",
+          "- ❌ 珠算（除了早上描红）",
+          "- ❌ 任何学习（Wiki batch 是妈妈整理数据，不是文杰学习）",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<ul><li>❌ Intensive Maths Drills（晚上不做）</li>\n<li>❌ One-stop English（晚上不做）</li>\n<li>❌ 快乐练习2.0（晚上不做）</li>\n<li>❌ KAK（晚上不做）</li>\n<li>❌ 珠算（除了早上描红）</li>\n<li>❌ 任何学习（Wiki batch 是妈妈整理数据，不是文杰学习）</li>\n</ul>\n<hr>"
+      },
+      {
+        "heading": "🎯 今天要做的（妈妈 21:00 前告诉 Mavis）",
+        "body": [
+          "1. 写汉字 1 个新字是什么",
+          "2. 项目日 60 min 完成情况",
+          "3. 最弱项补强效果",
+          "4. 自由复习做了什么",
+          "5. Wiki 复盘结论（W02 重点是什么）",
+          "6. 文杰状态",
+          "",
+          "---",
+          ""
+        ],
+        "html": "<li>写汉字 1 个新字是什么</li>\n<li>项目日 60 min 完成情况</li>\n<li>最弱项补强效果</li>\n<li>自由复习做了什么</li>\n<li>Wiki 复盘结论（W02 重点是什么）</li>\n<li>文杰状态</li>\n<hr>"
+      },
+      {
+        "heading": "关联",
+        "body": [
+          "- [[2026-08-21]] · [[2026-08-22]]",
+          "- [[../weekly/W01]] · [[../weekly/W02]]",
+          "- [[../../subjects/english/mastery]] · [[../../subjects/chinese/mastery]] · [[../../subjects/math/mastery]]"
+        ],
+        "html": "<ul><li>[[2026-08-21]] · [[2026-08-22]]</li>\n<li>[[../weekly/W01]] · [[../weekly/W02]]</li>\n<li>[[../../subjects/english/mastery]] · [[../../subjects/chinese/mastery]] · [[../../subjects/math/mastery]]</li></ul>"
+      }
+    ]
+  }
+];
+  const DEFAULT_DATE = "2026-08-17";
 
   // 渲染日期 tabs
   function renderDateTabs(current) {
     const container = document.getElementById('date-tabs');
-    container.innerHTML = AVAILABLE_DATES.map(d => {
+    container.innerHTML = DAILY_DATA.map(d => {
       const cls = d.date === current ? 'active' : '';
-      const today = d.status === 'today' ? 'today' : '';
-      return `<button class="date-tab ${cls} ${today}" data-date="${d.date}">${d.label}${d.status === 'today' ? ' ★' : ''}</button>`;
+      const today = d.date === DEFAULT_DATE ? 'today' : '';
+      const label = d.date.slice(5) + ' ' + (d.weekday || '');
+      return `<button class="date-tab ${cls} ${today}" data-date="${d.date}">${label}${d.date === DEFAULT_DATE ? ' ★' : ''}</button>`;
     }).join('');
 
     container.addEventListener('click', function (e) {
@@ -325,45 +1530,42 @@
     });
   }
 
-  // 加载指定日期的 Wiki 内容
-  async function loadDate(date) {
-    // 更新 tab 状态
+  // 加载指定日期的内容（从烤入的数据，不需要 fetch）
+  function loadDate(date) {
     document.querySelectorAll('.date-tab').forEach(b => {
       b.classList.toggle('active', b.dataset.date === date);
     });
 
-    // 显示加载状态
-    const container = document.getElementById('wiki-content');
-    container.innerHTML = '<div class="wiki-loading">从 Wiki 加载每日计划…</div>';
-
-    try {
-      const { title, html } = await WikiRenderer.renderDailyPlan(date);
-      container.innerHTML = `
-        <h1>${title}</h1>
-        <div class="wiki-body">${html}</div>
-        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--line); font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace;">
-          📚 数据来源：<a href="https://github.com/SherryXieLi/wenjie-plan/blob/main/wiki/plans/daily/${date}.md" target="_blank" style="color: var(--primary);">wiki/plans/daily/${date}.md</a>
-          · 改 Wiki + push + 刷新即更新
-        </div>
-      `;
-      // 更新页面标题
-      document.title = `${title} · 文杰每日学习`;
-    } catch (err) {
-      container.innerHTML = `
-        <div class="wiki-error">
-          ❌ 加载失败：${err.message}<br>
-          <small>确认 Wiki 文件存在：wiki/plans/daily/${date}.md</small>
-        </div>
-      `;
+    const day = DAILY_DATA.find(d => d.date === date);
+    if (!day) {
+      document.getElementById('wiki-content').innerHTML =
+        '<div class="wiki-error">❌ 没找到 ' + date + ' 的内容</div>';
+      return;
     }
+
+    const html = day.sections.map(sec =>
+      `<section class="wiki-section">
+        <h2>${sec.heading}</h2>
+        <div class="wiki-body">${sec.html}</div>
+      </section>`
+    ).join('');
+
+    document.getElementById('wiki-content').innerHTML = `
+      <h1>${day.title}</h1>
+      ${html}
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--line); font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace;">
+        📚 数据来源：<a href="https://github.com/SherryXieLi/wenjie-plan/blob/main/wiki/plans/daily/${date}.md" target="_blank" style="color: var(--primary);">wiki/plans/daily/${date}.md</a>
+        · 构建时间：2026-08-17 22:27:29
+        · 共 9 天
+      </div>
+    `;
+    document.title = `${day.title} · 文杰每日学习`;
   }
 
-  // 启动：默认加载今天（如果有）或第一个日期
+  // 启动
   function init() {
-    const today = AVAILABLE_DATES.find(d => d.status === 'today');
-    const startDate = today ? today.date : AVAILABLE_DATES[0].date;
-    renderDateTabs(startDate);
-    loadDate(startDate);
+    renderDateTabs(DEFAULT_DATE);
+    loadDate(DEFAULT_DATE);
   }
 
   if (document.readyState === 'loading') {

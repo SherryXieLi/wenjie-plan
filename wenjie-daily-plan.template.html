@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="文杰每日学习计划 · Wiki 实时驱动 · 妈妈谢莉制作">
+  <title>文杰 · 每日学习计划（Wiki 构建）</title>
+  <link rel="stylesheet" href="wenjie-shared.css">
+  <style>
+    /* ============================================================
+       wenjie-daily-plan.html · Wiki 驱动版
+       所有数据从 wiki/plans/daily/*.md 实时加载
+       改 Wiki → push → 自动更新
+       ============================================================ */
+
+    /* 页面特定的小样式（绝大多数已在 shared.css） */
+    .page-intro {
+      background: linear-gradient(135deg, rgba(47,111,94,0.06) 0%, rgba(201,123,63,0.04) 100%);
+      border: 1px dashed var(--primary);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+    .page-intro strong { color: var(--primary); }
+
+    /* 日期 tabs */
+    .date-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 24px 0;
+      padding: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .date-tab {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s;
+    }
+    .date-tab:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .date-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .date-tab.today {
+      box-shadow: 0 0 0 2px var(--gold);
+    }
+
+    /* Wiki 渲染内容 */
+    .wiki-content {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .wiki-content h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      font-weight: 400;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+    .wiki-content h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 24px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .wiki-content h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-2);
+      margin: 16px 0 8px;
+    }
+    .wiki-content p { margin: 8px 0; line-height: 1.6; }
+    .wiki-content ul, .wiki-content ol {
+      margin: 8px 0;
+      padding-left: 22px;
+    }
+    .wiki-content li { margin: 4px 0; line-height: 1.55; }
+    .wiki-content strong { color: var(--primary); font-weight: 600; }
+    .wiki-content code {
+      background: var(--line-soft);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .wiki-content hr {
+      border: none;
+      border-top: 1px dashed var(--line);
+      margin: 20px 0;
+    }
+    .wiki-content blockquote {
+      margin: 12px 0;
+      padding: 8px 14px;
+      background: var(--gold-soft);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 6px 6px 0;
+      color: var(--ink-2);
+    }
+
+    /* 时间表 */
+    .wiki-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    .wiki-content table th,
+    .wiki-content table td {
+      padding: 8px 10px;
+      border-bottom: 1px dashed var(--line-soft);
+      text-align: left;
+    }
+    .wiki-content table th {
+      background: var(--line-soft);
+      font-weight: 600;
+      color: var(--ink-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .wiki-content table tbody tr:hover {
+      background: var(--line-soft);
+    }
+
+    /* 加载状态 */
+    .wiki-loading {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .wiki-loading::before {
+      content: '⏳';
+      display: block;
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .wiki-error {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--rose);
+      background: var(--rose-soft);
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    /* 模板链接区 */
+    .templates-section {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-top: 16px;
+    }
+    .templates-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 12px;
+    }
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .template-card {
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--ink-2);
+      transition: all 0.15s;
+    }
+    .template-card:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .template-card strong {
+      display: block;
+      color: var(--primary);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .template-card small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 共享顶部导航（由 wenjie-shared.js 渲染）-->
+<div data-shared="top-bar"></div>
+
+<!-- 面包屑 -->
+<div data-shared="breadcrumb"></div>
+
+<main>
+<div class="container">
+
+<!-- HERO -->
+<section class="hero" style="padding-top: 24px;">
+  <div class="eyebrow">
+    📅 每日任务清单 · <strong>Wiki 单一源 · 构建时渲染</strong> · v5
+  </div>
+  <h1>今晚到睡前，<br><em>50 分钟</em> <strong>三门功课齐头并进</strong><br><span style="font-size: 18px; color: var(--ink-2);">+ 每天 21:00 前睡觉</span></h1>
+  <p class="lede">
+    <strong>5:2:1 节奏</strong>：<strong>5 天学习</strong>（50 min/天）→ <strong>1 天轻量</strong>（周四，只 20 min）→ <strong>1 天休息</strong>（周二·钢琴课）。
+    每天 3 块：珠算 + Phonics + 练习册轮换。
+  </p>
+
+  <div class="page-intro">
+    🆕 <strong>v5 · Wiki 驱动架构</strong> · Wiki (.md) 是单一数据源。
+    <br>
+    流程：改 <code>wiki/plans/daily/*.md</code> → <code>pushwenjie</code> → 自动构建 → push → 这里显示新内容。
+    <br>
+    📅 点下方日期切换查看其他天 · 默认 = 今天。
+  </div>
+
+  <!-- 日期 Tabs -->
+  <div class="date-tabs" id="date-tabs"></div>
+
+  <!-- Wiki 渲染内容（数据已烤入 HTML · 不用 fetch）-->
+  <div id="wiki-content" class="wiki-content">
+    <div class="wiki-loading">加载中…</div>
+  </div>
+
+  <!-- 模板区（保留，因为模板是 wiki 之外的"通用节奏"）-->
+  <div class="templates-section">
+    <h3>📋 通用节奏（每周重复使用 · 详见 Wiki）</h3>
+    <div class="templates-grid">
+      <a href="wiki/plans/weekly/W01.md" class="template-card">
+        <strong>📅 W01 周计划</strong>
+        <small>5 天学习 + 1 天轻量 + 1 天休息节奏</small>
+      </a>
+      <a href="wiki/plans/quarterly.md" class="template-card">
+        <strong>🗓 季度计划</strong>
+        <small>8 月 - 12 月整体节奏</small>
+      </a>
+      <a href="wiki/resources/bought.md" class="template-card">
+        <strong>📚 已购资源</strong>
+        <small>3 本练习册 + KAK + 牛津树</small>
+      </a>
+      <a href="wiki/profile/goals.md" class="template-card">
+        <strong>🎯 6 年目标</strong>
+        <small>RI / HCI IP · PSLE 4-6 分</small>
+      </a>
+    </div>
+  </div>
+
+</section>
+
+</div>
+</main>
+
+<!-- 共享页脚（由 wenjie-shared.js 渲染）-->
+<div data-shared="footer" data-updated="2026-08-16"></div>
+
+<!-- 第三方：Markdown 解析 -->
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+
+<!-- 共享组件 -->
+<script src="wenjie-shared.js"></script>
+
+<!-- Wiki 渲染器 -->
+<script src="wenjie-wiki-renderer.js"></script>
+
+<!-- 页面逻辑 -->
+<script>
+(function () {
+  'use strict';
+
+  // 烤入的 Wiki 数据（构建时生成）
+  const DAILY_DATA = __DAILY_DATA__;
+  const DEFAULT_DATE = __DEFAULT_DATE__;
+
+  // 渲染日期 tabs
+  function renderDateTabs(current) {
+    const container = document.getElementById('date-tabs');
+    container.innerHTML = DAILY_DATA.map(d => {
+      const cls = d.date === current ? 'active' : '';
+      const today = d.date === DEFAULT_DATE ? 'today' : '';
+      const label = d.date.slice(5) + ' ' + (d.weekday || '');
+      return `<button class="date-tab ${cls} ${today}" data-date="${d.date}">${label}${d.date === DEFAULT_DATE ? ' ★' : ''}</button>`;
+    }).join('');
+
+    container.addEventListener('click', function (e) {
+      if (e.target.matches('.date-tab')) {
+        loadDate(e.target.dataset.date);
+      }
+    });
+  }
+
+  // 加载指定日期的内容（从烤入的数据，不需要 fetch）
+  function loadDate(date) {
+    document.querySelectorAll('.date-tab').forEach(b => {
+      b.classList.toggle('active', b.dataset.date === date);
+    });
+
+    const day = DAILY_DATA.find(d => d.date === date);
+    if (!day) {
+      document.getElementById('wiki-content').innerHTML =
+        '<div class="wiki-error">❌ 没找到 ' + date + ' 的内容</div>';
+      return;
+    }
+
+    const html = day.sections.map(sec =>
+      `<section class="wiki-section">
+        <h2>${sec.heading}</h2>
+        <div class="wiki-body">${sec.html}</div>
+      </section>`
+    ).join('');
+
+    document.getElementById('wiki-content').innerHTML = `
+      <h1>${day.title}</h1>
+      ${html}
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--line); font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace;">
+        📚 数据来源：<a href="https://github.com/SherryXieLi/wenjie-plan/blob/main/wiki/plans/daily/${date}.md" target="_blank" style="color: var(--primary);">wiki/plans/daily/${date}.md</a>
+        · 构建时间：__BUILD_TIME__
+        · 共 __TOTAL_DAYS__ 天
+      </div>
+    `;
+    document.title = `${day.title} · 文杰每日学习`;
+  }
+
+  // 启动
+  function init() {
+    renderDateTabs(DEFAULT_DATE);
+    loadDate(DEFAULT_DATE);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
