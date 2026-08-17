@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="文杰6年学习战略 · Wiki 实时驱动 · 妈妈谢莉制作">
+  <title>文杰 · 6 年规划 + 入学评分（Wiki 驱动）</title>
+  <link rel="stylesheet" href="wenjie-shared.css">
+  <style>
+    /* 战略层专属样式 */
+    .plan-section {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    .plan-section h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--line);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .plan-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-2);
+      margin: 16px 0 8px;
+    }
+
+    /* 6 年时间轴 */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+      margin: 12px 0;
+    }
+    .timeline-item {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 6px;
+      text-align: center;
+      font-size: 11px;
+    }
+    .timeline-item.current {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+    .timeline-item .grade {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .timeline-item .year {
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* 12 维度评分 */
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+    .dim-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .dim-card .name {
+      font-size: 12px;
+      color: var(--ink-2);
+      margin-bottom: 6px;
+    }
+    .dim-card .score {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dim-card .score-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .dim-card .score-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--line-soft);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .dim-card .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-mid) 100%);
+    }
+    .dim-card[data-tier="warn"] { border-left: 3px solid var(--warm); }
+    .dim-card[data-tier="ok"] { border-left: 3px solid var(--primary); }
+    .dim-card[data-tier="strong"] { border-left: 3px solid var(--gold); }
+
+    /* 资源清单 */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .resource-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .resource-card .name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .resource-card .status {
+      font-size: 11px;
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .resource-card .status.pending { color: var(--warm); }
+
+    /* Wiki 内容 */
+    .wiki-render {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .wiki-render h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+    .wiki-render h2 {
+      font-size: 16px;
+      margin: 16px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed var(--line);
+      color: var(--primary);
+    }
+    .wiki-render h3 {
+      font-size: 14px;
+      margin: 12px 0 6px;
+      color: var(--ink-2);
+    }
+    .wiki-render p { margin: 6px 0; }
+    .wiki-render ul, .wiki-render ol { padding-left: 20px; margin: 6px 0; }
+    .wiki-render li { margin: 3px 0; }
+    .wiki-render code {
+      background: var(--line-soft);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .wiki-render strong { color: var(--primary); font-weight: 600; }
+    .wiki-render table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 8px 0;
+    }
+    .wiki-render table th,
+    .wiki-render table td {
+      padding: 6px 8px;
+      border-bottom: 1px dashed var(--line-soft);
+      text-align: left;
+    }
+    .wiki-render table th {
+      background: var(--line-soft);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .data-footer {
+      margin: 16px 0;
+      padding: 12px;
+      background: var(--gold-soft);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .data-footer strong { color: var(--gold); }
+
+    @media (max-width: 560px) {
+      .timeline { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 共享顶部导航 -->
+<div data-shared="top-bar"></div>
+
+<!-- 面包屑 -->
+<div data-shared="breadcrumb"></div>
+
+<main>
+<div class="container">
+
+<section class="hero" style="padding-top: 24px;">
+  <div class="eyebrow">
+    🗺 6 年战略 · <strong>Wiki 实时驱动</strong> · v6
+  </div>
+  <h1>文杰的<em>6 年</em><strong>学习路线图</strong></h1>
+  <p class="lede">
+    从 K2 末到 PSLE · 从 P6 到 RI/HCI IP · 从 JC 到 A-Level。
+    <strong>目标学校</strong>：<a href="wiki/dsa/hwa-chong-institution.md">Hwa Chong Institution (HCI)</a> ·
+    <a href="wiki/dsa/raffles-institution.md">Raffles Institution (RI)</a>
+  </p>
+</section>
+
+<!-- 6 年时间轴 -->
+<div class="plan-section">
+  <h2>📅 6 年时间轴</h2>
+  <div class="timeline"><div class="timeline-item current">
+            <div class="grade">K2</div>
+            <div class="year">2026</div>
+            <div style="font-size: 9px; color: var(--primary); margin-top: 2px;">现在</div>
+        </div><div class="timeline-item ">
+            <div class="grade">P1</div>
+            <div class="year">2027</div>
+            <div style="font-size: 9px; color: var(--primary); margin-top: 2px;">小学</div>
+        </div><div class="timeline-item ">
+            <div class="grade">P2</div>
+            <div class="year">2028</div>
+            <div style="font-size: 9px; color: var(--primary); margin-top: 2px;"></div>
+        </div><div class="timeline-item ">
+            <div class="grade">P3</div>
+            <div class="year">2029</div>
+            <div style="font-size: 9px; color: var(--primary); margin-top: 2px;">Trinity 4</div>
+        </div><div class="timeline-item ">
+            <div class="grade">P4</div>
+            <div class="year">2030</div>
+            <div style="font-size: 9px; color: var(--primary); margin-top: 2px;">SYF</div>
+        </div><div class="timeline-item ">
+            <div class="grade">P5</div>
+            <div class="year">2031</div>
+            <div style="font-size: 9px; color: var(--primary); margin-top: 2px;">DSA 准备</div>
+        </div></div>
+</div>
+
+<!-- 6 年目标 -->
+<div class="plan-section">
+  <h2>🎯 6 年目标</h2>
+  <div class="wiki-render">
+    <h1>6 年目标 · Goals</h1><h2>终目标（2032 年）</h2><ul><li><strong>PSLE 4-6 分</strong>（按现 AL 评分制 = 几乎每科 AL 1-2）</li>
+<li><strong>PSLE ≤ 6</strong> = RI / HCI IP 的硬门槛</li>
+</ul><h2>中期目标（2032-2033）</h2><ul><li><strong>RI / HCI IP 通道</strong>（6 年中学跳过 O-Level）</li>
+<li><strong>备选路径：DSA-Sec</strong>（P6 那年 7-8 月用 CCA / 学术特长申请）</li>
+<li>双轨并行：PSLE 4-6 保底 + DSA 锦上添花</li>
+</ul><h2>长期目标（2038+）</h2><ul><li>A-Level → 大学 → Top 大学</li>
+</ul><h2>关键里程碑</h2><table><thead><tr><th>时间</th><th>阶段</th><th>关键</th></tr></thead><tbody><tr><td>2027.01</td><td>P1 入学</td><td>基础打牢</td></tr><tr><td>2029</td><td>P3</td><td>科学开课</td></tr><tr><td>2031</td><td>P5</td><td>EM1 分流（PSLE 4-6 必备）</td></tr><tr><td>2032.11-12</td><td>P6</td><td>PSLE 4-6 分</td></tr><tr><td>2032.7-8</td><td>P6</td><td>DSA-Sec 申请（双申 RI + HCI）</td></tr><tr><td>2033.01</td><td>Sec 1</td><td>RI / HCI IP 入学</td></tr><tr><td>2038.10-11</td><td>JC 2</td><td>A-Level 考试</td></tr></tbody></table><h2>通道（DSA 双特长）</h2><ul><li>游泳（NSG 区/全国级）→ DSA-Sports (Swimming - IP)</li>
+<li>钢琴（SPAF + Trinity + SYF）→ Music Elective Programme (IP)</li>
+</ul><h2>相关</h2><ul><li>[[profile/basic]] · [[dsa/raffles-institution]] · [[dsa/hwa-chong-institution]]</li>
+<li>[[cca/swimming]] · [[cca/piano]]</li>
+<li>[[school-readiness/dsa-overview]] · [[dsa/dsa-application-timeline]]</li>
+</ul>
+  </div>
+</div>
+
+<!-- 入学评分 12 维度 -->
+<div class="plan-section">
+  <h2>🏫 P1 入学评分 · 12 维度</h2>
+  <p style="font-size: 12px; color: var(--muted); margin: 0 0 12px;">
+    基于 wiki/profile/12-dimensions.md · 5 分制（5 = 完全达到 P1 标准）
+  </p>
+  <div class="dim-grid"><div class="dim-card" data-tier="ok">
+            <div class="name">🗣 英语听说</div>
+            <div class="score">
+                <div class="score-num">4</div>
+                <div class="score-bar"><div class="score-fill" style="width: 80%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="warn">
+            <div class="name">📖 英语阅读</div>
+            <div class="score">
+                <div class="score-num">3</div>
+                <div class="score-bar"><div class="score-fill" style="width: 60%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="warn">
+            <div class="name">✍️ 英语书写</div>
+            <div class="score">
+                <div class="score-num">3</div>
+                <div class="score-bar"><div class="score-fill" style="width: 60%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="ok">
+            <div class="name">🔢 数学计算</div>
+            <div class="score">
+                <div class="score-num">4</div>
+                <div class="score-bar"><div class="score-fill" style="width: 80%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="warn">
+            <div class="name">🧩 数学应用</div>
+            <div class="score">
+                <div class="score-num">3</div>
+                <div class="score-bar"><div class="score-fill" style="width: 60%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="warn">
+            <div class="name">📐 数学思维</div>
+            <div class="score">
+                <div class="score-num">3</div>
+                <div class="score-bar"><div class="score-fill" style="width: 60%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="strong">
+            <div class="name">🀄 中文听说</div>
+            <div class="score">
+                <div class="score-num">5</div>
+                <div class="score-bar"><div class="score-fill" style="width: 100%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="ok">
+            <div class="name">📜 中文阅读</div>
+            <div class="score">
+                <div class="score-num">4</div>
+                <div class="score-bar"><div class="score-fill" style="width: 80%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="warn">
+            <div class="name">🖌 汉字书写</div>
+            <div class="score">
+                <div class="score-num">3</div>
+                <div class="score-bar"><div class="score-fill" style="width: 60%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="ok">
+            <div class="name">🎹 音乐/钢琴</div>
+            <div class="score">
+                <div class="score-num">4</div>
+                <div class="score-bar"><div class="score-fill" style="width: 80%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="ok">
+            <div class="name">🏃 运动体能</div>
+            <div class="score">
+                <div class="score-num">4</div>
+                <div class="score-bar"><div class="score-fill" style="width: 80%"></div></div>
+            </div>
+        </div><div class="dim-card" data-tier="strong">
+            <div class="name">👥 社交情感</div>
+            <div class="score">
+                <div class="score-num">5</div>
+                <div class="score-bar"><div class="score-fill" style="width: 100%"></div></div>
+            </div>
+        </div></div>
+</div>
+
+<!-- 已购资源 -->
+<div class="plan-section">
+  <h2>📚 已购资源</h2>
+  <div class="resource-grid"><div class="resource-card">
+            <div class="name">📚 Intensive Maths Drills P1</div>
+            <div class="status">已购 · Issac</div>
+        </div><div class="resource-card">
+            <div class="name">📚 One-stop English P1</div>
+            <div class="status">已购 · CASCO</div>
+        </div><div class="resource-card">
+            <div class="name">📚 快乐练习 2.0</div>
+            <div class="status">已购 · 识字 + 拼音</div>
+        </div><div class="resource-card">
+            <div class="name">🎵 KAK Vowel Sounds</div>
+            <div class="status">已购 · Grade 2</div>
+        </div><div class="resource-card">
+            <div class="name">📖 牛津树 Oxford Reading Tree</div>
+            <div class="status">已购 · Level 1-3</div>
+        </div><div class="resource-card">
+            <div class="name">🧮 算盘 + 心算卡</div>
+            <div class="status">已购</div>
+        </div><div class="resource-card">
+            <div class="name">🎹 钢琴课</div>
+            <div class="status">进行中 · Trinity</div>
+        </div></div>
+</div>
+
+<!-- DSA 路径 -->
+<div class="plan-section">
+  <h2>🎓 DSA 申请路径（2031-2032）</h2>
+  <div class="wiki-render">
+    <h1>DSA 申请要求总览</h1><h2>4 维度要求</h2><h3>1. 学术</h3>
+<ul><li>P5 + P6 上半年平均分 ≥ 50%</li>
+<li>P5 必须进 EM1</li>
+</ul>
+<h3>2. 操行</h3>
+<ul><li>P5 + P6 上半年 ≥ Very Good</li>
+<li>Excellent 加分</li>
+</ul>
+<h3>3. CCA（特长）</h3>
+<ul><li>见各学校具体通道</li>
+<li>至少 1 个深度特长</li>
+</ul>
+<h3>4. 面试</h3>
+<ul><li>选拔现场表现</li>
+<li>9-10 月由学校组织</li>
+</ul><h2>文杰自评（2026.08 baseline）</h2><table><thead><tr><th>维度</th><th>当前</th><th>目标</th><th>距离</th></tr></thead><tbody><tr><td>学术</td><td>数学远超 / 中英文待补</td><td>4 科 50%+</td><td>P1 入学后保持</td></tr><tr><td>操行</td><td>假定"非常好"</td><td>Very Good / Excellent</td><td>维持</td></tr><tr><td>游泳</td><td>校外银牌 / 50m 1:10</td><td>NSG 区前 4 / 全国前 8</td><td>远</td></tr><tr><td>钢琴</td><td>Trinity 1 Distinct / SPAF 1 Gold</td><td>Trinity 8 / SPAF 8 / SYF 主奏</td><td>远</td></tr></tbody></table><h2>风险点</h2><ul><li><strong>P4 之前必须有可见成果</strong>（NSG 成绩、SPAF 证书、SYF 选拔）</li>
+<li><strong>P5 一定要 EM1</strong>（PSLE 4-6 必备）</li>
+<li><strong>操行不能掉</strong>（P3 起就开始维护）</li>
+</ul><h2>关联</h2><ul><li>[[raffles-institution]] · [[hwa-chong-institution]] · [[dsa-application-timeline]]</li>
+<li>[[../profile/goals]] · [[../cca/conduct-grade]]</li>
+</ul>
+  </div>
+</div>
+
+<!-- 数据来源 -->
+<div class="data-footer">
+  <strong>📚 数据来源</strong>：<code>wiki/profile/goals.md</code> · <code>wiki/profile/12-dimensions.md</code> ·
+  <code>wiki/resources/bought.md</code> · <code>wiki/dsa/*</code> · 构建时间 2026-08-17 23:06:25
+</div>
+
+</div>
+</main>
+
+<!-- 共享页脚 -->
+<div data-shared="footer" data-updated="2026-08-16"></div>
+
+<!-- 共享组件 -->
+<script src="wenjie-shared.js"></script>
+<script src="wenjie-shared-search.js"></script>
+
+</body>
+</html>

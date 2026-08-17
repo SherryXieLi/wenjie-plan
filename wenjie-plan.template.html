@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="文杰6年学习战略 · Wiki 实时驱动 · 妈妈谢莉制作">
+  <title>文杰 · 6 年规划 + 入学评分（Wiki 驱动）</title>
+  <link rel="stylesheet" href="wenjie-shared.css">
+  <style>
+    /* 战略层专属样式 */
+    .plan-section {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    .plan-section h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--line);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .plan-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-2);
+      margin: 16px 0 8px;
+    }
+
+    /* 6 年时间轴 */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+      margin: 12px 0;
+    }
+    .timeline-item {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 6px;
+      text-align: center;
+      font-size: 11px;
+    }
+    .timeline-item.current {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+    .timeline-item .grade {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .timeline-item .year {
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* 12 维度评分 */
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+    .dim-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .dim-card .name {
+      font-size: 12px;
+      color: var(--ink-2);
+      margin-bottom: 6px;
+    }
+    .dim-card .score {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dim-card .score-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .dim-card .score-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--line-soft);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .dim-card .score-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-mid) 100%);
+    }
+    .dim-card[data-tier="warn"] { border-left: 3px solid var(--warm); }
+    .dim-card[data-tier="ok"] { border-left: 3px solid var(--primary); }
+    .dim-card[data-tier="strong"] { border-left: 3px solid var(--gold); }
+
+    /* 资源清单 */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .resource-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .resource-card .name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .resource-card .status {
+      font-size: 11px;
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .resource-card .status.pending { color: var(--warm); }
+
+    /* Wiki 内容 */
+    .wiki-render {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .wiki-render h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+    .wiki-render h2 {
+      font-size: 16px;
+      margin: 16px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed var(--line);
+      color: var(--primary);
+    }
+    .wiki-render h3 {
+      font-size: 14px;
+      margin: 12px 0 6px;
+      color: var(--ink-2);
+    }
+    .wiki-render p { margin: 6px 0; }
+    .wiki-render ul, .wiki-render ol { padding-left: 20px; margin: 6px 0; }
+    .wiki-render li { margin: 3px 0; }
+    .wiki-render code {
+      background: var(--line-soft);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .wiki-render strong { color: var(--primary); font-weight: 600; }
+    .wiki-render table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 8px 0;
+    }
+    .wiki-render table th,
+    .wiki-render table td {
+      padding: 6px 8px;
+      border-bottom: 1px dashed var(--line-soft);
+      text-align: left;
+    }
+    .wiki-render table th {
+      background: var(--line-soft);
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .data-footer {
+      margin: 16px 0;
+      padding: 12px;
+      background: var(--gold-soft);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .data-footer strong { color: var(--gold); }
+
+    @media (max-width: 560px) {
+      .timeline { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 共享顶部导航 -->
+<div data-shared="top-bar"></div>
+
+<!-- 面包屑 -->
+<div data-shared="breadcrumb"></div>
+
+<main>
+<div class="container">
+
+<section class="hero" style="padding-top: 24px;">
+  <div class="eyebrow">
+    🗺 6 年战略 · <strong>Wiki 实时驱动</strong> · v6
+  </div>
+  <h1>文杰的<em>6 年</em><strong>学习路线图</strong></h1>
+  <p class="lede">
+    从 K2 末到 PSLE · 从 P6 到 RI/HCI IP · 从 JC 到 A-Level。
+    <strong>目标学校</strong>：<a href="wiki/dsa/hwa-chong-institution.md">Hwa Chong Institution (HCI)</a> ·
+    <a href="wiki/dsa/raffles-institution.md">Raffles Institution (RI)</a>
+  </p>
+</section>
+
+<!-- 6 年时间轴 -->
+<div class="plan-section">
+  <h2>📅 6 年时间轴</h2>
+  __TIMELINE_HTML__
+</div>
+
+<!-- 6 年目标 -->
+<div class="plan-section">
+  <h2>🎯 6 年目标</h2>
+  <div class="wiki-render">
+    __GOALS_HTML__
+  </div>
+</div>
+
+<!-- 入学评分 12 维度 -->
+<div class="plan-section">
+  <h2>🏫 P1 入学评分 · 12 维度</h2>
+  <p style="font-size: 12px; color: var(--muted); margin: 0 0 12px;">
+    基于 wiki/profile/12-dimensions.md · 5 分制（5 = 完全达到 P1 标准）
+  </p>
+  __DIMENSIONS_HTML__
+</div>
+
+<!-- 已购资源 -->
+<div class="plan-section">
+  <h2>📚 已购资源</h2>
+  __RESOURCES_HTML__
+</div>
+
+<!-- DSA 路径 -->
+<div class="plan-section">
+  <h2>🎓 DSA 申请路径（2031-2032）</h2>
+  <div class="wiki-render">
+    __DSA_HTML__
+  </div>
+</div>
+
+<!-- 数据来源 -->
+<div class="data-footer">
+  <strong>📚 数据来源</strong>：<code>wiki/profile/goals.md</code> · <code>wiki/profile/12-dimensions.md</code> ·
+  <code>wiki/resources/bought.md</code> · <code>wiki/dsa/*</code> · 构建时间 __BUILD_TIME__
+</div>
+
+</div>
+</main>
+
+<!-- 共享页脚 -->
+<div data-shared="footer" data-updated="2026-08-16"></div>
+
+<!-- 共享组件 -->
+<script src="wenjie-shared.js"></script>
+<script src="wenjie-shared-search.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="文杰学习进度 + CCA 追踪 · Wiki 实时驱动">
+  <title>文杰 · 进度仪表盘 + CCA（Wiki 驱动）</title>
+  <link rel="stylesheet" href="wenjie-shared.css">
+  <style>
+    /* 进度 + CCA 专属样式 */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+    .kpi-label {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .kpi-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .kpi-unit { font-size: 11px; color: var(--muted); margin-left: 4px; }
+    .kpi-trend { font-size: 11px; color: var(--primary); margin-top: 4px; }
+    .kpi-trend.down { color: var(--rose); }
+    .kpi-trend.flat { color: var(--muted); }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 12px;
+    }
+    .section-card h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 14px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Spark lines */
+    .spark-line {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 70px;
+      padding: 6px 0;
+    }
+    .spark-bar {
+      flex: 1;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-mid) 100%);
+      border-radius: 3px 3px 0 0;
+      min-height: 4px;
+    }
+    .spark-bar.math { background: linear-gradient(180deg, var(--math) 0%, var(--math-mid) 100%); }
+    .spark-bar.english { background: linear-gradient(180deg, var(--primary) 0%, var(--primary-mid) 100%); }
+    .spark-bar.zero { background: var(--line); }
+    .spark-bar.future { background: var(--line-soft); }
+    .spark-labels {
+      display: flex;
+      gap: 3px;
+      margin-top: 4px;
+      font-size: 9px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .spark-label { flex: 1; text-align: center; }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .data-table td {
+      padding: 10px;
+      border-bottom: 1px dashed var(--line-soft);
+    }
+    .data-table tbody tr:hover { background: var(--line-soft); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+    .badge-pending { background: var(--rose-soft); color: var(--rose); }
+    .badge-mastered { background: var(--primary-soft); color: var(--primary); }
+    .badge-active { background: var(--primary-soft); color: var(--primary); }
+    .badge-done { background: var(--gold-soft); color: var(--gold); }
+    .badge-warn { background: var(--warm-soft); color: var(--warm); }
+
+    .empty-state {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      background: var(--line-soft);
+      border-radius: 8px;
+      border: 1px dashed var(--line);
+    }
+
+    /* CCA milestone timeline */
+    .cca-timeline {
+      display: grid;
+      gap: 8px;
+    }
+    .cca-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      align-items: center;
+    }
+    .cca-row .grade {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary);
+    }
+    .cca-row .milestone {
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+    .cca-row .status {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .status.done { color: var(--primary); }
+    .status.active { color: var(--gold); }
+    .status.future { color: var(--muted); }
+
+    .data-footer {
+      margin: 16px 0;
+      padding: 12px;
+      background: var(--gold-soft);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .data-footer strong { color: var(--gold); }
+
+    @media (max-width: 560px) {
+      .cca-row { grid-template-columns: 60px 1fr; }
+      .cca-row .status { grid-column: 2; margin-top: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 共享顶部导航 -->
+<div data-shared="top-bar"></div>
+
+<!-- 面包屑 -->
+<div data-shared="breadcrumb"></div>
+
+<main>
+<div class="container">
+
+<section class="hero" style="padding-top: 24px;">
+  <div class="eyebrow">
+    📊 进度 + CCA · <strong>Wiki 实时数据</strong> · 错题曲线 + 间隔重复
+  </div>
+  <h1>文杰的<em>进步</em><strong>一眼看清</strong></h1>
+  <p class="lede">
+    错题曲线 · 错题本 · CCA 里程碑 · 全部来自
+    <code>wiki/log.md</code> + <code>wiki/mistakes/</code> + <code>wiki/cca/</code>
+  </p>
+</section>
+
+<!-- KPI 卡片 -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">📚 累计学习天数</div>
+    <div class="kpi-value">5<span class="kpi-unit">天</span></div>
+    <div class="kpi-trend">08-15 ~ 08-23</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">🔥 待复习错题</div>
+    <div class="kpi-value">1<span class="kpi-unit">道</span></div>
+    <div class="kpi-trend down">1 道待复习</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">✅ 已掌握</div>
+    <div class="kpi-value">0<span class="kpi-unit">道</span></div>
+    <div class="kpi-trend">0/1 · 0% 掌握率</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">📈 本周完成度</div>
+    <div class="kpi-value">66<span class="kpi-unit">%</span></div>
+    <div class="kpi-trend">已 2/3 天</div>
+  </div>
+</div>
+
+<!-- 珠算曲线 -->
+<div class="section-card">
+  <h2>🧮 珠算正确率曲线</h2>
+  <div class="spark-line"><div class="empty-state" style="grid-column: 1 / -1;">还没数据 · 多做几天就有曲线</div></div>
+  <div class="spark-labels"></div>
+</div>
+
+<!-- 心算曲线 -->
+<div class="section-card">
+  <h2>🧠 心算完成度曲线</h2>
+  <div class="spark-line"><div class="empty-state" style="grid-column: 1 / -1;">还没数据 · 多做几天就有曲线</div></div>
+  <div class="spark-labels"></div>
+</div>
+
+<!-- 错题表 -->
+<div class="section-card">
+  <h2>📋 错题本 · 当前状态</h2>
+  <table class="mistake-table">
+        <thead>
+            <tr>
+                <th>状态</th>
+                <th>ID</th>
+                <th>科目</th>
+                <th>错因</th>
+                <th>题面</th>
+                <th>发现日</th>
+            </tr>
+        </thead>
+        <tbody><tr>
+            <td><span class="badge badge-pending">待复习</span></td>
+            <td><strong>math-001</strong></td>
+            <td>math</td>
+            <td>进位加法</td>
+            <td><code>7 + 5 = ?</code></td>
+            <td>2026-08-17</td>
+        </tr></tbody>
+    </table>
+</div>
+
+<!-- CCA 钢琴里程碑 -->
+<div class="section-card">
+  <h2>🎹 CCA · 钢琴里程碑</h2>
+  <div class="cca-timeline"><div class="cca-row">
+            <div class="grade">K2 末</div>
+            <div class="milestone">Trinity 1 · <small>已考完 Distinct</small></div>
+            <div class="status status-done">
+                ✅
+            </div>
+        </div><div class="cca-row">
+            <div class="grade">P1 末</div>
+            <div class="milestone">Trinity 3 · <small>备考中</small></div>
+            <div class="status status-active">
+                🔄
+            </div>
+        </div><div class="cca-row">
+            <div class="grade">P2 末</div>
+            <div class="milestone">SPAF 1 · <small>2025-09 Gold</small></div>
+            <div class="status status-done">
+                ✅
+            </div>
+        </div><div class="cca-row">
+            <div class="grade">P3 末</div>
+            <div class="milestone">Trinity 4 + SPAF 2 · <small>2029</small></div>
+            <div class="status status-future">
+                ⏳
+            </div>
+        </div><div class="cca-row">
+            <div class="grade">P4 末</div>
+            <div class="milestone">SYF 校内选拔 + SPAF 3 · <small>2030</small></div>
+            <div class="status status-future">
+                ⏳
+            </div>
+        </div><div class="cca-row">
+            <div class="grade">P5 末</div>
+            <div class="milestone">SYF 主奏 + Trinity 6 · <small>2031</small></div>
+            <div class="status status-future">
+                ⏳
+            </div>
+        </div><div class="cca-row">
+            <div class="grade">P6 末</div>
+            <div class="milestone">Trinity 7 + DSA · <small>2032</small></div>
+            <div class="status status-future">
+                ⏳
+            </div>
+        </div></div>
+</div>
+
+<!-- CCA 钢琴错题 -->
+<div class="section-card">
+  <h2>🎼 钢琴 · 曲库</h2>
+  <table class="data-table">
+        <thead>
+            <tr>
+                <th>曲目</th>
+                <th>级别</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Bach · Minuet in G</td><td>Trinity 1</td><td><span class="badge badge-done">已通过</span></td></tr>
+            <tr><td>Schumann · Album for the Young</td><td>Trinity 2</td><td><span class="badge badge-mastered">熟练</span></td></tr>
+            <tr><td>Chopin · Prelude</td><td>Trinity 3</td><td><span class="badge badge-active">练习中</span></td></tr>
+            <tr><td>Debussy · Children's Corner</td><td>Trinity 4</td><td><span class="badge badge-warn">待开始</span></td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- 数据来源 -->
+<div class="data-footer">
+  <strong>📚 数据来源</strong>：<code>wiki/log.md</code> · <code>wiki/mistakes/</code> · <code>wiki/cca/</code> · <code>wiki/subjects/piano/</code> · 构建时间 2026-08-17 23:06:25
+</div>
+
+</div>
+</main>
+
+<!-- 共享页脚 -->
+<div data-shared="footer" data-updated="2026-08-16"></div>
+
+<!-- 共享组件 -->
+<script src="wenjie-shared.js"></script>
+<script src="wenjie-shared-search.js"></script>
+
+</body>
+</html>

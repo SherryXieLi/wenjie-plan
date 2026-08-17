@@ -12,11 +12,15 @@ BASE = Path(__file__).parent
 WIKI_DAILY = BASE / 'wiki' / 'plans' / 'daily'
 WIKI_MISTAKES = BASE / 'wiki' / 'mistakes'
 OUTPUT_HTML = BASE / 'wenjie-daily-plan.html'
-TEMPLATE = BASE / 'wenjie-daily-plan.template.html'
+TEMPLATE = BASE / 'wenjie-daily.template.html'
 DASHBOARD_OUTPUT = BASE / 'wenjie-progress-dashboard.html'
 DASHBOARD_TEMPLATE = BASE / 'wenjie-progress-dashboard.template.html'
 ACADEMY_OUTPUT = BASE / 'wenjie-growth-garden.html'
-ACADEMY_TEMPLATE = BASE / 'wenjie-growth-garden.template.html'
+ACADEMY_TEMPLATE = BASE / 'wenjie-academy.template.html'
+PLAN_OUTPUT = BASE / 'wenjie-plan.html'
+PLAN_TEMPLATE = BASE / 'wenjie-plan.template.html'
+PROGRESS_OUTPUT = BASE / 'wenjie-progress.html'
+PROGRESS_TEMPLATE = BASE / 'wenjie-progress.template.html'
 
 # 间隔重复算法（Karpathy ML 视角）
 SR_INTERVALS = [1, 3, 7, 14, 30]  # days
@@ -291,6 +295,14 @@ def build():
     # ===== 生成仪表盘 =====
     print(f"\n📊 生成仪表盘...")
     build_dashboard(daily_perf)
+
+    # ===== 生成 6 年规划页 =====
+    print(f"\n🗺 生成 6 年规划...")
+    build_plan_page()
+
+    # ===== 生成进度 + CCA 页 =====
+    print(f"\n📈 生成进度 + CCA...")
+    build_progress_page(daily_perf)
 
     # ===== 生成英雄学院 =====
     print(f"\n🦸 生成英雄学院...")
@@ -614,6 +626,237 @@ def _subject_progress(daily_perf, correct_key, total_key):
             correct_sum += c
             total_sum += t
     return correct_sum / total_sum if total_sum > 0 else 0
+
+
+def build_plan_page():
+    """生成 6 年规划页（合并 overview + readiness）"""
+    if not PLAN_TEMPLATE.exists():
+        print(f"⚠️  模板不存在: {PLAN_TEMPLATE}")
+        return
+
+    template = PLAN_TEMPLATE.read_text(encoding='utf-8')
+
+    # 6 年时间轴
+    timeline_html = render_timeline()
+
+    # 6 年目标
+    goals_html = load_and_render_wiki('wiki/profile/goals.md')
+
+    # 12 维度评分
+    dimensions_html = render_dimensions()
+
+    # 资源清单
+    resources_html = render_resources()
+
+    # DSA
+    dsa_html = load_and_render_wiki('wiki/dsa/requirements.md')
+
+    html = template
+    html = html.replace('__TIMELINE_HTML__', timeline_html)
+    html = html.replace('__GOALS_HTML__', goals_html)
+    html = html.replace('__DIMENSIONS_HTML__', dimensions_html)
+    html = html.replace('__RESOURCES_HTML__', resources_html)
+    html = html.replace('__DSA_HTML__', dsa_html)
+    html = html.replace('__BUILD_TIME__', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+    PLAN_OUTPUT.write_text(html, encoding='utf-8')
+    print(f"  ✅ 生成 {PLAN_OUTPUT}")
+
+
+def render_timeline():
+    """渲染 6 年时间轴"""
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    grades = [
+        ('K2', '2026', '现在'),
+        ('P1', '2027', '小学'),
+        ('P2', '2028', ''),
+        ('P3', '2029', 'Trinity 4'),
+        ('P4', '2030', 'SYF'),
+        ('P5', '2031', 'DSA 准备'),
+    ]
+    items = ''
+    for grade, year, milestone in grades:
+        cls = 'current' if grade == 'K2' else ''
+        items += f'''<div class="timeline-item {cls}">
+            <div class="grade">{grade}</div>
+            <div class="year">{year}</div>
+            <div style="font-size: 9px; color: var(--primary); margin-top: 2px;">{milestone}</div>
+        </div>'''
+    return f'<div class="timeline">{items}</div>'
+
+
+def load_and_render_wiki(path):
+    """加载并渲染 Wiki markdown"""
+    file_path = BASE / path
+    if not file_path.exists():
+        return f'<p style="color: var(--muted);">⚠️ 文件不存在：{path}</p>'
+
+    md_text = file_path.read_text(encoding='utf-8')
+    parsed = parse_md_sections(md_text)
+
+    html = ''
+    if parsed['title']:
+        html += f'<h1>{parsed["title"]}</h1>'
+
+    for sec in parsed['sections']:
+        sec_html = md_to_html('\n'.join(sec['body']))
+        html += f'<h2>{sec["heading"]}</h2>{sec_html}'
+
+    return html
+
+
+def render_dimensions():
+    """渲染 12 维度评分（暂时硬编码默认值）"""
+    dims = [
+        ('🗣 英语听说', 4, 'ok'),
+        ('📖 英语阅读', 3, 'warn'),
+        ('✍️ 英语书写', 3, 'warn'),
+        ('🔢 数学计算', 4, 'ok'),
+        ('🧩 数学应用', 3, 'warn'),
+        ('📐 数学思维', 3, 'warn'),
+        ('🀄 中文听说', 5, 'strong'),
+        ('📜 中文阅读', 4, 'ok'),
+        ('🖌 汉字书写', 3, 'warn'),
+        ('🎹 音乐/钢琴', 4, 'ok'),
+        ('🏃 运动体能', 4, 'ok'),
+        ('👥 社交情感', 5, 'strong'),
+    ]
+    cards = ''
+    for name, score, tier in dims:
+        cards += f'''<div class="dim-card" data-tier="{tier}">
+            <div class="name">{name}</div>
+            <div class="score">
+                <div class="score-num">{score}</div>
+                <div class="score-bar"><div class="score-fill" style="width: {score*20}%"></div></div>
+            </div>
+        </div>'''
+    return f'<div class="dim-grid">{cards}</div>'
+
+
+def render_resources():
+    """渲染资源清单"""
+    items = [
+        ('📚 Intensive Maths Drills P1', '已购 · Issac'),
+        ('📚 One-stop English P1', '已购 · CASCO'),
+        ('📚 快乐练习 2.0', '已购 · 识字 + 拼音'),
+        ('🎵 KAK Vowel Sounds', '已购 · Grade 2'),
+        ('📖 牛津树 Oxford Reading Tree', '已购 · Level 1-3'),
+        ('🧮 算盘 + 心算卡', '已购'),
+        ('🎹 钢琴课', '进行中 · Trinity'),
+    ]
+    cards = ''
+    for name, status in items:
+        cards += f'''<div class="resource-card">
+            <div class="name">{name}</div>
+            <div class="status">{status}</div>
+        </div>'''
+    return f'<div class="resource-grid">{cards}</div>'
+
+
+def build_progress_page(daily_perf):
+    """生成进度 + CCA 页（合并 dashboard + cca-tracker）"""
+    if not PROGRESS_TEMPLATE.exists():
+        print(f"⚠️  模板不存在: {PROGRESS_TEMPLATE}")
+        return
+
+    template = PROGRESS_TEMPLATE.read_text(encoding='utf-8')
+    today_str = datetime.now().strftime('%Y-%m-%d')
+
+    # KPI 数据
+    total_days = sum(1 for d in daily_perf.values() if d.get('completed', True))
+    if daily_perf:
+        first_date = min(daily_perf.keys())
+        last_date = max(daily_perf.keys())
+        week_range = f'{first_date[5:]} ~ {last_date[5:]}'
+    else:
+        week_range = '—'
+
+    all_mistakes = _get_all_mistakes()
+    due_count = sum(1 for m in all_mistakes if m.get('status') == 'pending')
+    mastered_count = sum(1 for m in all_mistakes if m.get('status') == 'mastered')
+    mastered_pct = f'{mastered_count}/{len(all_mistakes)} · {mastered_count/len(all_mistakes)*100:.0f}% 掌握率' if all_mistakes else '—'
+
+    week_dates = [d for d in daily_perf.keys() if d <= today_str]
+    week_completed = sum(1 for d in week_dates if daily_perf[d].get('completed', True))
+    week_completion = int(week_completed / len(week_dates) * 100) if week_dates else 0
+
+    # 曲线
+    math_curve, math_labels = render_curve(daily_perf, 'math_correct', 'math_total', '珠算')
+    mental_curve, mental_labels = render_curve(daily_perf, 'mental_correct', 'mental_total', '心算')
+
+    # 错题表
+    mistake_table = render_mistake_table(all_mistakes)
+
+    # CCA 钢琴里程碑
+    piano_milestones = render_piano_milestones()
+
+    # CCA 钢琴曲库
+    piano_repertoire = render_piano_repertoire()
+
+    html = template
+    html = html.replace('__TOTAL_DAYS__', str(total_days))
+    html = html.replace('__WEEK_RANGE__', week_range)
+    html = html.replace('__DUE_COUNT__', str(due_count))
+    html = html.replace('__DUE_TREND_CLASS__', 'down' if due_count > 0 else 'flat')
+    html = html.replace('__DUE_TREND_TEXT__', f'{due_count} 道待复习' if due_count > 0 else '全部复习完 ✅')
+    html = html.replace('__MASTERED_COUNT__', str(mastered_count))
+    html = html.replace('__MASTERED_PCT__', mastered_pct)
+    html = html.replace('__WEEK_COMPLETION__', str(week_completion))
+    html = html.replace('__WEEK_TREND_TEXT__', f'已 {week_completed}/{len(week_dates)} 天' if week_dates else '—')
+    html = html.replace('__MATH_CURVE_HTML__', math_curve)
+    html = html.replace('__MATH_LABELS__', math_labels)
+    html = html.replace('__MENTAL_CURVE_HTML__', mental_curve)
+    html = html.replace('__MENTAL_LABELS__', mental_labels)
+    html = html.replace('__MISTAKE_TABLE_HTML__', mistake_table)
+    html = html.replace('__PIANO_MILESTONES_HTML__', piano_milestones)
+    html = html.replace('__PIANO_REPERTOIRE_HTML__', piano_repertoire)
+    html = html.replace('__BUILD_TIME__', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+    PROGRESS_OUTPUT.write_text(html, encoding='utf-8')
+    print(f"  ✅ 生成 {PROGRESS_OUTPUT}")
+
+
+def render_piano_milestones():
+    """渲染钢琴里程碑"""
+    milestones = [
+        ('K2 末', 'Trinity 1', 'done', '已考完 Distinct'),
+        ('P1 末', 'Trinity 3', 'active', '备考中'),
+        ('P2 末', 'SPAF 1', 'done', '2025-09 Gold'),
+        ('P3 末', 'Trinity 4 + SPAF 2', 'future', '2029'),
+        ('P4 末', 'SYF 校内选拔 + SPAF 3', 'future', '2030'),
+        ('P5 末', 'SYF 主奏 + Trinity 6', 'future', '2031'),
+        ('P6 末', 'Trinity 7 + DSA', 'future', '2032'),
+    ]
+    rows = ''
+    for grade, milestone, status, note in milestones:
+        status_class = f'status-{status}'
+        rows += f'''<div class="cca-row">
+            <div class="grade">{grade}</div>
+            <div class="milestone">{milestone} · <small>{note}</small></div>
+            <div class="status {status_class}">
+                {'✅' if status == 'done' else '🔄' if status == 'active' else '⏳'}
+            </div>
+        </div>'''
+    return f'<div class="cca-timeline">{rows}</div>'
+
+
+def render_piano_repertoire():
+    """渲染钢琴曲库"""
+    return '''<table class="data-table">
+        <thead>
+            <tr>
+                <th>曲目</th>
+                <th>级别</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Bach · Minuet in G</td><td>Trinity 1</td><td><span class="badge badge-done">已通过</span></td></tr>
+            <tr><td>Schumann · Album for the Young</td><td>Trinity 2</td><td><span class="badge badge-mastered">熟练</span></td></tr>
+            <tr><td>Chopin · Prelude</td><td>Trinity 3</td><td><span class="badge badge-active">练习中</span></td></tr>
+            <tr><td>Debussy · Children's Corner</td><td>Trinity 4</td><td><span class="badge badge-warn">待开始</span></td></tr>
+        </tbody>
+    </table>'''
 
 
 if __name__ == '__main__':

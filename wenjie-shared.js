@@ -11,32 +11,26 @@
 
   // ---- 全局导航 + 层级标记 ----
   const NAV_ITEMS = [
-    { id: 'overview',  href: 'wenjie-master-overview.html',   label: '🗺 6年总览', layer: '战略层' },
-    { id: 'readiness', href: 'wenjie-school-readiness.html',  label: '🏫 入学评分', layer: '评估层' },
-    { id: 'progress',  href: 'wenjie-progress-dashboard.html',label: '📊 进度仪表盘', layer: '诊断层' },
-    { id: 'daily',     href: 'wenjie-daily-plan.html',        label: '📅 每日计划', layer: '操作层' },
-    { id: 'cca',       href: 'wenjie-cca-tracker.html',       label: '🎹 CCA追踪', layer: '边角层' },
-    { id: 'garden',    href: 'wenjie-growth-garden.html',     label: '🌱 成长花园', layer: '娃看版' }
+    { id: 'plan',     href: 'wenjie-plan.html',              label: '🗺 6年规划', layer: '战略层' },
+    { id: 'progress', href: 'wenjie-progress.html',          label: '📊 进度 + CCA', layer: '评估层' },
+    { id: 'daily',    href: 'wenjie-daily-plan.html',        label: '📅 每日计划', layer: '操作层' },
+    { id: 'academy',  href: 'wenjie-growth-garden.html',     label: '🦸 英雄学院', layer: '娃看版' }
   ];
 
   // ---- 页面标题（top bar crumb）----
   const PAGE_TITLES = {
+    'plan':              '文杰 · 6 年规划 + 入学评分',
+    'progress':          '文杰 · 进度 + CCA',
     'daily-plan':        '文杰 · 每日学习内容',
-    'growth-garden':     '文杰的成长花园',
-    'master-overview':   '文杰 · 6 年全景速览',
-    'progress-dashboard':'文杰 · 学习进度仪表盘',
-    'school-readiness':  '文杰 · 入学准备度',
-    'cca-tracker':       '文杰 · CCA 进度追踪',
+    'growth-garden':     '文杰的英雄学院',
     '':                  '文杰学习计划'
   };
 
   const PAGE_PHASE = {
-    'daily-plan':        'Phase 1 · W01 · 8 月 · v4.3',
-    'master-overview':   '6 年规划 · 2026-2032',
-    'progress-dashboard':'每周更新 · 数据驱动',
-    'school-readiness':  'Phase 1 · W01 · 8 月',
-    'cca-tracker':       '🏊 Swimming + 🎹 Piano · DSA 准备',
-    'growth-garden':     '文杰的成长花园',
+    'plan':              '6 年规划 · 2026-2032',
+    'progress':          '进度追踪 + CCA',
+    'daily-plan':        'Phase 1 · W01 · 8 月 · v6',
+    'growth-garden':     '奥特曼英雄学院',
     '':                  ''
   };
 
