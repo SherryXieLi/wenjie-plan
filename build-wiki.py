@@ -866,14 +866,21 @@ def render_week_plan_for_kid(today_date):
                     continue
                 if '~~' in line:
                     continue
-                skip_kw = ['完全自由', '玩耍', '晚饭', '洗澡', '睡觉', '户外', '项目日活动']
+                skip_kw = ['完全自由', '玩耍', '晚饭', '洗澡', '睡觉', '户外', '项目日活动', '到达', '回家']
                 if any(k in task for k in skip_kw):
                     continue
+
+                # 移除已存在的 emoji（避免重复）
+                task = re.sub(r'[\U0001F300-\U0001F9FF]', '', task).strip()
+                # 移除 markdown 残留
+                task = re.sub(r'\*+', '', task).strip()
 
                 # 选择 emoji
                 task_emoji = '📝'
                 if '考级' in task:
                     task_emoji = '🎯'
+                elif '出发' in task or '路上' in task:
+                    task_emoji = '🚗'
                 elif '钢琴' in task:
                     task_emoji = '🎹'
                 elif '汉字' in task or '写字' in task:
