@@ -522,6 +522,9 @@ def build_academy(daily_data, daily_perf, today_date):
     # 渲染娃版今日任务（基于 daily plan 时间表）
     todays_tasks_html = render_todays_tasks_for_kid(today_date, daily_perf)
 
+    # 渲染本周计划（七日视图 · 当周 7 天）
+    week_plan_html = render_week_plan_for_kid(today_date)
+
     # 替换占位符
     html = template
     html = html.replace('__LEVEL__', str(level))
@@ -532,6 +535,7 @@ def build_academy(daily_data, daily_perf, today_date):
     html = html.replace('__SPEED__', str(min(100, 50 + total_days * 5)))
     html = html.replace('__MISSIONS_HTML__', missions_html)
     html = html.replace('__TODAYS_TASKS_HTML__', todays_tasks_html)
+    html = html.replace('__WEEK_PLAN_HTML__', week_plan_html)
     html = html.replace('__MISSION_COUNT__', str(missions_html.count('mission-card')))
     html = html.replace('__MATH_PROGRESS__', f'{math_p}% 击败')
     html = html.replace('__ENGLISH_PROGRESS__', f'{english_p}% 击败')
@@ -790,6 +794,125 @@ def render_todays_tasks_for_kid(today_date, daily_perf):
     </div>'''
 
     return f'<div class="todays-tasks-grid">{cards}</div>{defeat_btn}'
+
+
+def render_week_plan_for_kid(today_date):
+    """渲染娃版本周计划（七日视图 · 当周 7 天）"""
+    import re
+    from datetime import datetime, timedelta
+
+    def clean_md(s):
+        s = re.sub(r'\*\*([^*]+)\*\*', r'\1', s)
+        s = re.sub(r'~~([^~]+)~~', r'', s)
+        s = re.sub(r'__([^_]+)__', r'\1', s)
+        return s.strip()
+
+    # 找出本周的 7 天（周一到周日）
+    today = datetime.strptime(today_date, '%Y-%m-%d').date()
+    monday = today - timedelta(days=today.weekday())
+    week_dates = [(monday + timedelta(days=i)) for i in range(7)]
+
+    # 每天的类型 + 主要任务
+    day_type_emoji = {
+        '周一': ('🟢', '常规'),
+        '周二': ('🟡', '半休'),
+        '周三': ('🟡', '半休'),
+        '周四': ('🟢', '轻量'),
+        '周五': ('🟢', '常规'),
+        '周六': ('🟠', '项目'),
+        '周日': ('🟠', '复盘'),
+    }
+
+    weekday_names = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    cards = ''
+
+    for date_obj in week_dates:
+        date_str = date_obj.strftime('%Y-%m-%d')
+        weekday = weekday_names[date_obj.weekday()]
+        emoji, day_type = day_type_emoji[weekday]
+
+        # 读取当天的计划
+        daily_md = BASE / 'wiki' / 'plans' / 'daily' / f'{date_str}.md'
+        tasks_short = []
+
+        if daily_md.exists():
+            md_text = daily_md.read_text(encoding='utf-8')
+
+            # 找第一个表格 + 提取关键任务
+            in_first_table = False
+            for line in md_text.split('\n'):
+                if not in_first_table:
+                    if '|' in line and '时段' in line and '任务' in line:
+                        in_first_table = True
+                    continue
+                if not (line.startswith('|') and '|' in line):
+                    if in_first_table:
+                        break
+                    continue
+                if '---' in line:
+                    continue
+
+                cells = [c.strip() for c in line.strip('|').split('|')]
+                if len(cells) < 2:
+                    continue
+
+                task = clean_md(cells[1])
+                if not task or task == '—':
+                    continue
+                if '~~' in line:
+                    continue
+                skip_kw = ['完全自由', '玩耍', '晚饭', '洗澡', '睡觉', '户外', '项目日活动']
+                if any(k in task for k in skip_kw):
+                    continue
+
+                # 选择 emoji
+                task_emoji = '📝'
+                if '考级' in task:
+                    task_emoji = '🎯'
+                elif '钢琴' in task:
+                    task_emoji = '🎹'
+                elif '汉字' in task or '写字' in task:
+                    task_emoji = '✍️'
+                elif '珠算' in task or '心算' in task or '数学' in task:
+                    task_emoji = '🔢'
+                elif '英文' in task or 'English' in task or 'Phonics' in task:
+                    task_emoji = '📚'
+                elif '阅读' in task or '读' in task:
+                    task_emoji = '📖'
+                elif 'Wiki' in task or '复盘' in task:
+                    task_emoji = '📋'
+
+                short = re.sub(r'[（(][^）)]*[）)]', '', task).strip()[:6]
+                tasks_short.append(f'{task_emoji} {short}')
+
+                if len(tasks_short) >= 3:
+                    break
+
+        if not tasks_short:
+            tasks_short = ['—']
+
+        # 状态 class
+        is_today = (date_str == today_date)
+        is_past = (date_obj < today)
+        classes = 'week-day-card'
+        if is_today:
+            classes += ' today'
+        elif is_past:
+            classes += ' past'
+
+        badge = '<div class="week-day-badge">TODAY</div>' if is_today else ''
+        tasks_html = '<br>'.join(tasks_short)
+
+        cards += f'''
+        <div class="{classes}" data-date="{date_str}">
+          <div class="week-day-name">{weekday}</div>
+          <div class="week-day-emoji">{emoji}</div>
+          <div class="week-day-tasks">{tasks_html}</div>
+          <div class="week-day-date">{date_str[5:]}</div>
+          {badge}
+        </div>'''
+
+    return f'<div class="week-plan-grid">{cards}</div>'
 
 
 def _get_all_mistakes():

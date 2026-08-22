@@ -818,6 +818,89 @@
       .todays-tasks-grid { grid-template-columns: 1fr; }
     }
 
+    /* 🆕 本周计划（七日视图） */
+    .week-plan {
+      max-width: 600px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .week-plan-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      color: #ffd700;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .week-plan-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .week-day-card {
+      background: linear-gradient(135deg, rgba(47, 111, 94, 0.4) 0%, rgba(74, 144, 164, 0.2) 100%);
+      border: 2px solid rgba(255, 215, 0, 0.2);
+      border-radius: 10px;
+      padding: 8px 4px;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .week-day-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 215, 0, 0.5);
+    }
+    .week-day-card.today {
+      border-color: #ffd700;
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 107, 53, 0.2) 100%);
+    }
+    .week-day-card.past {
+      opacity: 0.5;
+    }
+    .week-day-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .week-day-emoji {
+      font-size: 28px;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    .week-day-tasks {
+      font-size: 9px;
+      color: rgba(255, 215, 0, 0.9);
+      line-height: 1.3;
+    }
+    .week-day-date {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .week-day-badge {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 6px;
+      font-size: 8px;
+      background: #ffd700;
+      color: #0a0e27;
+      border-radius: 4px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 480px) {
+      .week-plan-grid { grid-template-columns: repeat(7, 1fr); gap: 4px; }
+      .week-day-card { padding: 6px 2px; }
+      .week-day-emoji { font-size: 22px; }
+      .week-day-name { font-size: 10px; }
+      .week-day-tasks { font-size: 8px; }
+    }
+
     /* 🆕 打败它按钮（每个任务卡） */
     .task-done-btn {
       margin-top: 10px;
@@ -1410,6 +1493,64 @@
   </div>
 </div>
 
+<!-- 🆕 本周计划（七日视图 · 同步 wiki/plans/weekly/本周.md） -->
+<div class="week-plan kid-only">
+  <h2 class="week-plan-title">📅 本周计划</h2>
+  <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.6); margin: -4px 0 12px;">
+    看看这周每天做什么
+  </p>
+  <div class="week-plan-grid">
+        <div class="week-day-card past" data-date="2026-08-17">
+          <div class="week-day-name">周一</div>
+          <div class="week-day-emoji">🟢</div>
+          <div class="week-day-tasks">—</div>
+          <div class="week-day-date">08-17</div>
+          
+        </div>
+        <div class="week-day-card past" data-date="2026-08-18">
+          <div class="week-day-name">周二</div>
+          <div class="week-day-emoji">🟡</div>
+          <div class="week-day-tasks">✍️ 写汉字 1 <br>🎹 钢琴课<br>✍️ 快乐练习2.</div>
+          <div class="week-day-date">08-18</div>
+          
+        </div>
+        <div class="week-day-card past" data-date="2026-08-19">
+          <div class="week-day-name">周三</div>
+          <div class="week-day-emoji">🟡</div>
+          <div class="week-day-tasks">✍️ 写汉字 1 <br>🎹 钢琴<br>📝 学习</div>
+          <div class="week-day-date">08-19</div>
+          
+        </div>
+        <div class="week-day-card past" data-date="2026-08-20">
+          <div class="week-day-name">周四</div>
+          <div class="week-day-emoji">🟢</div>
+          <div class="week-day-tasks">✍️ 写汉字 1 <br>🎹 钢琴<br>📝 轻量学习 2</div>
+          <div class="week-day-date">08-20</div>
+          
+        </div>
+        <div class="week-day-card past" data-date="2026-08-21">
+          <div class="week-day-name">周五</div>
+          <div class="week-day-emoji">🟢</div>
+          <div class="week-day-tasks">✍️ 写汉字 1 <br>🎹 钢琴<br>📝 学习</div>
+          <div class="week-day-date">08-21</div>
+          
+        </div>
+        <div class="week-day-card today" data-date="2026-08-22">
+          <div class="week-day-name">周六</div>
+          <div class="week-day-emoji">🟠</div>
+          <div class="week-day-tasks">✍️ 写汉字 1 <br>🎹 钢琴练习<br>📖 亲子共读</div>
+          <div class="week-day-date">08-22</div>
+          <div class="week-day-badge">TODAY</div>
+        </div>
+        <div class="week-day-card" data-date="2026-08-23">
+          <div class="week-day-name">周日</div>
+          <div class="week-day-emoji">🟠</div>
+          <div class="week-day-tasks">✍️ 写汉字 1 <br>🎹 钢琴练习<br>📖 亲子共读</div>
+          <div class="week-day-date">08-23</div>
+          
+        </div></div>
+</div>
+
 <!-- 🆕 今日怪兽（具体任务 · 行动导向 · 来自 wiki/plans/daily/今日.md） -->
 <div class="monster-summary kid-only">
   <h2 class="monster-summary-title">⚔️ 今天的怪兽</h2>
@@ -1722,7 +1863,7 @@
 
 <!-- 数据来源 -->
 <div class="data-footer">
-  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 18:36:31
+  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 19:50:28
 </div>
 
 </main>
