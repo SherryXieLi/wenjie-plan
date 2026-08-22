@@ -890,11 +890,8 @@ def render_week_plan_for_kid(today_date):
                 short = re.sub(r'[（(][^）)]*[）)]', '', task).strip()[:6]
                 task_entry = f'{task_emoji} {short}'
 
-                # 跳过"写汉字 1 字"（每天都有·显示在顶部 baseline）
+                # 跳过"写汉字"（每天 8:15 的微习惯 · 不在周视图显示）
                 if '写汉字' in task or task.strip().startswith('写汉字'):
-                    # 只在第一个时记录
-                    if not any('✍️' in t for t in tasks_short):
-                        tasks_short.append(task_entry)
                     continue
 
                 tasks_short.append(task_entry)
