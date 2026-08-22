@@ -507,6 +507,33 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* Arena 视觉进度条（娃版） */
+    .arena-bar {
+      display: none;
+      margin-top: 12px;
+      width: 100%;
+      height: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+    .arena-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd700 0%, #ff6b35 100%);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    }
+
+    /* 娃看模式：显示进度条，隐藏文字 */
+    body:not(.parent-mode) .arena-bar {
+      display: block;
+    }
+    body:not(.parent-mode) .arena-progress {
+      display: none;
+    }
+
     /* ===== Power Up 攻略（Do X → Get Y） ===== */
     .powerup-section {
       max-width: 600px;
@@ -932,7 +959,7 @@
 
 <!-- 今日任务 -->
 <div class="mission-board">
-  <h2 class="mission-title">📋 今日任务 · 3 个怪兽</h2>
+  <h2 class="mission-title">📋 今天的怪兽</h2>
 
   <div class="mission-card">
             <div class="mission-head">
@@ -972,40 +999,42 @@
 
 <!-- 5 大战场 -->
 <div class="arena-map">
-  <h2 class="arena-title">🗺 5 大战场</h2>
-  <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: -8px 0 12px; text-align: center;">
-    👆 点开看任务
-  </p>
+  <h2 class="arena-title">🗺 我的战场</h2>
 
   <div class="arena-grid">
     <div class="arena-card" data-arena="math" style="--arena-color-1: #1a3a4a; --arena-color-2: #4a90a4; --arena-border: #87ceeb;">
       <div class="arena-icon">🔴</div>
       <h3 class="arena-name">数学</h3>
       <div class="arena-progress">0% 击败</div>
+      <div class="arena-bar"><div class="arena-bar-fill" style="width: 0%;"></div></div>
     </div>
 
     <div class="arena-card" data-arena="english" style="--arena-color-1: #1a3a2a; --arena-color-2: #2f6f5e; --arena-border: #87ceeb;">
       <div class="arena-icon">🔵</div>
       <h3 class="arena-name">英文</h3>
       <div class="arena-progress">0% 击败</div>
+      <div class="arena-bar"><div class="arena-bar-fill" style="width: 0%;"></div></div>
     </div>
 
     <div class="arena-card" data-arena="chinese" style="--arena-color-1: #4a2a1a; --arena-color-2: #c97b3f; --arena-border: #ff6b35;">
       <div class="arena-icon">🟠</div>
       <h3 class="arena-name">中文</h3>
       <div class="arena-progress">0% 击败</div>
+      <div class="arena-bar"><div class="arena-bar-fill" style="width: 0%;"></div></div>
     </div>
 
     <div class="arena-card" data-arena="piano" style="--arena-color-1: #4a3a1a; --arena-color-2: #b58a3b; --arena-border: #ffd700;">
       <div class="arena-icon">🟡</div>
       <h3 class="arena-name">钢琴</h3>
       <div class="arena-progress">0% 击败</div>
+      <div class="arena-bar"><div class="arena-bar-fill" style="width: 0%;"></div></div>
     </div>
 
     <div class="arena-card" data-arena="reading" style="--arena-color-1: #1a4a2a; --arena-color-2: #2f8f5e; --arena-border: #87ceeb;">
       <div class="arena-icon">🟢</div>
       <h3 class="arena-name">阅读</h3>
       <div class="arena-progress">0% 击败</div>
+      <div class="arena-bar"><div class="arena-bar-fill" style="width: 0%;"></div></div>
     </div>
   </div>
 </div>
@@ -1188,7 +1217,7 @@
 
 <!-- 数据来源 -->
 <div class="data-footer">
-  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 17:55:58
+  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 17:58:00
 </div>
 
 </main>

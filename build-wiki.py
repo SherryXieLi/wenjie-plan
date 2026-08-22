@@ -534,6 +534,12 @@ def build_academy(daily_data, daily_perf, today_date):
     html = html.replace('__CHINESE_PROGRESS__', f'{chinese_p}% 击败')
     html = html.replace('__PIANO_PROGRESS__', f'{piano_p}% 击败')
     html = html.replace('__READING_PROGRESS__', f'{reading_p}% 击败')
+    # 视觉进度条（娃版用）
+    html = html.replace('__MATH_PCT__', str(math_p))
+    html = html.replace('__ENGLISH_PCT__', str(english_p))
+    html = html.replace('__CHINESE_PCT__', str(chinese_p))
+    html = html.replace('__PIANO_PCT__', str(piano_p))
+    html = html.replace('__READING_PCT__', str(reading_p))
     html = html.replace('__MONSTERS_DEFEATED__', str(monsters_defeated))
     html = html.replace('__BOSSES_DEFEATED__', str(bosses_defeated))
     html = html.replace('__TROPHIES__', str(trophies))
