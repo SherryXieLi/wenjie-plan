@@ -758,6 +758,66 @@
       margin: 0 0 8px;
     }
 
+    /* 娃版今日怪兽（动态任务 · 来自 wiki/plans/daily/今日.md） */
+    .monster-summary {
+      max-width: 600px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .monster-summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      color: #ffd700;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .todays-tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .todays-task-card {
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%);
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .todays-task-card.done {
+      opacity: 0.5;
+      border-color: rgba(135, 206, 235, 0.5);
+      background: linear-gradient(135deg, rgba(135, 206, 235, 0.1) 0%, rgba(135, 206, 235, 0.05) 100%);
+    }
+    .todays-task-emoji {
+      font-size: 48px;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+    .todays-task-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .todays-task-time {
+      font-size: 11px;
+      color: rgba(255, 215, 0, 0.8);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .todays-task-reward {
+      font-size: 11px;
+      color: rgba(135, 206, 235, 0.9);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 400px) {
+      .todays-tasks-grid { grid-template-columns: 1fr; }
+    }
+
     /* 娃版 modal 样式 */
     .kid-goal {
       text-align: center;
@@ -1187,10 +1247,54 @@
   </div>
 </div>
 
-<!-- 今日任务 -->
-<div class="mission-board">
-  <h2 class="mission-title">📋 今天的怪兽</h2>
+<!-- 🆕 今日怪兽（具体任务 · 行动导向 · 来自 wiki/plans/daily/今日.md） -->
+<div class="monster-summary kid-only">
+  <h2 class="monster-summary-title">⚔️ 今天的怪兽</h2>
+  <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.6); margin: -4px 0 12px;">
+    做这些事就打败怪兽
+  </p>
+  <div class="todays-tasks-grid">
+        <div class="todays-task-card">
+          <div class="todays-task-emoji">✍️</div>
+          <div class="todays-task-name">写汉字 1 字</div>
+          <div class="todays-task-time">8:15-8:30</div>
+          <div class="todays-task-reward">+5 XP</div>
+        </div>
+        <div class="todays-task-card">
+          <div class="todays-task-emoji">📝</div>
+          <div class="todays-task-name">**项目日活动*</div>
+          <div class="todays-task-time">**🆕 8:30-9:30**</div>
+          <div class="todays-task-reward">+10 XP</div>
+        </div>
+        <div class="todays-task-card">
+          <div class="todays-task-emoji">🎹</div>
+          <div class="todays-task-name">**钢琴练习**</div>
+          <div class="todays-task-time">**🆕 9:30-9:50**</div>
+          <div class="todays-task-reward">+15 XP</div>
+        </div>
+        <div class="todays-task-card">
+          <div class="todays-task-emoji">🎹</div>
+          <div class="todays-task-name">~~钢琴练习~~</div>
+          <div class="todays-task-time">17:15-17:35</div>
+          <div class="todays-task-reward">+15 XP</div>
+        </div>
+        <div class="todays-task-card">
+          <div class="todays-task-emoji">📖</div>
+          <div class="todays-task-name">亲子共读</div>
+          <div class="todays-task-time">20:40-21:00</div>
+          <div class="todays-task-reward">+10 XP</div>
+        </div>
+        <div class="todays-task-card">
+          <div class="todays-task-emoji">📝</div>
+          <div class="todays-task-name">晚上</div>
+          <div class="todays-task-time">维度</div>
+          <div class="todays-task-reward">+10 XP</div>
+        </div></div>
+</div>
 
+<!-- 家长版保留详细今日任务 -->
+<div class="mission-board parent-only">
+  <h2 class="mission-title">📋 今日任务 · Today's Missions</h2>
   <div class="mission-card">
             <div class="mission-head">
                 <div class="monster-emoji">🐲</div>
@@ -1227,9 +1331,12 @@
         </div>
 </div>
 
-<!-- 5 大战场 -->
+<!-- 📈 5 科进步（长期 · 各科进度曲线 · 进步导向） -->
 <div class="arena-map">
-  <h2 class="arena-title">🗺 我的战场</h2>
+  <h2 class="arena-title">📈 5 科进步</h2>
+  <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: -8px 0 12px; text-align: center;">
+    看看你每科进步了多少
+  </p>
 
   <div class="arena-grid">
     <div class="arena-card" data-arena="math" style="--arena-color-1: #1a3a4a; --arena-color-2: #4a90a4; --arena-border: #87ceeb;">
@@ -1459,7 +1566,7 @@
 
 <!-- 数据来源 -->
 <div class="data-footer">
-  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 18:05:32
+  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 18:08:39
 </div>
 
 </main>

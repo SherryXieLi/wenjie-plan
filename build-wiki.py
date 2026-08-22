@@ -519,6 +519,9 @@ def build_academy(daily_data, daily_perf, today_date):
     today_day = next((d for d in daily_data if d['date'] == today_date), None)
     missions_html = render_monster_missions(today_day, daily_perf, today_date)
 
+    # 渲染娃版今日任务（基于 daily plan 时间表）
+    todays_tasks_html = render_todays_tasks_for_kid(today_date, daily_perf)
+
     # 替换占位符
     html = template
     html = html.replace('__LEVEL__', str(level))
@@ -528,6 +531,7 @@ def build_academy(daily_data, daily_perf, today_date):
     html = html.replace('__INTEL__', str(min(100, xp // 5)))
     html = html.replace('__SPEED__', str(min(100, 50 + total_days * 5)))
     html = html.replace('__MISSIONS_HTML__', missions_html)
+    html = html.replace('__TODAYS_TASKS_HTML__', todays_tasks_html)
     html = html.replace('__MISSION_COUNT__', str(missions_html.count('mission-card')))
     html = html.replace('__MATH_PROGRESS__', f'{math_p}% 击败')
     html = html.replace('__ENGLISH_PROGRESS__', f'{english_p}% 击败')
@@ -668,6 +672,90 @@ def render_monster_missions(day_data, daily_perf, today_date):
         </div>'''
 
     return html
+
+
+def render_todays_tasks_for_kid(today_date, daily_perf):
+    """渲染娃版今日任务（来自 wiki/plans/daily/今日.md · 只取学习时段）"""
+    daily_md = BASE / 'wiki' / 'plans' / 'daily' / f'{today_date}.md'
+    if not daily_md.exists():
+        return '<div class="todays-task-card"><div class="todays-task-name">今天无任务 ✨</div></div>'
+
+    md_text = daily_md.read_text(encoding='utf-8')
+
+    # 解析时间表 · 找包含学习的时段
+    # 格式：| 时段 | 任务 | ... |
+    tasks = []
+    perf = daily_perf.get(today_date, {})
+
+    for line in md_text.split('\n'):
+        # 匹配表格行
+        if line.startswith('|') and '|' in line and '---' not in line and '时段' not in line and '任务' not in line:
+            cells = [c.strip() for c in line.strip('|').split('|')]
+            if len(cells) < 2:
+                continue
+            time_slot = cells[0]
+            task = cells[1]
+            who = cells[3] if len(cells) >= 4 else ''
+
+            # 过滤无效任务
+            if not task or task in ['任务', '灵活', '—']:
+                continue
+            if '完全自由' in task or '玩耍' in task or '晚饭' in task or '洗澡' in task or '睡觉' in task or '户外' in task:
+                continue
+
+            # 判断任务类型 + emoji + 奖励
+            emoji = '📝'
+            reward = '+10 XP'
+            if '钢琴' in task:
+                emoji = '🎹'
+                reward = '+15 XP'
+            elif '汉字' in task or '写字' in task:
+                emoji = '✍️'
+                reward = '+5 XP'
+            elif '珠算' in task or '心算' in task or '数学' in task or 'Maths' in task:
+                emoji = '🔢'
+                reward = '+15 XP'
+            elif '英文' in task or 'English' in task or 'Phonics' in task or 'KAK' in task:
+                emoji = '📚'
+                reward = '+10 XP'
+            elif '中文' in task or '练习' in task or '识字' in task:
+                emoji = '📗'
+                reward = '+10 XP'
+            elif '阅读' in task or '读' in task:
+                emoji = '📖'
+                reward = '+10 XP'
+
+            # 提取简短任务名（取前 6 字）
+            short_task = task
+            # 移除括号内容
+            import re
+            short_task = re.sub(r'[（(][^）)]*[）)]', '', short_task).strip()
+            # 截短
+            if len(short_task) > 8:
+                short_task = short_task[:8]
+
+            tasks.append({
+                'time': time_slot,
+                'name': short_task,
+                'emoji': emoji,
+                'reward': reward,
+                'who': who
+            })
+
+    if not tasks:
+        return '<div class="todays-task-card"><div class="todays-task-name">今天无学习任务 🎉</div></div>'
+
+    cards = ''
+    for t in tasks[:6]:  # 最多 6 张
+        cards += f'''
+        <div class="todays-task-card">
+          <div class="todays-task-emoji">{t['emoji']}</div>
+          <div class="todays-task-name">{t['name']}</div>
+          <div class="todays-task-time">{t['time']}</div>
+          <div class="todays-task-reward">{t['reward']}</div>
+        </div>'''
+
+    return f'<div class="todays-tasks-grid">{cards}</div>'
 
 
 def _get_all_mistakes():
