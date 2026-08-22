@@ -104,6 +104,57 @@
       letter-spacing: 0.1em;
     }
 
+    /* ===== 娃看/家长看 切换 ===== */
+    .mode-toggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 999;
+      background: rgba(255, 215, 0, 0.95);
+      color: #0a0e27;
+      border: 2px solid #ffd700;
+      border-radius: 24px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      transition: all 0.2s;
+    }
+    .mode-toggle:hover {
+      background: #ffd700;
+      transform: scale(1.05);
+    }
+    .mode-toggle .icon {
+      margin-right: 4px;
+    }
+
+    /* 娃看模式（默认）：隐藏家长内容 */
+    body:not(.parent-mode) .parent-only {
+      display: none !important;
+    }
+
+    /* 家长模式：隐藏娃版简化内容 */
+    body.parent-mode .kid-only {
+      display: none !important;
+    }
+
+    /* 娃看模式：放大简化 */
+    body:not(.parent-mode) .hero-name { font-size: 28px; }
+    body:not(.parent-mode) .arena-card { padding: 14px 10px; }
+    body:not(.parent-mode) .arena-name { font-size: 16px; }
+    body:not(.parent-mode) .mission-card { padding: 14px 16px; }
+
+    @media (max-width: 560px) {
+      .mode-toggle {
+        top: 8px;
+        right: 8px;
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
+
     /* ===== 英雄卡 ===== */
     .hero-card {
       max-width: 600px;
@@ -669,6 +720,10 @@
   </style>
 </head>
 <body>
+  <button class="mode-toggle" id="mode-toggle" onclick="toggleMode()" aria-label="切换模式">
+    <span class="icon">📖</span>
+    <span id="mode-toggle-text">家长看</span>
+  </button>
 
 <!-- 共享顶部导航 -->
 <div data-shared="top-bar"></div>
@@ -713,8 +768,8 @@
   </div>
 </div>
 
-<!-- 战斗规则书 -->
-<div class="battle-rules">
+<!-- 战斗规则书（家长看） -->
+<div class="battle-rules parent-only">
   <h2 class="rules-title">📜 战斗规则书 · Battle Rules</h2>
   <div class="rules-card">
     <p style="font-size: 12px; color: rgba(255,255,255,0.7); margin: 0 0 16px;">
@@ -788,7 +843,10 @@
 
 <!-- 5 大战场 -->
 <div class="arena-map">
-  <h2 class="arena-title">🗺 5 大战场 · 怪兽分布（点我！→）</h2>
+  <h2 class="arena-title">🗺 5 大战场</h2>
+  <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: -8px 0 12px; text-align: center;">
+    👆 点开看任务
+  </p>
 
   <div class="arena-grid">
     <div class="arena-card" data-arena="math" style="--arena-color-1: #1a3a4a; --arena-color-2: #4a90a4; --arena-border: #87ceeb;">
@@ -833,8 +891,8 @@
   </div>
 </div>
 
-<!-- ⚡ Power Up 攻略 · Do X → Get Y -->
-<div class="powerup-section">
+<!-- ⚡ Power Up 攻略 · Do X → Get Y（家长看） -->
+<div class="powerup-section parent-only">
   <h2 class="powerup-title">⚡ Power Up 攻略 · Do X → Get Y</h2>
   <p style="font-size: 11px; color: rgba(135, 206, 235, 0.7); margin: 0 0 12px; font-family: 'JetBrains Mono', monospace;">
     怎么做才能升级？→ 看下面这些攻略
@@ -931,12 +989,10 @@
   </div>
 </div>
 
-<!-- 奖杯柜 -->
-<div class="trophy-cabinet">
-  <h2 class="trophy-title">🏆 奖杯柜 · Trophy Cabinet</h2>
-  <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 0 0 12px; font-family: 'JetBrains Mono', monospace;">
-    ⚔️ 累计击败怪兽统计
-  </p>
+<!-- 奖杯柜（家长看详情） -->
+<div class="trophy-cabinet parent-only">
+
+  <h2 class="trophy-title">🏆 奖杯柜</h2>
 
   <div class="trophy-grid">
     <div class="trophy-card">
@@ -986,6 +1042,31 @@
   </div>
 </div>
 
+<!-- 🆕 娃版简化奖杯（3 个大奖杯） -->
+<div class="trophy-cabinet kid-only" style="margin-top: 24px;">
+  <h2 class="trophy-title">🏆 你的奖杯</h2>
+  <div class="trophy-grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px;">
+    <div class="trophy-card" style="background: linear-gradient(135deg, #ffd700 0%, #ff6b35 100%); border: 3px solid #ffd700;">
+      <div style="font-size: 48px;">⚡</div>
+      <div style="font-size: 24px; font-weight: 900; color: #0a0e27;">__XP__</div>
+      <div style="font-size: 12px; color: #0a0e27; font-weight: 700;">XP</div>
+    </div>
+    <div class="trophy-card" style="background: linear-gradient(135deg, #ff6b35 0%, #b06367 100%); border: 3px solid #ff6b35;">
+      <div style="font-size: 48px;">🐉</div>
+      <div style="font-size: 24px; font-weight: 900; color: white;">__MONSTERS_DEFEATED__</div>
+      <div style="font-size: 12px; color: white; font-weight: 700;">打败怪兽</div>
+    </div>
+    <div class="trophy-card" style="background: linear-gradient(135deg, #4a90a4 0%, #87ceeb 100%); border: 3px solid #87ceeb;">
+      <div style="font-size: 48px;">🔥</div>
+      <div style="font-size: 24px; font-weight: 900; color: white;">__STREAK__</div>
+      <div style="font-size: 12px; color: white; font-weight: 700;">连续 __STREAK__ 天</div>
+    </div>
+  </div>
+  <p style="text-align: center; color: rgba(255,255,255,0.6); margin-top: 12px; font-size: 11px;">
+    ✨ 点击右上「📖 家长看」看更多 ✨
+  </p>
+</div>
+
 <!-- 数据来源 -->
 <div class="data-footer">
   ⚡ 实时数据 · Wiki 驱动 · 构建时间 __BUILD_TIME__
@@ -1002,6 +1083,37 @@
 
 <!-- 英雄学院专用 · 怪兽 modal -->
 <script src="wenjie-academy-arenas.js"></script>
+
+<script>
+function toggleMode() {
+  const body = document.body;
+  const toggle = document.getElementById('mode-toggle');
+  const text = document.getElementById('mode-toggle-text');
+  const icon = toggle.querySelector('.icon');
+
+  if (body.classList.contains('parent-mode')) {
+    body.classList.remove('parent-mode');
+    text.textContent = '家长看';
+    icon.textContent = '📖';
+    localStorage.setItem('wenjie-academy-mode', 'kid');
+  } else {
+    body.classList.add('parent-mode');
+    text.textContent = '娃看';
+    icon.textContent = '🦸';
+    localStorage.setItem('wenjie-academy-mode', 'parent');
+  }
+}
+
+// 加载时恢复模式
+(function() {
+  const saved = localStorage.getItem('wenjie-academy-mode');
+  if (saved === 'parent') {
+    document.body.classList.add('parent-mode');
+    document.getElementById('mode-toggle-text').textContent = '娃看';
+    document.querySelector('.mode-toggle .icon').textContent = '🦸';
+  }
+})();
+</script>
 
 </body>
 </html>
