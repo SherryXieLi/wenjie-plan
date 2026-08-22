@@ -191,10 +191,18 @@
       align-items: center;
     }
     .hero-avatar {
-      font-size: 96px;
+      width: 140px;
+      height: 140px;
       flex-shrink: 0;
       filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.5));
       animation: heroFloat 3s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ultraman-svg {
+      width: 100%;
+      height: 100%;
     }
     @keyframes heroFloat {
       0%, 100% { transform: translateY(0); }
@@ -734,7 +742,7 @@
     /* ===== 响应式 ===== */
     @media (max-width: 560px) {
       .hero-content { flex-direction: column; text-align: center; }
-      .hero-avatar { font-size: 72px; }
+      .hero-avatar { font-size: 72px; width: 100px; height: 100px; }
       .hero-title { font-size: 28px; }
       .trophy-grid { grid-template-columns: 1fr; }
     }
@@ -763,7 +771,74 @@
 <!-- 英雄卡 -->
 <div class="hero-card">
   <div class="hero-content">
-    <div class="hero-avatar">🦸‍♂️</div>
+    <div class="hero-avatar">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="ultraman-svg" aria-label="奥特曼头像">
+        <!-- 发光背景 -->
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffd700" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="silverBody" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="40%" stop-color="#e8e8e8"/>
+            <stop offset="100%" stop-color="#a8a8a8"/>
+          </linearGradient>
+          <linearGradient id="silverHead" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="50%" stop-color="#e0e0e0"/>
+            <stop offset="100%" stop-color="#909090"/>
+          </linearGradient>
+          <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="60%" stop-color="#a8e6ff"/>
+            <stop offset="100%" stop-color="#4a90a4"/>
+          </radialGradient>
+        </defs>
+
+        <!-- 背景光晕 -->
+        <circle cx="100" cy="100" r="95" fill="url(#glow)"/>
+
+        <!-- 头部（椭圆形，银色） -->
+        <ellipse cx="100" cy="85" rx="62" ry="68" fill="url(#silverHead)" stroke="#606060" stroke-width="1.5"/>
+
+        <!-- 头顶红色冠（奥特曼标志） -->
+        <path d="M 100 18 Q 95 8 88 20 L 88 38 L 100 32 L 112 38 L 112 20 Q 105 8 100 18 Z"
+              fill="#dc143c" stroke="#8b0000" stroke-width="1"/>
+        <path d="M 100 20 L 95 30 L 100 28 L 105 30 Z"
+              fill="#ffd700"/>
+
+        <!-- 头部中间银色护甲线 -->
+        <path d="M 88 50 L 100 55 L 112 50" stroke="#606060" stroke-width="1.5" fill="none"/>
+
+        <!-- 眼睛（大型椭圆 · 奥特曼标志性） -->
+        <ellipse cx="72" cy="80" rx="18" ry="22" fill="url(#eyeGlow)" stroke="#404040" stroke-width="1.5"/>
+        <ellipse cx="128" cy="80" rx="18" ry="22" fill="url(#eyeGlow)" stroke="#404040" stroke-width="1.5"/>
+
+        <!-- 眼睛内部高光 -->
+        <ellipse cx="76" cy="74" rx="4" ry="6" fill="#ffffff" opacity="0.9"/>
+        <ellipse cx="132" cy="74" rx="4" ry="6" fill="#ffffff" opacity="0.9"/>
+
+        <!-- 鼻子 / 嘴部（奥特曼标志性的严肃表情） -->
+        <path d="M 100 95 L 100 115" stroke="#606060" stroke-width="1.5" fill="none"/>
+        <path d="M 90 122 Q 100 128 110 122" stroke="#404040" stroke-width="1.5" fill="none"/>
+
+        <!-- 肩膀 / 身体上部分（银色身体） -->
+        <ellipse cx="100" cy="170" rx="60" ry="20" fill="url(#silverBody)" stroke="#606060" stroke-width="1.5"/>
+
+        <!-- 胸前红色条纹 -->
+        <path d="M 70 158 Q 75 165 70 172" stroke="#dc143c" stroke-width="3" fill="none"/>
+        <path d="M 130 158 Q 125 165 130 172" stroke="#dc143c" stroke-width="3" fill="none"/>
+
+        <!-- 彩色计时器（胸口中央 · 奥特曼标志） -->
+        <circle cx="100" cy="168" r="11" fill="#dc143c" stroke="#8b0000" stroke-width="1.5"/>
+        <circle cx="100" cy="168" r="9" fill="#ff4444"/>
+        <circle cx="100" cy="168" r="6" fill="#ffeb3b">
+          <animate attributeName="r" values="6;7;6" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="100" cy="168" r="3" fill="#ffffff"/>
+      </svg>
+    </div>
     <div class="hero-info">
       <h2 class="hero-name">文杰奥特曼</h2>
       <div class="hero-level">等级 3 · ⚡ 450/300 XP</div>
@@ -1113,7 +1188,7 @@
 
 <!-- 数据来源 -->
 <div class="data-footer">
-  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 17:54:16
+  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 17:55:58
 </div>
 
 </main>
