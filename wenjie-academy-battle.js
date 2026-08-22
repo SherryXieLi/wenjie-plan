@@ -58,11 +58,15 @@
                     fill="#cc2020" stroke="#500000" stroke-width="0.5"/>
               <!-- 头盔 -->
               <ellipse cx="60" cy="60" rx="22" ry="25" fill="#dcdcdc" stroke="#202020" stroke-width="1"/>
-              <!-- 大眼睛 -->
-              <ellipse cx="51" cy="60" rx="7" ry="10" fill="#a0e0ff" stroke="#101010" stroke-width="0.8"/>
-              <ellipse cx="69" cy="60" rx="7" ry="10" fill="#a0e0ff" stroke="#101010" stroke-width="0.8"/>
-              <ellipse cx="52" cy="56" rx="2" ry="3" fill="#ffffff"/>
-              <ellipse cx="70" cy="56" rx="2" ry="3" fill="#ffffff"/>
+              <!-- 🆕 迪迦眼睛（外眼角下垂） -->
+              <g transform="rotate(-22 51 63)">
+                <ellipse cx="51" cy="63" rx="7" ry="11" fill="#a0e0ff" stroke="#101010" stroke-width="0.8"/>
+                <ellipse cx="53" cy="58" rx="2" ry="3.5" fill="#ffffff"/>
+              </g>
+              <g transform="rotate(22 69 63)">
+                <ellipse cx="69" cy="63" rx="7" ry="11" fill="#a0e0ff" stroke="#101010" stroke-width="0.8"/>
+                <ellipse cx="71" cy="58" rx="2" ry="3.5" fill="#ffffff"/>
+              </g>
               <!-- 嘴 -->
               <path d="M 56 76 Q 60 79 64 76" stroke="#202020" stroke-width="1" fill="none"/>
               <!-- 脖子 -->

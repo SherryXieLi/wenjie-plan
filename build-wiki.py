@@ -769,16 +769,27 @@ def render_todays_tasks_for_kid(today_date, daily_perf):
         return '<div class="todays-task-card"><div class="todays-task-name">今天无学习任务 🎉</div></div>'
 
     cards = ''
-    for t in tasks[:6]:
+    for i, t in enumerate(tasks[:6]):
         cards += f'''
-        <div class="todays-task-card">
+        <div class="todays-task-card" data-task-id="{today_date}-{i}" data-task-index="{i}">
           <div class="todays-task-emoji">{t['emoji']}</div>
           <div class="todays-task-name">{t['name']}</div>
           <div class="todays-task-time">{t['time']}</div>
           <div class="todays-task-reward">{t['reward']}</div>
+          <button class="task-done-btn" data-task-id="{today_date}-{i}">⚔️ 打败它</button>
         </div>'''
 
-    return f'<div class="todays-tasks-grid">{cards}</div>'
+    defeat_btn = f'''
+    <div class="defeat-monster-btn-wrapper" id="defeat-btn-wrapper" style="display:none;">
+      <button class="defeat-monster-btn" id="defeat-monster-btn">
+        🎉 打败今天的怪兽！
+      </button>
+      <p style="text-align:center; color: rgba(135, 206, 235, 0.9); font-size: 11px; margin-top: 8px;">
+        点击看文杰奥特曼打败怪兽 ⚡
+      </p>
+    </div>'''
+
+    return f'<div class="todays-tasks-grid">{cards}</div>{defeat_btn}'
 
 
 def _get_all_mistakes():
