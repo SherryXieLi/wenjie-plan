@@ -162,6 +162,100 @@
       }
     }
 
+    /* ===== 战斗回放 ===== */
+    .battle-replay {
+      max-width: 600px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .replay-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      color: #ffd700;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .replay-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .replay-card {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(135, 206, 235, 0.05) 100%);
+      border: 2px solid rgba(255, 215, 0, 0.4);
+      border-radius: 14px;
+      padding: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .replay-svg {
+      width: 100%;
+      max-width: 400px;
+      height: 180px;
+      margin: 0 auto;
+      display: block;
+    }
+    .replay-card-title {
+      text-align: center;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .replay-card-status {
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255, 215, 0, 0.8);
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* 战斗动画关键帧 */
+    @keyframes ultraman-enter {
+      0% { transform: translateX(-100px); opacity: 0; }
+      60% { transform: translateX(20px); opacity: 1; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes monster-enter {
+      0% { transform: translateX(100px); opacity: 0; }
+      60% { transform: translateX(-20px); opacity: 1; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes punch {
+      0%, 30%, 60%, 100% { transform: translateX(0); }
+      35%, 65% { transform: translateX(60px); }
+    }
+    @keyframes monster-hit {
+      0%, 30%, 60%, 90%, 100% { transform: translateX(0) scale(1); opacity: 1; }
+      35%, 65% { transform: translateX(-15px) scale(1.1); }
+      95% { opacity: 0; transform: scale(0); }
+    }
+    @keyframes boom {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.5); opacity: 1; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    @keyframes victory-pose {
+      0%, 95% { transform: translateX(0); }
+      100% { transform: translateX(0) scale(1.15); }
+    }
+    @keyframes victory-glow {
+      0%, 90% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .anim-ultraman { animation: ultraman-enter 1.5s ease-out forwards; transform: translateX(-100px); opacity: 0; }
+    .anim-monster { animation: monster-enter 1.5s ease-out 0.3s forwards; transform: translateX(100px); opacity: 0; }
+    .anim-punch { animation: punch 4s ease-in-out infinite; animation-delay: 1.5s; }
+    .anim-monster-hit { animation: monster-hit 4s ease-in-out infinite; animation-delay: 1.5s; transform-origin: center; }
+    .anim-boom { animation: boom 4s ease-out infinite; animation-delay: 1.5s; transform-origin: center; }
+    .anim-victory { animation: victory-pose 4s ease-in-out infinite; animation-delay: 1.5s; transform-origin: bottom center; }
+    .anim-glow { animation: victory-glow 4s ease-in-out infinite; animation-delay: 1.5s; }
+
     /* ===== 英雄卡 ===== */
     .hero-card {
       max-width: 600px;
@@ -853,121 +947,153 @@
 <div class="hero-card">
   <div class="hero-content">
     <div class="hero-avatar">
-      <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" class="ultraman-svg" aria-label="奥特曼">
+      <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" class="ultraman-svg" aria-label="迪迦奥特曼">
         <defs>
-          <!-- 金色背景光晕 -->
+          <!-- 紫色能量光晕（迪迦复合型主题色） -->
           <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ffd700" stop-opacity="0.5"/>
+            <stop offset="0%" stop-color="#a060ff" stop-opacity="0.5"/>
+            <stop offset="50%" stop-color="#ffd700" stop-opacity="0.3"/>
             <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
           </radialGradient>
-          <!-- 银色头盔（垂直渐变） -->
+          <!-- 银色头盔 -->
           <linearGradient id="silverHead" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="50%" stop-color="#d8d8d8"/>
-            <stop offset="100%" stop-color="#808080"/>
+            <stop offset="50%" stop-color="#dcdcdc"/>
+            <stop offset="100%" stop-color="#7a7a7a"/>
           </linearGradient>
           <!-- 银色身体 -->
           <linearGradient id="silverBody" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#e8e8e8"/>
-            <stop offset="100%" stop-color="#a0a0a0"/>
+            <stop offset="0%" stop-color="#f0f0f0"/>
+            <stop offset="60%" stop-color="#c0c0c0"/>
+            <stop offset="100%" stop-color="#808080"/>
           </linearGradient>
-          <!-- 大眼睛（亮蓝白光） -->
-          <radialGradient id="eyeLight" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="50%" stop-color="#b8e8ff"/>
-            <stop offset="100%" stop-color="#5080a0"/>
-          </radialGradient>
-          <!-- 红色头冠 -->
-          <linearGradient id="redCrest" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ff4040"/>
-            <stop offset="100%" stop-color="#a00000"/>
+          <!-- 紫色护甲（迪迦特征） -->
+          <linearGradient id="purpleArmor" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#a060ff"/>
+            <stop offset="100%" stop-color="#5020a0"/>
           </linearGradient>
           <!-- 红色条纹 -->
           <linearGradient id="redStripe" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#e82020"/>
-            <stop offset="100%" stop-color="#900000"/>
+            <stop offset="0%" stop-color="#ff3030"/>
+            <stop offset="100%" stop-color="#800000"/>
           </linearGradient>
-          <!-- 彩色计时器（绿光） -->
-          <radialGradient id="timerLight" cx="50%" cy="40%" r="50%">
-            <stop offset="0%" stop-color="#aaffaa"/>
-            <stop offset="60%" stop-color="#20c020"/>
-            <stop offset="100%" stop-color="#006000"/>
+          <!-- 大眼睛（亮蓝光） -->
+          <radialGradient id="eyeLight" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="50%" stop-color="#c0e8ff"/>
+            <stop offset="100%" stop-color="#4080c0"/>
+          </radialGradient>
+          <!-- 浅蓝计时器（迪迦标志） -->
+          <radialGradient id="tigaTimer" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="30%" stop-color="#a0e0ff"/>
+            <stop offset="80%" stop-color="#2080e0"/>
+            <stop offset="100%" stop-color="#0040a0"/>
+          </radialGradient>
+          <!-- 红色危险计时器（动画切换） -->
+          <radialGradient id="tigaTimerRed" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffe0e0"/>
+            <stop offset="50%" stop-color="#ff4040"/>
+            <stop offset="100%" stop-color="#800000"/>
           </radialGradient>
         </defs>
 
         <!-- 背景光晕 -->
-        <circle cx="100" cy="120" r="115" fill="url(#bgGlow)"/>
-
-        <!-- ============== 身体 ============== -->
-
-        <!-- 肩膀 / 躯干 -->
-        <path d="M 30 240 L 30 175 Q 50 145 100 145 Q 150 145 170 175 L 170 240 Z"
-              fill="url(#silverBody)" stroke="#404040" stroke-width="1.5"/>
-
-        <!-- 胸前红色条纹（左） -->
-        <path d="M 50 240 L 50 165 Q 55 155 60 165 L 60 240 Z"
-              fill="url(#redStripe)"/>
-
-        <!-- 胸前红色条纹（右） -->
-        <path d="M 140 240 L 140 165 Q 145 155 150 165 L 150 240 Z"
-              fill="url(#redStripe)"/>
-
-        <!-- 脖子（银色） -->
-        <rect x="80" y="135" width="40" height="20" fill="url(#silverHead)" stroke="#404040" stroke-width="1"/>
+        <circle cx="100" cy="140" r="135" fill="url(#bgGlow)"/>
 
         <!-- ============== 头部 ============== -->
 
-        <!-- 头盔外形（蛋形 / 椭圆形，比脸长） -->
-        <ellipse cx="100" cy="75" rx="68" ry="80" fill="url(#silverHead)" stroke="#404040" stroke-width="1.5"/>
+        <!-- 头盔外壳（蛋形 · 偏长） -->
+        <ellipse cx="100" cy="80" rx="65" ry="78" fill="url(#silverHead)" stroke="#303030" stroke-width="1.5"/>
 
-        <!-- 头顶红色冠（奥特曼标志 · 大三角形 + 金色高光） -->
-        <path d="M 100 0
-                 L 88 30
-                 Q 88 40 100 38
-                 Q 112 40 112 30
+        <!-- 迪迦标志：高耸尖头冠（比初代奥特曼高很多） -->
+        <path d="M 100 -5
+                 L 86 30
+                 Q 84 38 88 42
+                 L 112 42
+                 Q 116 38 114 30
                  Z"
-              fill="url(#redCrest)" stroke="#600000" stroke-width="1"/>
-        <!-- 冠中央金色 V 字 -->
-        <path d="M 100 5 L 96 25 L 100 22 L 104 25 Z"
-              fill="#ffd700"/>
+              fill="url(#redStripe)" stroke="#500000" stroke-width="1"/>
+        <!-- 冠尖顶高光 -->
+        <ellipse cx="98" cy="10" rx="2" ry="8" fill="#ffaaaa" opacity="0.7"/>
+        <!-- 冠底部金色装饰 -->
+        <path d="M 88 38 L 100 32 L 112 38 L 112 42 L 88 42 Z"
+              fill="#ffd700" stroke="#806000" stroke-width="0.5"/>
 
-        <!-- 头部中间银色护甲线（V 形） -->
-        <path d="M 78 55 L 100 65 L 122 55"
-              stroke="#404040" stroke-width="2" fill="none"/>
+        <!-- 头部中间银色护甲线（迪迦标志：V 形更尖锐） -->
+        <path d="M 75 55 L 100 68 L 125 55"
+              stroke="#202020" stroke-width="2" fill="none" stroke-linecap="round"/>
 
-        <!-- 大型椭圆眼睛（标志性 · 占头部 1/3 高度） -->
-        <ellipse cx="68" cy="78" rx="22" ry="30" fill="url(#eyeLight)" stroke="#202020" stroke-width="2"/>
-        <ellipse cx="132" cy="78" rx="22" ry="30" fill="url(#eyeLight)" stroke="#202020" stroke-width="2"/>
+        <!-- 大型椭圆眼睛（标志性 · 比初代更宽） -->
+        <ellipse cx="68" cy="82" rx="24" ry="32" fill="url(#eyeLight)" stroke="#101010" stroke-width="2.5"/>
+        <ellipse cx="132" cy="82" rx="24" ry="32" fill="url(#eyeLight)" stroke="#101010" stroke-width="2.5"/>
 
-        <!-- 眼睛高光 -->
-        <ellipse cx="74" cy="68" rx="6" ry="9" fill="#ffffff" opacity="0.95"/>
-        <ellipse cx="138" cy="68" rx="6" ry="9" fill="#ffffff" opacity="0.95"/>
-        <!-- 小高光 -->
-        <circle cx="62" cy="88" r="2.5" fill="#ffffff" opacity="0.7"/>
-        <circle cx="126" cy="88" r="2.5" fill="#ffffff" opacity="0.7"/>
+        <!-- 眼睛大高光 -->
+        <ellipse cx="74" cy="70" rx="7" ry="10" fill="#ffffff" opacity="0.95"/>
+        <ellipse cx="138" cy="70" rx="7" ry="10" fill="#ffffff" opacity="0.95"/>
+        <!-- 眼睛小高光 -->
+        <circle cx="60" cy="92" r="3" fill="#ffffff" opacity="0.7"/>
+        <circle cx="124" cy="92" r="3" fill="#ffffff" opacity="0.7"/>
 
-        <!-- 鼻子（极简 · 银线） -->
-        <path d="M 100 105 L 100 120" stroke="#303030" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- 鼻子（银线 · 极简） -->
+        <path d="M 100 110 L 100 124" stroke="#202020" stroke-width="2" fill="none" stroke-linecap="round"/>
 
-        <!-- 嘴部（轻微 · 严肃） -->
-        <path d="M 88 132 Q 100 138 112 132" stroke="#303030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- 嘴部（迪迦更尖锐的嘴线） -->
+        <path d="M 86 134 Q 100 140 114 134" stroke="#202020" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
-        <!-- ============== 彩色计时器（胸口 · 经典设计） ============== -->
+        <!-- ============== 脖子 ============== -->
+        <rect x="82" y="148" width="36" height="18" fill="url(#silverHead)" stroke="#303030" stroke-width="1"/>
 
-        <!-- 外圈 -->
-        <circle cx="100" cy="180" r="20" fill="#404040" stroke="#202020" stroke-width="2"/>
-        <!-- 红色基底 -->
-        <circle cx="100" cy="180" r="17" fill="#cc2020"/>
-        <!-- 绿光核心（脉冲呼吸） -->
-        <circle cx="100" cy="180" r="13" fill="url(#timerLight)">
-          <animate attributeName="r" values="13;15;13" dur="1.2s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="1;0.85;1" dur="1.2s" repeatCount="indefinite"/>
+        <!-- ============== 身体（更修长 · 迪迦特征） ============== -->
+
+        <!-- 上半身（胸 + 肩） -->
+        <path d="M 25 280
+                 L 25 195
+                 Q 30 175 50 168
+                 Q 75 158 100 158
+                 Q 125 158 150 168
+                 Q 170 175 175 195
+                 L 175 280
+                 Z"
+              fill="url(#silverBody)" stroke="#303030" stroke-width="1.5"/>
+
+        <!-- 胸前紫色护甲 V 形（迪迦复合型特征） -->
+        <path d="M 70 168 L 100 158 L 130 168 L 130 220 L 100 200 L 70 220 Z"
+              fill="url(#purpleArmor)" stroke="#301050" stroke-width="1" opacity="0.85"/>
+
+        <!-- 紫色护甲高光 -->
+        <path d="M 75 168 L 100 162 L 125 168"
+              stroke="#d090ff" stroke-width="2" fill="none" opacity="0.7"/>
+
+        <!-- 红色条纹（左侧） -->
+        <path d="M 35 280 L 35 195 Q 38 185 42 195 L 42 280 Z"
+              fill="url(#redStripe)"/>
+
+        <!-- 红色条纹（右侧） -->
+        <path d="M 158 280 L 158 195 Q 162 185 165 195 L 165 280 Z"
+              fill="url(#redStripe)"/>
+
+        <!-- 中央红色 V 形纹（迪迦胸甲标志） -->
+        <path d="M 100 200 L 80 240 L 90 240 L 100 220 L 110 240 L 120 240 Z"
+              fill="url(#redStripe)" opacity="0.8"/>
+
+        <!-- ============== 彩色计时器（胸口中央 · 浅蓝色 · 迪迦标志） ============== -->
+
+        <!-- 外圈（金属边框） -->
+        <circle cx="100" cy="190" r="22" fill="#202020" stroke="#000000" stroke-width="2"/>
+        <!-- 内圈银边 -->
+        <circle cx="100" cy="190" r="19" fill="#404040" stroke="#808080" stroke-width="0.5"/>
+        <!-- 浅蓝核心（脉冲呼吸） -->
+        <circle cx="100" cy="190" r="15" fill="url(#tigaTimer)">
+          <animate attributeName="r" values="15;17;15" dur="1.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="1;0.9;1" dur="1.2s" repeatCount="indefinite"/>
         </circle>
-        <!-- 高光 -->
-        <ellipse cx="95" cy="174" rx="5" ry="7" fill="#ffffff" opacity="0.7"/>
+        <!-- 计时器高光 -->
+        <ellipse cx="94" cy="183" rx="6" ry="8" fill="#ffffff" opacity="0.8"/>
 
-        <!-- ============== 整体光晕效果 ============== -->
-        <ellipse cx="100" cy="120" rx="80" ry="120" fill="none" stroke="#ffd700" stroke-width="0.5" opacity="0.3"/>
+        <!-- ============== 整体光晕 ============== -->
+        <ellipse cx="100" cy="140" rx="90" ry="145" fill="none" stroke="#a060ff" stroke-width="0.8" opacity="0.4"/>
+        <ellipse cx="100" cy="140" rx="100" ry="155" fill="none" stroke="#ffd700" stroke-width="0.5" opacity="0.3"/>
       </svg>
     </div>
     <div class="hero-info">
@@ -1286,6 +1412,18 @@
   </p>
 </div>
 
+<!-- 🆕 战斗回放（娃版专属 · 打败怪兽动画） -->
+<div class="battle-replay kid-only">
+  <h2 class="replay-title">🎬 战斗回放</h2>
+  <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.6); margin: -4px 0 12px;">
+    看看文杰奥特曼怎么打败怪兽！
+  </p>
+
+  <div class="replay-grid" id="replay-grid">
+    <!-- 动画卡片由 JS 注入 -->
+  </div>
+</div>
+
 <!-- 数据来源 -->
 <div class="data-footer">
   ⚡ 实时数据 · Wiki 驱动 · 构建时间 __BUILD_TIME__
@@ -1302,6 +1440,9 @@
 
 <!-- 英雄学院专用 · 怪兽 modal -->
 <script src="wenjie-academy-arenas.js"></script>
+
+<!-- 英雄学院专用 · 战斗回放 -->
+<script src="wenjie-academy-battle.js"></script>
 
 <script>
 function toggleMode() {

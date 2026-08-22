@@ -544,6 +544,15 @@ def build_academy(daily_data, daily_perf, today_date):
     html = html.replace('__BOSSES_DEFEATED__', str(bosses_defeated))
     html = html.replace('__TROPHIES__', str(trophies))
     html = html.replace('__STREAK__', str(streak))
+
+    # 战斗回放 defeat 标记（基于 daily_perf 各科完成度）
+    math_done = daily_perf.get(today_date, {}).get('math_total', 0) > 0 and daily_perf.get(today_date, {}).get('math_correct', 0) >= daily_perf.get(today_date, {}).get('math_total', 0) * 0.7
+    html = html.replace('__MATH_DEFEATED__', '1' if math_done else '0')
+    html = html.replace('__ENGLISH_DEFEATED__', '0')  # 暂无数据
+    html = html.replace('__CHINESE_DEFEATED__', '0')
+    html = html.replace('__PIANO_DEFEATED__', '1' if daily_perf.get(today_date, {}).get('piano_done', False) else '0')
+    html = html.replace('__READING_DEFEATED__', '0')
+
     html = html.replace('__BUILD_TIME__', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     ACADEMY_OUTPUT.write_text(html, encoding='utf-8')
