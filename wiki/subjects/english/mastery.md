@@ -11,15 +11,16 @@
 | 说 Speaking | 3.0 | 4.0 | 🟡 | 完整句表达 OK，复杂话题弱 |
 | 读 Reading | 3.0 | 4.0 | 🟡 | L6 父母陪读 |
 | 写 Writing | 1.0 | 3.5 | 🔴 | 基本没写过 |
-| Phonics | 2.5 | 4.5 | 🟡 | 半生不熟（见 [[mistakes/pattern-001-long-short-vowels]]）|
+| Phonics | 3.0 | 4.5 | 🟡 | 半生不熟 → 8/18 新学 4 个发音（+0.5）|
 | Sight Words | 22/52 | 40/52 | 🟡 | Dolch K 已 22 个（见 [[entities/sight-words-dolch-k]]）|
 
-**综合 2.4 / 5.0**
+**综合 2.5 / 5.0**（Phonics +0.5）
 
-## 当前观察（2026-08-15）
+## 当前观察（2026-08-15 → 2026-08-18）
 - 8/15 读 4-5 页牛津树 L6，**length 卡壳**（Phonics Phase 5 内容：长元音 + 静默 e）
 - 见 [[entities/letter-sounds]] 待补
 - W01 8/17 Phonics 26 字母音测评后会更新评分
+- 🆕 8/18 新学 4 个发音（具体待妈妈告诉我）
 
 ## 写作（最大 gap）
 - 写是最大 gap —— P1 第一学期就要会抄写 + 听写
