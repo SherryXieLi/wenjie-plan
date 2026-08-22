@@ -809,7 +809,12 @@ def render_week_plan_for_kid(today_date):
 
     # 找出本周的 7 天（周一到周日）
     today = datetime.strptime(today_date, '%Y-%m-%d').date()
-    monday = today - timedelta(days=today.weekday())
+    # 智能选择：周一-周三显示本周；周四-周日显示下周（即将到来的周）
+    if today.weekday() >= 3:  # 周四-周日
+        days_to_next_mon = 7 - today.weekday()
+        monday = today + timedelta(days=days_to_next_mon)
+    else:
+        monday = today - timedelta(days=today.weekday())
     week_dates = [(monday + timedelta(days=i)) for i in range(7)]
 
     # 每天的类型 + 主要任务
