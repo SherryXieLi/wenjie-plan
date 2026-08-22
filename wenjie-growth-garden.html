@@ -663,6 +663,60 @@
       letter-spacing: 0.1em;
       margin: 0 0 8px;
     }
+
+    /* 娃版 modal 样式 */
+    .kid-goal {
+      text-align: center;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 107, 53, 0.1) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffd700;
+      margin: 8px 0;
+    }
+    .kid-mission-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .kid-mission-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(135, 206, 235, 0.3);
+      border-radius: 8px;
+    }
+    .kid-mission-icon {
+      font-size: 24px;
+    }
+    .kid-mission-text {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 600;
+    }
+    .kid-reward-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .kid-reward {
+      padding: 10px 14px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(135, 206, 235, 0.1) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffd700;
+      text-align: center;
+    }
+
+    @media (max-width: 400px) {
+      .kid-mission-list { grid-template-columns: 1fr; }
+    }
     .mission-list {
       list-style: none;
       padding: 0;
@@ -1267,7 +1321,7 @@
 
 <!-- 数据来源 -->
 <div class="data-footer">
-  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 17:59:38
+  ⚡ 实时数据 · Wiki 驱动 · 构建时间 2026-08-22 18:02:47
 </div>
 
 </main>
