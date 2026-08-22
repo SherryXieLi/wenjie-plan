@@ -693,11 +693,23 @@ def render_todays_tasks_for_kid(today_date, daily_perf):
     md_text = daily_md.read_text(encoding='utf-8')
 
     tasks = []
+    in_first_table = False
+    table_ended = False
 
     for line in md_text.split('\n'):
-        if not (line.startswith('|') and '|' in line):
+        # 找到第一个表格（包含 '| 时段 |' 头）
+        if not in_first_table:
+            if '|' in line and '时段' in line and '任务' in line:
+                in_first_table = True
             continue
-        if '---' in line or '时段' in line or '任务' in line:
+
+        # 已经离开了第一个表格就停止
+        if not (line.startswith('|') and '|' in line):
+            if in_first_table:
+                # 离开表格 → 停止
+                break
+            continue
+        if '---' in line:
             continue
 
         cells = [c.strip() for c in line.strip('|').split('|')]
