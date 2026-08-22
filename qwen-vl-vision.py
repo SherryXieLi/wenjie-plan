@@ -45,8 +45,13 @@ def call_qwen_vl(image_path, prompt, model='qwen3-vl-plus'):
 
     endpoint = os.environ.get(
         'QWEN_VL_ENDPOINT',
-        'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
+        'https://ws-7z36atunwt2uhkmr.cn-beijing.maas.aliyuncs.com/compatible-mode/v1'
     )
+    # 处理 endpoint：去掉尾随 / 和 /chat/completions
+    endpoint = endpoint.rstrip('/')
+    if endpoint.endswith('/chat/completions'):
+        endpoint = endpoint[:-len('/chat/completions')]
+    chat_url = f'{endpoint}/chat/completions'
 
     image_data = encode_image_to_base64(image_path)
     mime = detect_mime(image_path)
@@ -68,7 +73,7 @@ def call_qwen_vl(image_path, prompt, model='qwen3-vl-plus'):
     }
 
     req = urllib.request.Request(
-        endpoint,
+        chat_url,
         data=json.dumps(payload).encode('utf-8'),
         headers={
             'Content-Type': 'application/json',
