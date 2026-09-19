@@ -11,10 +11,11 @@
 
   // ---- 全局导航 + 层级标记 ----
   const NAV_ITEMS = [
-    { id: 'plan',     href: 'wenjie-plan.html',              label: '🗺 6年规划', layer: '战略层' },
-    { id: 'progress', href: 'wenjie-progress.html',          label: '📊 进度 + CCA', layer: '评估层' },
-    { id: 'daily',    href: 'wenjie-daily-plan.html',        label: '📅 每日计划', layer: '操作层' },
-    { id: 'academy',  href: 'wenjie-growth-garden.html',     label: '🦸 英雄学院', layer: '娃看版' }
+    { id: 'plan',         href: 'wenjie-plan.html',              label: '🗺 6年规划', layer: '战略层' },
+    { id: 'progress',     href: 'wenjie-progress.html',          label: '📊 进度 + CCA', layer: '评估层' },
+    { id: 'daily',        href: 'wenjie-daily-plan.html',        label: '📅 每日计划', layer: '操作层' },
+    { id: 'trinity-grade5', href: 'wenjie-trinity-grade5.html',  label: '🎹 Grade 5', layer: '考级 · 钢琴' },
+    { id: 'academy',      href: 'wenjie-growth-garden.html',     label: '🦸 英雄学院', layer: '娃看版' }
   ];
 
   // ---- 页面标题（top bar crumb）----
@@ -22,6 +23,7 @@
     'plan':              '文杰 · 6 年规划 + 入学评分',
     'progress':          '文杰 · 进度 + CCA',
     'daily-plan':        '文杰 · 每日学习内容',
+    'trinity-grade5':    '文杰 · Trinity Grade 5 曲目库',
     'growth-garden':     '文杰的英雄学院',
     '':                  '文杰学习计划'
   };
@@ -30,6 +32,7 @@
     'plan':              '6 年规划 · 2026-2032',
     'progress':          '进度追踪 + CCA',
     'daily-plan':        'Phase 1 · W01 · 8 月 · v6',
+    'trinity-grade5':    '考级 · Trinity Piano Grade 5',
     'growth-garden':     '奥特曼英雄学院',
     '':                  ''
   };
@@ -104,6 +107,7 @@
             '<a href="https://github.com/SherryXieLi/wenjie-plan">📂 GitHub</a>' +
             '<a href="wiki/index.md">📚 Wiki</a>' +
             '<a href="https://github.com/SherryXieLi/wenjie-plan/blob/main/' + FILENAME + '">✏️ Edit on GitHub</a>' +
+            '<a href="javascript:sharePage()">📤 分享本页</a>' +
             '<a href="javascript:window.print()">🖨 打印 / PDF</a>' +
           '</div>' +
           '<div class="updated">' +
@@ -111,6 +115,33 @@
           '</div>' +
         '</div>';
     });
+  }
+
+  // ---- 分享功能（Web Share API + clipboard 降级）----
+  window.sharePage = function () {
+    const title = (PAGE_TITLES[PAGE_ID] || '文杰学习计划') + ' · 文杰学习计划';
+    const text = '文杰的 ' + (PAGE_TITLES[PAGE_ID] || '学习计划') + '（妈妈 SherryXieLi 制作）';
+    const url = window.location.href;
+
+    if (navigator.share) {
+      navigator.share({ title: title, text: text, url: url })
+        .catch(function (err) {
+          // 用户取消分享时不报错
+          if (err.name !== 'AbortError') fallbackCopy(url);
+        });
+    } else {
+      fallbackCopy(url);
+    }
+  };
+
+  function fallbackCopy(url) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        alert('✅ 链接已复制！\n\n' + url + '\n\n粘贴到微信/WhatsApp 发送给家人');
+      }).catch(function () { prompt('复制下方链接给家人：', url); });
+    } else {
+      prompt('复制下方链接给家人：', url);
+    }
   }
 
   // ---- 自动注入 fonts（避免每个页面重复）----

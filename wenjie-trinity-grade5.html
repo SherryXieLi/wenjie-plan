@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2f6f5e">
+  <title>文杰 · Trinity Grade 5 曲目库 · 文杰学习计划</title>
+  <link rel="stylesheet" href="wenjie-shared.css">
+  <style>
+    /* ---- 页面专属样式 ---- */
+    .hero {
+      padding: 36px 0 24px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+    .hero .sub {
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    /* ---- 方案 A 高亮卡片 ---- */
+    .plan-a-card {
+      background: linear-gradient(135deg, #2f6f5e 0%, #245a4a 100%);
+      color: white;
+      border-radius: var(--r);
+      padding: 24px;
+      margin: 24px 0;
+      box-shadow: 0 8px 24px rgba(47,111,94,0.15);
+    }
+    .plan-a-card h2 {
+      font-size: 18px;
+      margin-bottom: 4px;
+      color: white;
+    }
+    .plan-a-card .plan-sub {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-bottom: 16px;
+    }
+    .plan-a-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    @media (min-width: 600px) {
+      .plan-a-list { grid-template-columns: 1fr 1fr; }
+    }
+    .plan-a-item {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .plan-a-item .num {
+      width: 22px; height: 22px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .plan-a-item .role {
+      font-size: 10.5px;
+      background: rgba(255,255,255,0.18);
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
+
+    /* ---- 筛选器 ---- */
+    .filters {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      margin: 24px 0 16px;
+    }
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 180px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-family: inherit;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .chip {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      background: var(--line-soft);
+      color: var(--ink-2);
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .chip:hover { background: var(--primary-soft); color: var(--primary); }
+    .chip.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .stats {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* ---- 曲库网格 ---- */
+    .piece-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    @media (min-width: 640px) {
+      .piece-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 900px) {
+      .piece-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .piece-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 14px 16px;
+      transition: all 0.18s;
+      position: relative;
+    }
+    .piece-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+    .piece-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: 0 4px 12px rgba(47,111,94,0.15);
+    }
+    .piece-card .num-badge {
+      position: absolute;
+      top: 10px; right: 12px;
+      background: var(--line-soft);
+      color: var(--muted);
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600;
+    }
+    .piece-card.selected .num-badge {
+      background: var(--primary);
+      color: white;
+    }
+    .piece-card .composer {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+    .piece-card .title-en {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .piece-card .title-cn {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .piece-card .period-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .period-tag.baroque { background: rgba(176,99,103,0.10); color: var(--rose); }
+    .period-tag.classical { background: rgba(181,138,59,0.10); color: var(--gold); }
+    .period-tag.romantic { background: rgba(201,123,63,0.10); color: var(--warm); }
+    .period-tag.modern { background: rgba(74,144,164,0.10); color: var(--math); }
+    .period-tag.folk { background: rgba(47,111,94,0.10); color: var(--primary); }
+    .piece-card .publisher {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-family: 'SF Mono', Menlo, Consolas, monospace;
+    }
+    .piece-card .links {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .piece-card .links a {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      text-decoration: none;
+      background: var(--line-soft);
+      color: var(--ink-2);
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .piece-card .links a:hover {
+      background: var(--primary);
+      color: white;
+    }
+    .piece-card .links a.score {
+      background: var(--warm-soft);
+      color: var(--warm);
+    }
+    .piece-card .links a.score:hover {
+      background: var(--warm);
+      color: white;
+    }
+    .piece-card .links a.video {
+      background: var(--rose-soft);
+      color: var(--rose);
+    }
+    .piece-card .links a.video:hover {
+      background: var(--rose);
+      color: white;
+    }
+
+    /* ---- 选中曲目侧栏 ---- */
+    .selection-bar {
+      position: sticky;
+      bottom: 16px;
+      background: var(--ink);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      margin: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13.5px;
+      z-index: 5;
+    }
+    .selection-bar .count {
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .selection-bar .hint {
+      opacity: 0.7;
+      font-size: 11.5px;
+    }
+    .selection-bar .reset {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .selection-bar .reset:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 28px 0 12px;
+      padding-left: 10px;
+      border-left: 3px solid var(--primary);
+    }
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+
+    /* ---- 浮动分享按钮（移动端友好）---- */
+    .share-fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      z-index: 20;
+      font-family: inherit;
+    }
+    .share-fab:active { transform: scale(0.95); }
+    @media (min-width: 768px) {
+      .share-fab { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- 共享顶部导航（由 wenjie-shared.js 渲染）-->
+    <div data-shared="top-bar"></div>
+
+    <!-- 共享面包屑（返回主页）-->
+    <div data-shared="breadcrumb"></div>
+
+    <div class="container">
+      <!-- Hero -->
+      <div class="hero">
+        <div style="font-size: 48px; margin-bottom: 8px;">🎹</div>
+        <h1>Trinity Piano Grade 5 曲目库</h1>
+        <div class="sub">58 首官方曲目 · 中英文对照 · 乐谱 & 演奏视频一键直达<br>考试模式：视频录制上传评分 · 需选 4 首</div>
+      </div>
+
+      <!-- 方案 A 高亮 -->
+      <div class="plan-a-card">
+        <h2>⭐ 我们的方案 A</h2>
+        <div class="plan-sub">稳中求胜 · 巴洛克打底 + 古典过渡 + 现代爆点</div>
+        <div class="plan-a-list">
+          <div class="plan-a-item">
+            <span class="num">1</span>
+            <span><span class="role">技术</span>Bach D小调二部创意曲 BWV 775</span>
+          </div>
+          <div class="plan-a-item">
+            <span class="num">2</span>
+            <span><span class="role">优雅</span>Bach 加沃特舞曲（法5 G大调 BWV 816）</span>
+          </div>
+          <div class="plan-a-item">
+            <span class="num">3</span>
+            <span><span class="role">歌唱</span>Haydn A大调行板 Hob I:53/II</span>
+          </div>
+          <div class="plan-a-item">
+            <span class="num">4</span>
+            <span><span class="role">爆点</span>爱乐之城《Engagement Party》订婚派对</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 筛选区 -->
+      <div class="filters">
+        <div class="filters-row">
+          <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索作曲家 / 曲名（中英文均可）">
+          <select class="search-input" id="sortSelect" style="max-width: 160px;">
+            <option value="default">按编号排序</option>
+            <option value="composer">按作曲家</option>
+            <option value="period">按时期</option>
+          </select>
+        </div>
+        <div class="filter-chips" id="periodChips">
+          <span class="chip active" data-period="all">全部</span>
+          <span class="chip" data-period="baroque">🎻 巴洛克</span>
+          <span class="chip" data-period="classical">🎼 古典</span>
+          <span class="chip" data-period="romantic">💝 浪漫</span>
+          <span class="chip" data-period="modern">🎬 现代/流行</span>
+          <span class="chip" data-period="folk">🌏 民族</span>
+          <span class="chip" data-period="plan-a">⭐ 方案 A</span>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot" style="background: var(--rose);"></span>巴洛克 (Bach, Handel 等)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--gold);"></span>古典 (Haydn, Mozart 等)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--warm);"></span>浪漫 (Schubert, Schumann 等)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--math);"></span>现代/流行 (电影配乐, Coldplay 等)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--primary);"></span>民族/民谣</div>
+        </div>
+        <div class="stats" id="statsText">显示 58 首 / 共 58 首</div>
+      </div>
+
+      <!-- 曲库 -->
+      <h2 class="section-title">📚 完整曲库（58 首）</h2>
+      <div class="piece-grid" id="pieceGrid"></div>
+
+      <!-- 底部说明 -->
+      <div style="background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; margin: 16px 0 40px; font-size: 13px; color: var(--ink-2); line-height: 1.7;">
+        <h3 style="font-size: 14px; margin-bottom: 8px; color: var(--ink);">📌 考试规则速记</h3>
+        <ul style="padding-left: 20px; margin: 0;">
+          <li>从曲库中选 <strong>4 首</strong>曲目，总时长不超过 <strong>13 分钟</strong></li>
+          <li>视频录制模式：录好后上传至 Trinity 官方系统评分</li>
+          <li>除曲目外还需准备：音阶琶音、视奏、听音测试</li>
+          <li>4 首风格尽量覆盖不同时期（巴洛克 / 古典 / 浪漫 / 现代）</li>
+        </ul>
+        <h3 style="font-size: 14px; margin: 14px 0 8px; color: var(--ink);">🎯 选曲策略</h3>
+        <ul style="padding-left: 20px; margin: 0;">
+          <li><strong>技术深度型</strong>（方案 A 中的 #4 BWV 775）：评审看基本功，复调作品最显实力</li>
+          <li><strong>音乐性强</strong>（方案 A 中的 #31 Engagement Party）：视频录制没有现场氛围，要靠演奏本身打动评审</li>
+          <li><strong>平衡型</strong>：4 首风格多样（巴洛克 2 + 古典 1 + 现代 1）最稳</li>
+        </ul>
+      </div>
+
+      <!-- 选曲栏 -->
+      <div class="selection-bar" id="selectionBar" style="display: none;">
+        <div>
+          已选 <span class="count" id="selCount">0</span> / 4 首
+          <span class="hint" id="selHint"></span>
+        </div>
+        <button class="reset" onclick="resetSelection()">清空</button>
+      </div>
+    </div>
+
+    <!-- 共享页脚 -->
+    <div data-shared="footer" data-updated="2026-08-22"></div>
+
+    <!-- 浮动分享按钮（移动端） -->
+    <button class="share-fab" onclick="sharePage()">📤 分享</button>
+  </main>
+
+  <script>
+    // ---- 完整曲目数据（58首）----
+    const PIECES = [
+      { n: 1, composer: "Dennis Alexander", en: "All is Calm", cn: "一切宁静", period: "modern", pub: "Trinity TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Dennis Alexander All is Calm piano" },
+      { n: 2, composer: "William Alwyn", en: "There Sleeps Titania (from Midsummer Night)", cn: "提坦妮娅安眠（仲夏夜之梦）", period: "modern", pub: "Trinity TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Alwyn There Sleeps Titania piano" },
+      { n: 3, composer: "Anon., ed. James Long", en: "Coranto no. 221 (from Fitzwilliam Virginal Book)", cn: "库朗特舞曲第221首（菲茨威廉维金纳琴曲集）", period: "baroque", pub: "TCL020284 / TCL020567 / TCL2363053e", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Coranto Fitzwilliam Virginal Book piano" },
+      { n: 4, composer: "Johann Sebastian Bach", en: "2-Part Invention no. 4 in D minor, BWV 775", cn: "D小调二部创意曲第4首 BWV 775", period: "baroque", pub: "Trinity TCL032041 / TCL033284e", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Bach Invention BWV 775 D minor piano", planA: true },
+      { n: 5, composer: "Johann Sebastian Bach", en: "Gavotte (from French Suite no. 5 in G, BWV 816)", cn: "加沃特舞曲（G大调第5号法国组曲 BWV 816）", period: "baroque", pub: "Henle HN71", book: "French Suites BWV 812-817", search: "Bach French Suite 5 Gavotte BWV 816 piano", planA: true },
+      { n: 6, composer: "Johann Sebastian Bach", en: "Prelude in C, BWV 846 (Well-Tempered Clavier Bk 1)", cn: "C大调前奏曲 BWV 846（平均律第一卷）", period: "baroque", pub: "Trinity TCL032041 / TCL033277e", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Bach Prelude C major BWV 846 Well Tempered piano" },
+      { n: 7, composer: "Gareth Balch", en: "A Walk at Strumble Head", cn: "斯特伦布尔海角漫步", period: "modern", pub: "Trinity TCL020567 / TCL2363060e", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Gareth Balch A Walk at Strumble Head piano" },
+      { n: 8, composer: "Sara Bareilles (arr. Alastair Gavin)", en: "What Baking Can Do (from Waitress the Musical)", cn: "烘焙的魔力（音乐剧《女招待》）", period: "modern", pub: "Trinity TCL205403e", book: "Single Edition", search: "What Baking Can Do Waitress piano" },
+      { n: 9, composer: "Béla Bartók", en: "Dance of Buchum (bars 1-18 only)", cn: "布丘姆之舞（仅第1-18小节）", period: "modern", pub: "Henle HN1402", book: "Romanian Folk Dances", search: "Bartok Dance of Buchum piano" },
+      { n: 10, composer: "Jean-François Basteau", en: "Regard", cn: "凝视", period: "modern", pub: "Lemoine HL29303", book: "Instants magiques", search: "Basteau Regard Instants magiques piano" },
+      { n: 11, composer: "Amy Beach", en: "Pantalon (from Young People's Carnival, op. 25)", cn: "潘塔龙角色舞（少年嘉年华 op.25）", period: "romantic", pub: "Trinity TCL020284 / TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Amy Beach Pantalon piano" },
+      { n: 12, composer: "Arthur Benjamin", en: "Haunted House", cn: "闹鬼的房子", period: "modern", pub: "Trinity TCL015389", book: "Raise the Bar Piano: Grades 3-5", search: "Arthur Benjamin Haunted House piano" },
+      { n: 13, composer: "Friedrich Burgmüller", en: "Berceuse no. 7 (from 18 Characteristic Studies, op. 109)", cn: "摇篮曲第7首（18首特性练习曲 op.109）", period: "romantic", pub: "TCL020284 / TCL020567 / TCL2363056e", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Burgmuller Berceuse op 109 piano" },
+      { n: 14, composer: "Chris Caine", en: "January – New Year", cn: "一月·新年", period: "modern", pub: "Trinity TCL234402 / TCL2404001e", book: "A Year in Twelve Keys", search: "Chris Caine January New Year piano" },
+      { n: 15, composer: "Matthew Camidge", en: "Scherzando (2nd movt from Sonata no. 1 in G)", cn: "谐谑曲（G大调第1号奏鸣曲第二乐章）", period: "classical", pub: "Trinity TCL020567 / TCL2363059e", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Matthew Camidge Scherzando Sonata 1 piano" },
+      { n: 16, composer: "Charles Camilleri", en: "Cantilena", cn: "坎蒂莱娜（抒情小曲）", period: "modern", pub: "Trinity TCL015389", book: "Raise the Bar Piano: Grades 3-5", search: "Charles Camilleri Cantilena piano" },
+      { n: 17, composer: "Mike Cornick", en: "Blues for Beth", cn: "贝丝的布鲁斯", period: "modern", pub: "Trinity TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Mike Cornick Blues for Beth piano" },
+      { n: 18, composer: "Séana Davey", en: "Ice Dance", cn: "冰之舞", period: "modern", pub: "TCL031952 / TCL032041 / TCL033253e", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Seana Davey Ice Dance piano" },
+      { n: 19, composer: "Léo Delibes (arr. Turner)", en: "Flower Duet (from Lakmé)", cn: "花之二重唱（歌剧《拉克美》）", period: "romantic", pub: "Schott ED13860", book: "The Piano Playlist", search: "Delibes Flower Duet Lakme piano" },
+      { n: 20, composer: "František Xaver Dušek", en: "Allegro (1st movt from Sonata XII in G)", cn: "快板（G大调第12号奏鸣曲第一乐章）", period: "classical", pub: "TCL020284 / TCL020567 / TCL2363054e", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Dusek Sonata XII G major piano" },
+      { n: 21, composer: "Duke Ellington (arr. Vicari)", en: "Don't Get Around Much Anymore", cn: "不再四处漫游", period: "modern", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Duke Ellington Don't Get Around Much piano" },
+      { n: 22, composer: "Marcos Fernandez", en: "Málaga", cn: "马拉加", period: "modern", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Marcos Fernandez Malaga piano" },
+      { n: 23, composer: "Zdeněk Fibich", en: "Lento assai no. 3 (from Moods, Impressions, op. 41)", cn: "很慢的慢板第3首（情绪·印象 op.41）", period: "romantic", pub: "TCL031952 / TCL032041 / TCL033239e", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Fibich Moods Impressions Souvenirs piano" },
+      { n: 24, composer: "Gilon Fox", en: "Walk in the Park", cn: "公园漫步", period: "modern", pub: "TCL020284 / TCL020567 / TCL2363057e", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Gilon Fox Walk in the Park piano" },
+      { n: 25, composer: "Tom Gerou", en: "March of the Roman Legionaries", cn: "罗马军团进行曲", period: "modern", pub: "Trinity TCL020284 / TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Tom Gerou March Roman Legionaries piano" },
+      { n: 26, composer: "Gordon Goodwin", en: "Settle Down", cn: "安定下来", period: "modern", pub: "Trinity TCL020284 / TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Gordon Goodwin Settle Down piano" },
+      { n: 27, composer: "Chabuca Granda (arr. Williams)", en: "Fina Estampa", cn: "优雅的姿态", period: "folk", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Chabuca Granda Fina Estampa piano" },
+      { n: 28, composer: "George Frideric Handel", en: "Fantasia in D minor", cn: "D小调幻想曲", period: "baroque", pub: "Trinity TCL032041 / TCL033260e", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Handel Fantasia D minor piano" },
+      { n: 29, composer: "Joseph Haydn", en: "Andante in A, Hob I:53/II", cn: "A大调行板 Hob I:53/II", period: "classical", pub: "Trinity TCL020567 / TCL2363058e", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Haydn Andante Hob I:53 piano", planA: true },
+      { n: 30, composer: "Heinrich Hofmann", en: "Am Abend no. 2 (from Stimmungsbilder, op. 88)", cn: "在傍晚时分第2首（心境画卷 op.88）", period: "romantic", pub: "Trinity TCL015389 / TCL2363061e", book: "Raise the Bar Piano: Grades 3-5", search: "Heinrich Hofmann Am Abend Stimmungsbilder piano" },
+      { n: 31, composer: "Justin Hurwitz", en: "Engagement Party (from La La Land)", cn: "订婚派对（电影《爱乐之城》）", period: "modern", pub: "Trinity TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Justin Hurwitz Engagement Party La La Land piano", planA: true },
+      { n: 32, composer: "Marie Jaëll", en: "Grisaille no. 3 (from Les jours pluvieux)", cn: "灰色调第3首（阴雨的日子）", period: "romantic", pub: "TCL031952 / TCL032041 / TCL033246e", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Marie Jaell Grisaille Les jours pluvieux piano" },
+      { n: 33, composer: "Pál Járdányi", en: "Andantino (1st movt from Sonatina no. 2)", cn: "小行板（第2号小奏鸣曲第一乐章）", period: "modern", pub: "Trinity TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Jardanyi Sonatina 2 Andantino piano" },
+      { n: 34, composer: "Billy Joel (arr. John Human)", en: "Just the Way You Are", cn: "就是这样的你", period: "modern", pub: "Trinity TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Billy Joel Just the Way You Are piano" },
+      { n: 35, composer: "Friedrich Kuhlau", en: "Allegro con spirito (1st movt from Sonatina in C, op. 55 no. 3)", cn: "精神饱满的快板（C大调小奏鸣曲 op.55 no.3 第一乐章）", period: "classical", pub: "Trinity TCL015389", book: "Raise the Bar Piano: Grades 3-5", search: "Kuhlau Sonatina op 55 no 3 piano" },
+      { n: 36, composer: "Friedrich Kuhlau", en: "Allegro molto (1st movt from Sonatina in F, op. 88 no. 4)", cn: "很快的快板（F大调小奏鸣曲 op.88 no.4 第一乐章）", period: "classical", pub: "TCL031952 / TCL032041 / TCL033222e", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Kuhlau Sonatina op 88 no 4 piano" },
+      { n: 37, composer: "Chris Martin et al. (Coldplay, arr. Hussey)", en: "Clocks (Coldplay)", cn: "时钟（酷玩乐队）", period: "modern", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Coldplay Clocks piano cover" },
+      { n: 38, composer: "John McCabe", en: "Sports Car", cn: "跑车", period: "modern", pub: "Trinity TCL020284 / TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "John McCabe Sports Car piano" },
+      { n: 39, composer: "Margaret Murray McLeod", en: "Philippa's Jig", cn: "菲利帕的吉格舞曲", period: "modern", pub: "Trinity TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Margaret Murray McLeod Philippa's Jig piano" },
+      { n: 40, composer: "Christopher Norton", en: "Kettle Rag (from Lavender's Kind of Blue)", cn: "水壶拉格（薰衣草的蓝色）", period: "modern", pub: "Trinity TCL015389", book: "Raise the Bar Piano: Grades 3-5", search: "Christopher Norton Kettle Rag piano" },
+      { n: 41, composer: "Ross Petot", en: "Typhoon", cn: "台风", period: "modern", pub: "Trinity TCL020284 / TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Ross Petot Typhoon piano" },
+      { n: 42, composer: "Rachel Portman", en: "Chocolat: Main Title Theme", cn: "《浓情巧克力》主题曲", period: "modern", pub: "Trinity TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Rachel Portman Chocolat main title piano" },
+      { n: 43, composer: "Michael Proksch", en: "And Now Let's Handel", cn: "现在让我们来\"亨德尔\"", period: "modern", pub: "Trinity TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Michael Proksch And Now Let's Handel piano" },
+      { n: 44, composer: "Fishel Pustilnik", en: "Circus Theme (including repeats)", cn: "马戏团主题（含反复）", period: "modern", pub: "Trinity TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5 Extended", search: "Fishel Pustilnik Circus Theme piano" },
+      { n: 45, composer: "Antonio Rosetti", en: "Allegretto", cn: "小快板", period: "classical", pub: "Trinity TCL032041 / TCL033291e", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Antonio Rosetti Allegretto piano" },
+      { n: 46, composer: "Xaver Scharwenka", en: "Scherzino no. 10 (from Album for the Young, op. 62)", cn: "小谐谑曲第10首（少年曲集 op.62）", period: "romantic", pub: "Trinity TCL032041 / TCL033307e", book: "Piano Exam Pieces Plus 2023: Grade 5 Extended", search: "Scharwenka Scherzino Album for the Young piano" },
+      { n: 47, composer: "Franz Schubert", en: "Valse sentimentale, op. 50 no. 13", cn: "感伤的圆舞曲 op.50 no.13", period: "romantic", pub: "TCL020284 / TCL020567 / TCL2363055e", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Schubert Valse sentimentale op 50 piano" },
+      { n: 48, composer: "Robert Schumann", en: "Reiterstück (The Horseman) no. 23 (Album for the Young, op. 68)", cn: "骑士之歌第23首（少年曲集 op.68）", period: "romantic", pub: "Wiener UT50252", book: "Album for the Young op. 68", search: "Schumann Reiterstuck Horseman Album for the Young piano" },
+      { n: 49, composer: "Tong Shang", en: "Friendship no. 2 (from Seven Little Pieces after Folk Songs from Inner Mongolia)", cn: "友谊第2首（七首内蒙古民歌主题小曲）", period: "folk", pub: "Schott ED7652", book: "Chinese Piano Music for Children", search: "Tong Shang Friendship Inner Mongolia piano" },
+      { n: 50, composer: "Shankar-Jaikishan (arr. Misri)", en: "Ajeeb Dastan Hai Yeh (from Dil Apna Aur Preet Parai)", cn: "奇异的故事（印度电影《我心与爱》）", period: "folk", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Ajeeb Dastan Hai Yeh piano" },
+      { n: 51, composer: "Ed Sheeran & Amy Wadge (arr. Hussey)", en: "Thinking Out Loud", cn: "沉思", period: "modern", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Ed Sheeran Thinking Out Loud piano" },
+      { n: 52, composer: "Mark Tanner", en: "Pause for Thought", cn: "沉思时刻", period: "modern", pub: "Clifton C158", book: "Jazz Hands book 3", search: "Mark Tanner Pause for Thought piano" },
+      { n: 53, composer: "Pyotr Ilyich Tchaikovsky", en: "Süße Träumerei no. 21 (from Kinderalbum, op. 39)", cn: "甜蜜的梦第21首（儿童曲集 op.39）", period: "romantic", pub: "Trinity TCL020284 / TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Tchaikovsky Susse Traumerei Kinderalbum piano" },
+      { n: 54, composer: "Kazumi Totaka (arr. Wrangell)", en: "Mii Channel Theme", cn: "Mii 频道主题曲", period: "modern", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Mii Channel Theme piano" },
+      { n: 55, composer: "Ralph Vaughan Williams", en: "Two-part Invention in E♭", cn: "降E大调二部创意曲", period: "modern", pub: "Trinity TCL015389", book: "Raise the Bar Piano: Grades 3-5", search: "Vaughan Williams Two-part Invention Eb piano" },
+      { n: 56, composer: "Andrea Vicari", en: "Spanish Polylogarythms", cn: "西班牙多重节奏", period: "modern", pub: "Trinity TCL031952 / TCL032041", book: "Piano Exam Pieces Plus 2023: Grade 5", search: "Andrea Vicari Spanish Polylogarythms piano" },
+      { n: 57, composer: "Pam Wedgwood", en: "Large Wave", cn: "大浪", period: "modern", pub: "Trinity TCL020284 / TCL020567", book: "Piano Exam Pieces Plus 2021: Grade 5", search: "Pam Wedgwood Large Wave piano" },
+      { n: 58, composer: "James Welburn", en: "Mosey on Down", cn: "悠然前行", period: "modern", pub: "Musica Ferrum 9790708147527", book: "Musical Escapades", search: "James Welburn Mosey on Down piano" },
+    ];
+
+    const PERIOD_LABEL = {
+      baroque: "巴洛克",
+      classical: "古典",
+      romantic: "浪漫",
+      modern: "现代/流行",
+      folk: "民族/民谣",
+    };
+
+    // ---- 渲染 ----
+    let selected = new Set();
+    let currentPeriod = 'all';
+    let currentSearch = '';
+
+    function renderGrid() {
+      const grid = document.getElementById('pieceGrid');
+      let list = PIECES.slice();
+
+      // 筛选时期
+      if (currentPeriod === 'plan-a') {
+        list = list.filter(p => p.planA);
+      } else if (currentPeriod !== 'all') {
+        list = list.filter(p => p.period === currentPeriod);
+      }
+
+      // 搜索
+      if (currentSearch.trim()) {
+        const q = currentSearch.trim().toLowerCase();
+        list = list.filter(p =>
+          p.en.toLowerCase().includes(q) ||
+          p.cn.includes(q) ||
+          p.composer.toLowerCase().includes(q)
+        );
+      }
+
+      // 排序
+      const sortBy = document.getElementById('sortSelect').value;
+      if (sortBy === 'composer') list.sort((a,b) => a.composer.localeCompare(b.composer));
+      else if (sortBy === 'period') list.sort((a,b) => a.period.localeCompare(b.period));
+      else list.sort((a,b) => a.n - b.n);
+
+      // 渲染
+      grid.innerHTML = list.map(p => {
+        const isSel = selected.has(p.n);
+        const planAStar = p.planA ? '<span style="color: var(--gold); font-size: 11px;">⭐</span> ' : '';
+        return `
+          <div class="piece-card ${isSel ? 'selected' : ''}" data-n="${p.n}">
+            <div class="num-badge">${p.n}</div>
+            <div class="composer">${planAStar}${p.composer}</div>
+            <div class="title-en">${p.en}</div>
+            <div class="title-cn">${p.cn}</div>
+            <span class="period-tag ${p.period}">${PERIOD_LABEL[p.period]}</span>
+            <div class="publisher">📖 ${p.pub}</div>
+            <div class="links">
+              <a class="score" href="https://www.amazon.com/s?k=${encodeURIComponent(p.pub)}" target="_blank" rel="noopener">📘 买谱</a>
+              <a class="score" href="https://www.trinitycollege.com/shop" target="_blank" rel="noopener">🏪 Trinity店</a>
+              <a class="video" href="https://www.youtube.com/results?search_query=${encodeURIComponent(p.search)}" target="_blank" rel="noopener">▶ 演奏</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 绑定点击
+      grid.querySelectorAll('.piece-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.tagName === 'A') return;
+          const n = parseInt(card.dataset.n);
+          toggleSelect(n);
+        });
+      });
+
+      // 统计
+      document.getElementById('statsText').textContent = `显示 ${list.length} 首 / 共 ${PIECES.length} 首${selected.size ? ' · 已选 ' + selected.size + ' 首' : ''}`;
+      updateSelectionBar();
+    }
+
+    function toggleSelect(n) {
+      if (selected.has(n)) selected.delete(n);
+      else if (selected.size < 4) selected.add(n);
+      else { alert('最多只能选 4 首哦（考试要求）'); return; }
+      renderGrid();
+    }
+
+    function resetSelection() {
+      selected.clear();
+      renderGrid();
+    }
+
+    function updateSelectionBar() {
+      const bar = document.getElementById('selectionBar');
+      const count = document.getElementById('selCount');
+      const hint = document.getElementById('selHint');
+      if (selected.size === 0) { bar.style.display = 'none'; return; }
+      bar.style.display = 'flex';
+      count.textContent = selected.size;
+      hint.textContent = selected.size < 4 ? `（还差 ${4 - selected.size} 首）` : '✓ 已满 4 首';
+    }
+
+    // ---- 事件绑定 ----
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      currentSearch = e.target.value;
+      renderGrid();
+    });
+    document.getElementById('sortSelect').addEventListener('change', renderGrid);
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentPeriod = chip.dataset.period;
+        renderGrid();
+      });
+    });
+
+    // 初始化
+    renderGrid();
+  </script>
+  <script src="wenjie-shared.js"></script>
+</body>
+</html>
